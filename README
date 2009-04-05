@@ -1,0 +1,39 @@
+MySQL::Admin version 0.41
+
+ABOUT
+    MySQL::Admin is a Mysql Adminstration tool.
+    see http://lindnerei.sourceforge.net.
+
+
+INSTALLATION
+
+To install this module type the following:
+
+   perl Makefile.PL
+   make
+   make test
+   make install
+   make testdb
+   make install_examples # /cgi-bin/examples/
+
+DEPENDENCIES
+
+This module requires these other modules and libraries:
+Test::More >=0.7,
+Module::Build >=0.2808,
+HTML::Menu::TreeView >=1.04,
+DBI >=1.50,
+CGI >=3.29,
+HTML::Parser >=3.56,
+Syntax::Highlight::Engine::Kate >=0.04,
+MD5 >=2.03,
+Authen::Captcha >=1.23,
+Mail::Sendmail >=0.79,
+
+
+COPYRIGHT AND LICENCE
+
+Copyright (C) 2006-2009 by Hr. Dirk Lindner
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by the Free Software Foundation; This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more details.
+

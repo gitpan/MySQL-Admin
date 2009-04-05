@@ -1,0 +1,61 @@
+Revision history for Perl MySQL::Admin 0.41
+0.41
+       This Version is not Backward Compatible !
+       Renamed to Msql::Admin.
+0.37
+       This Version is not Backward Compatible !
+       Enlarged Database Editor.
+       New default style.
+       Import / Export Opera Bookmarks Drag&drop TreeView Items
+       Ajax support(cgi::cms required no ajax, but if youe want use it take a look in lze.pl)
+       Antiflood.
+       links_pro_page
+       layout editor
+       Current Action Menu (edit file menu action).
+
+0.36   Some changes for the new Style
+
+0.35
+       thread anzeigen bei bearbeiten news.pl
+       Doku.
+0.34
+       A few Security fixes !!!!
+       extended editor
+       align profiles
+       Help Action
+       antiflood settings
+       news-right
+       upload right
+       Bilder im Fileeditor anzeigen.
+       menü length durch ... ersetzen
+
+0.31
+        fix en de tags, db installer first post antiflood.
+
+0.30
+        use Syntax::Highlight::Engine::Kate
+        system style
+        new bbcode tags en de [code=lang]
+        save old .htaccess, bookmarks and navigation.
+        a few fixes and much more.
+0.29
+        ./Build install_examples, testdb , gbook,.a few fixes
+
+0.28
+        alle module in eine distrubtion zusammengefasst
+        zoom buttons, neues file erstellen,chmod files  uvm,
+
+0.27 some fixes
+
+0.26
+
+    Overwrought Docs and clean up code, fix build System
+
+0.25
+     -a few fixes
+0.24
+     -refactoring.
+
+0.01  Sun Jan 22 01:37:35 2006
+        - original version; created by h2xs 1.23 with options
+                -XAn  MySQL::Admin

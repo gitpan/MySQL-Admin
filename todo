@@ -1,0 +1,30 @@
+unicode
+
+Captcha text bei reply in den news
+
+Captcha Registrieren
+
+#Clean HTML CSS
+
+#alles testen
+
+mysql suche geht nciht richtig (escape leerzeichen)
+
+Datenbank
+       SHOW VARIABLES; ShowProcesslist Create View
+       change charset drop, create database
+news
+       leere seite wird angezeigt wenn der letzte beitrag der Seite gelöscht wird.
+       attachment wird gelöscht(aus der Datenbank) beim bearbeiten.(attachments verwalten).
+       links_pro_page für suche einbauen.
+       BBCODE Modul von CPAn benutzen
+       trash (wiederherstellen)
+lesezeichen
+       import: als neuer ordner einfügen
+edittree
+       confirm delete usw quote textarea
+       treeview name="#setzen" und per url# nach einfügen dort hinspringen
+Files
+       upload files im explorer.
+       Nach Datum sotieren geht nicht richtig status merken.
+ Admin Password per Build.PL setzen
