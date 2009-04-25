@@ -5,18 +5,18 @@ require Exporter;
 use vars qw($config $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Config::EXPORT  = qw(loadConfig saveConfig $config);
 @ISA                           = qw(Exporter);
-$MySQL::Admin::Config::VERSION = '0.41';
+$MySQL::Admin::Config::VERSION = '0.42';
 $DefaultClass                  = 'MySQL::Admin::Config'
     unless defined $MySQL::Admin::Config::DefaultClass;
 $defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
-MySQL::Admin::Config  - config for CGI::LZE
+MySQL::Admin::Config  - config for MySQL::Admin
 
 =head1 DESCRIPTION
 
-see L<CGI::LZE::GUI>
+see L<MySQL::Admin::GUI>
 
 =head2 EXPORT
 

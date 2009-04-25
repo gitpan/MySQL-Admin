@@ -41,6 +41,7 @@ cgi-bin/templates/lze/tabwidget.htm
 cgi-bin/templates/lze/window.htm
 cgi-bin/templates/lze/wnd.htm
 Changes
+Debian_CPANTS.txt
 examples/cgi.pl
 examples/content-tab.pl
 examples/content.pl
@@ -67,14 +68,9 @@ extra/uninstall.sql
 htdocs/favicon.ico
 htdocs/gallery/perl.jpg
 htdocs/images/admin.jpg
-htdocs/images/angry.gif
-htdocs/images/cool.gif
-htdocs/images/grin.gif
-htdocs/images/kiss.gif
 htdocs/images/mail.png
 htdocs/images/minus.png
 htdocs/images/plus.png
-htdocs/images/smiley.gif
 htdocs/images/Thumbs.db
 htdocs/javascript/content.js
 htdocs/javascript/editor.js

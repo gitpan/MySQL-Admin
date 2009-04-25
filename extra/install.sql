@@ -8,18 +8,18 @@ CREATE TABLE IF NOT EXISTS actions (
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('news','news.pl','Blog',0,'news;navigation','show',1);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('news','news.pl','Blog',0,'news;navigation;verify','show',1);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('settings','quick.pl','Settings',5,'','main',2);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addNews','news.pl','newMessage',0,'news;navigation','addNews',3);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addNews','news.pl','newMessage',1,'news;navigation;verify','addNews',3);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('admin','admin.pl','adminCenter',5,'navigation;','main',4);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('delete','news.pl','blog',5,'news;navigation','deleteNews',5);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('edit','news.pl','blog',5,'news;navigation','editNews',6);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('saveedit','news.pl','blog',5,'news;navigation','saveedit',7);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('reply','news.pl','blog',0,'news;navigation','replyNews',8);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('delete','news.pl','blog',5,'news;navigation;verify','deleteNews',5);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('edit','news.pl','blog',5,'news;navigation;verify','editNews',6);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('saveedit','news.pl','blog',5,'news;navigation;verify','saveedit',7);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('reply','news.pl','blog',0,'news;navigation;verify','replyNews',8);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('profile','profile.pl','Profile',1,'navigation;','main',9);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('reg','reg.pl','register',0,'navigation;','reg',11);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addReply','news.pl','blog',0,'news;navigation','addReply',12);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showthread','news.pl','blog',0,'news;navigation','showMessage',13);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addReply','news.pl','blog',0,'news;navigation;verify','addReply',12);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showthread','news.pl','blog',0,'news;navigation;verify','showMessage',13);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('makeUser','reg.pl','register',0,0,'make',14);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('verify','reg.pl','verify',0,0,'navigation;',15);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('fulltext','search.pl','search',0,'navigation;','fulltext',26);
@@ -39,17 +39,17 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('openFile','files.pl','openFile',5,'navigation','OpenFile',43);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('newFile','files.pl','newFile',5,'navigation','newFile',44);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('saveFile','files.pl','saveFile',5,'navigation','saveFile',45);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showMessage','news.pl','blog',0,'news;navigation','main',18);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showMessage','news.pl','blog',0,'news;navigation;verify','main',18);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('chmodFile','files.pl','chmodFile',5,'navigation','chmodFile',49);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('deleteFile','files.pl','deleteFile',5,'navigation','deleteFile',50);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('impressum','impressum.pl','Impressum',0,'navigation','main',51);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('makeDir','files.pl','Files',5,'navigation','makeDir',52);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('newGbookEntry','gbook.pl','gbook',5,'navigation','newGbookEntry',55);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('newGbookEntry','gbook.pl','gbook',0,'navigation','newGbookEntry',55);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addnewGbookEntry','gbook.pl','gbook',0,'navigation','addnewGbookEntry',56);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('gbook','gbook.pl','gbook',0,'navigation','showGbook',57);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('deleteExploit','admin.pl','Admin',5,'navigation','deleteExploit',59);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('help','help.pl','help',0,'help;navigation','main',60);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showEditor','news.pl','NewPost',0,'navigation','showEditor',61);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showEditor','news.pl','NewPost',0,'navigation;verify','showEditor',61);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('AddFulltext','tables.pl','AddFulltext',5,'tables;navigation','AddFulltext',62);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('AnalyzeTable','tables.pl','AnalyzeTable',5,'tables;navigation','AnalyzeTable',63);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('AddPrimaryKey','tables.pl','AddPrimaryKey',5,'tables;navigation','AddPrimaryKey',64);

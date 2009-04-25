@@ -9,7 +9,8 @@ sub newGbookEntry {
     my $message = param('message');
     $message =
         ( $message =~ /^(.{3,1000})$/s ) ? $1 : translate("gbook_body");
-    my $headline = param('headline') ? param('headline') : translate('headline');
+    my $headline =
+        param('headline') ? param('headline') : translate('headline');
     $headline = ( $headline =~ /^(.{3,50})$/s ) ? $1 : translate('headline');
     my %parameter = (
         action    => "addnewGbookEntry",

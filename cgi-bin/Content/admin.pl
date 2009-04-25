@@ -3,15 +3,14 @@ my %parameter = ( path   => $m_hrSettings->{cgi}{bin} . '/templates',
                   style  => $m_sStyle,
                   title  => translate('admin'),
                   server => $m_hrSettings->{cgi}{serverName},
-                  id     => 'aboutWindow',
+                  id     => 'adminWindow',
                   class  => 'max',
 );
 my $window = new HTML::Window( \%parameter );
 $window->set_closeable(0);
 $window->set_moveable(0);
 $window->set_resizeable(0);
-$m_sContent .= br();
-$m_sContent .= $window->windowHeader();
+$m_sContent .= br() . $window->windowHeader();
 $m_sContent .=
     qq(<table align="center" border="0" cellpadding="0" cellspacing="0" summary="adminlayout" width="100%"><tr><td align="center"><a href="$ENV{SCRIPT_NAME}?action=settings">)
     . translate('settings')
@@ -25,7 +24,7 @@ $m_sContent .=
     . translate('showFiles')
     . qq(</a><br/><a href="$ENV{SCRIPT_NAME}?action=env">)
     . translate('env')
-    . qq(</a></td></tr></table><br>);
+    . qq(</a></td></tr></table><br/>);
 &showExploits() unless ( $m_hrAction eq 'deleteexploit' );
 $m_sContent .= $window->windowFooter();
 
@@ -37,8 +36,7 @@ sub deleteExploit {
 
 sub showExploits {
     my @exploit = $m_oDatabase->fetch_AoH("select * from exploit");
-    $m_sContent .=
-        q(<div align="center" style="width:95%;overflow:auto;"><h3>Exploits</h3>);
+    $m_sContent .= q(<div align="center"><h3>Exploits</h3>);
 
     for ( my $i = 0; $i <= ( $#exploit > 10 ? 10 : $#exploit ); $i++ ) {
         $m_sContent .= "<hr/>";

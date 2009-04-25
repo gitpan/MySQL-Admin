@@ -235,6 +235,8 @@ my $inctance = $class->new(
 #       'CGI::Ajax'                       => ">=0.706",
         'Authen::Captcha'                 => ">=1.023",
         'Mail::Sendmail'                  => ">=0.79",
+        'Parse::BBCode'                   => ">=0.08",
+        'Syntax::Highlight::Perl'         => ">=1.00",
     },
     ($] >= 5.005 ? (AUTHOR => 'Dirk Lindner <lze@cpan.org>') : ()),
     dist_abstract      => "Admin",
@@ -368,7 +370,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.41',
+    version   => '0.42',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

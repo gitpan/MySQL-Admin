@@ -21,7 +21,7 @@ use vars qw(
 @HTML::Menu::Pages::EXPORT = qw(makePages);
 @ISA                       = qw(Exporter);
 
-$HTML::Menu::Pages::VERSION = '0.41';
+$HTML::Menu::Pages::VERSION = '0.42';
 
 $DefaultClass = 'HTML::Menu::Pages'
     unless defined $HTML::Menu::Pages::DefaultClass;
@@ -149,8 +149,8 @@ sub ebis {
     my @data = ( {  name  => 'header',
                     pages => '<a class ="menuLink3" href="'
                         . ( $mod_rewrite
-                            ? "/$m_hrAction.html&$append"
-                            : "$ENV{SCRIPT_NAME}?action=$m_hrAction&$append"
+                            ? "/$m_hrAction.html&amp;$append"
+                            : "$ENV{SCRIPT_NAME}?action=$m_hrAction&amp;$append"
                         )
                         . '">'
                         . $pages . '</a>',
@@ -161,8 +161,8 @@ sub ebis {
         {
         name => "previous",
         href => $mod_rewrite
-        ? "/$previousPage/$nextPage/$m_hrAction.html&$append"
-        : "$ENV{SCRIPT_NAME}?von=$previousPage&amp;bis=$nextPage&amp;action=$m_hrAction&$append",
+        ? "/$previousPage/$nextPage/$m_hrAction.html&amp;$append"
+        : "$ENV{SCRIPT_NAME}?von=$previousPage&amp;bis=$nextPage&amp;action=$m_hrAction&amp;$append",
         }
         if ( $m_nStart- $per_page >= 0 );
 
@@ -192,8 +192,8 @@ sub ebis {
         $d = $length if ( $d > $length );
         my $svbis =
             ($mod_rewrite)
-            ? "/$c/$d/$m_hrAction.html&$append"
-            : "$ENV{SCRIPT_NAME}?von=$c&amp;bis=$d&amp;action=$m_hrAction&$append";
+            ? "/$c/$d/$m_hrAction.html&amp;$append"
+            : "$ENV{SCRIPT_NAME}?von=$c&amp;bis=$d&amp;action=$m_hrAction&amp;$append";
         push @data, ( $b* $per_page eq $m_nStart )
             ? { name  => 'currentLinks',
                 href  => $svbis,
@@ -211,8 +211,8 @@ sub ebis {
     $next = $length if ( $next > $length );
     my $esvbis =
         ($mod_rewrite)
-        ? "/$v/$next/$m_hrAction.html&$append"
-        : "$ENV{SCRIPT_NAME}?von=$v&amp;bis=$next&amp;action=$m_hrAction&$append";
+        ? "/$v/$next/$m_hrAction.html&amp;$append"
+        : "$ENV{SCRIPT_NAME}?von=$v&amp;bis=$next&amp;action=$m_hrAction&amp;$append";
     push @data,
         { name => "next",
           href => $esvbis
@@ -242,6 +242,12 @@ sub getSelf {
 =head1 AUTHOR
 
 Dirk Lindner <lze@cpan.org>
+
+
+=head2 see Also
+
+L<CGI> L<MySQL::Admin::GUI> L<MySQL::Admin::Actions> L<MySQL::Admin::Translate> L<MySQL::Admin::Settings> L<MySQL::Admin::Config>
+
 
 =head1 LICENSE
 

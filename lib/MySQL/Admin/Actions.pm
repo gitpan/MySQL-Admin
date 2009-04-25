@@ -6,7 +6,7 @@ use vars qw($m_hrActions $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Actions::EXPORT = qw(loadActions saveActions $m_hrActions);
 use MySQL::Admin::Config;
 @MySQL::Admin::Actions::ISA     = qw( Exporter MySQL::Admin::Config);
-$MySQL::Admin::Actions::VERSION = '0.41';
+$MySQL::Admin::Actions::VERSION = '0.42';
 $DefaultClass                   = 'MySQL::Admin::Actions'
     unless defined $MySQL::Admin::Actions::DefaultClass;
 $defaultconfig = '%CONFIG%';
@@ -108,7 +108,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2005-2008 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

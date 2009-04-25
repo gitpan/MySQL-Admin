@@ -1,4 +1,11 @@
-Revision history for Perl MySQL::Admin 0.41
+Revision history for Perl MySQL::Admin 0.42
+0.42
+       Benutzt jetzt Parse::BBCode
+       Smilies sind rausgeflogen
+       Multiples leeren truncate fixed
+       Delete User geht jetzt.
+       Für perl Code wird wieder Syntax::Highlight::Perl benutzt ansonsten Syntax::Highlight::Engine::Kate
+       Style angepasst html gesäubert
 0.41
        This Version is not Backward Compatible !
        Renamed to Msql::Admin.

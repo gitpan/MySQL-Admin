@@ -36,7 +36,7 @@ $CGI::DefaultClass  = 'CGI';
 $DefaultClass       = 'MySQL::Admin' unless defined $MySQL::Admin::DefaultClass;
 $defaultconfig      = '/srv/www/cgi-bin/config/settings.pl';
 $CGI::AutoloadClass = 'CGI';
-$MySQL::Admin::VERSION  = '0.41';
+$MySQL::Admin::VERSION  = '0.42';
 $m_bMod_perl           = ( $ENV{MOD_PERL} ) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI);
@@ -107,7 +107,7 @@ our $hold = 120;    #session ist 120 sekunden gültig.
 
 =head1 NAME
 
-MySQL::Admin - Mysql Administrator.
+MySQL::Admin - Mysql Administrator and more
 
 =head1 SYNOPSIS
 
@@ -248,7 +248,6 @@ sub includeAction {
         session($qstring);
 
         print $m_hrParams->{first};
-
 
 =cut
 
@@ -437,7 +436,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
-Copyright (C) 2008 by Hr. Dirk Lindner
+Copyright (C) 2009 by Hr. Dirk Lindner
 
 =head2 see Also
 

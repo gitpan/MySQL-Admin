@@ -1,6 +1,6 @@
 ---
 name: MySQL-Admin
-version: 0.41
+version: 0.42
 author:
   - 'Dirk Lindner <lze@cpan.org>'
 abstract: Admin
@@ -16,7 +16,9 @@ requires:
   MD5: '>=2.03'
   Mail::Sendmail: '>=0.79'
   Module::Build: '>=0.2808'
+  Parse::BBCode: '>=0.08'
   Syntax::Highlight::Engine::Kate: '>=0.04'
+  Syntax::Highlight::Perl: '>=1.00'
   Test::More: '>=0.7'
 provides:
   CGI::QuickFormR:
@@ -24,10 +26,10 @@ provides:
     version: 1.93
   DBI::Library:
     file: lib/DBI/Library.pm
-    version: 0.41
+    version: 0.42
   DBI::Library::Database:
     file: lib/DBI/Library/Database.pm
-    version: 0.41
+    version: 0.42
   DBI::Library::Database::db:
     file: lib/DBI/Library/Database.pm
   DBI::Library::Database::st:
@@ -38,46 +40,46 @@ provides:
     file: lib/DBI/Library.pm
   HTML::Editor:
     file: lib/HTML/Editor.pm
-    version: 0.41
+    version: 0.42
   HTML::Editor::BBCODE:
     file: lib/HTML/Editor/BBCODE.pm
-    version: 0.41
+    version: 0.42
   HTML::Menu::Pages:
     file: lib/HTML/Menu/Pages.pm
-    version: 0.41
+    version: 0.42
   HTML::TabWidget:
     file: lib/HTML/TabWidget.pm
-    version: 0.41
+    version: 0.42
   HTML::Window:
     file: lib/HTML/Window.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin:
     file: lib/MySQL/Admin.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Actions:
     file: lib/MySQL/Admin/Actions.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Config:
     file: lib/MySQL/Admin/Config.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::GUI:
     file: lib/MySQL/Admin/GUI.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Main:
     file: lib/MySQL/Admin/Main.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Session:
     file: lib/MySQL/Admin/Session.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Settings:
     file: lib/MySQL/Admin/Settings.pm
-    version: 0.41
+    version: 0.42
   MySQL::Admin::Translate:
     file: lib/MySQL/Admin/Translate.pm
-    version: 0.41
+    version: 0.42
   Template::Quick:
     file: lib/Template/Quick.pm
-    version: 0.41
+    version: 0.42
 generated_by: Module::Build version 0.280801
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

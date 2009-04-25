@@ -85,7 +85,9 @@ $m_sContent .= table(
                 {  -align  => 'center',
                    -border => 0
                 },
-                Tr( td( {  align => 'left',
+                $m_hrSettings->{admin}{icq}
+                ? Tr(
+                    td( {  align => 'left',
                            class => "label"
                         },
                         'ICQ'
@@ -106,8 +108,13 @@ $m_sContent .= table(
                         },
                         $m_hrSettings->{admin}{icq}
                     ),
+                    )
+                : Tr( td(),
+                      td()
                 ),
-                Tr( td( {  align => 'left',
+                $m_hrSettings->{admin}{skype}
+                ? Tr(
+                    td( {  align => 'left',
                            class => "label"
                         },
                         'Skype'
@@ -128,56 +135,77 @@ $m_sContent .= table(
                         },
                         $m_hrSettings->{admin}{skype}
                     ),
+                    )
+                : Tr( td(),
+                      td()
                 ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'Email'
-                    ),
-                    td(),
+                $m_hrSettings->{admin}{email}
+                ? Tr( td( { align => 'left',
+                            class => "label"
+                          },
+                          'Email'
+                      ),
+                      td(),
+                      td( { align => 'left',
+                            class => "value"
+                          },
+                          $m_hrSettings->{admin}{email}
+                      ),
+                    )
+                : Tr( td(),
+                      td()
+                ),
+                $m_hrSettings->{admin}{aim}
+                ? Tr( td( { align => 'left',
+                            class => "label"
+                          },
+                          'Aim'
+                      ),
+                      td(),
+                      td( { align => 'left',
+                            class => "value"
+                          },
+                          $m_hrSettings->{admin}{aim}
+                      ),
+                    )
+                : Tr( td(),
+                      td()
+                ),
+                $m_hrSettings->{admin}{msn}
+                ? Tr( td( { align => 'left',
+                            class => "label"
+                          },
+                          'MSN'
+                      ),
+                      td(),
+                      td( { align => 'left',
+                            class => "value"
+                          },
+                          $m_hrSettings->{admin}{msn}
+                      ),
+                    )
+                : Tr( td(),
+                      td()
+                ),
+                $m_hrSettings->{admin}{jabber}
+                ? Tr( td( { align => 'left',
+                            class => "label"
+                          },
+                          'Jabber'
+                      ),
+                      td(),
+                      td( { align => 'left',
+                            class => "value"
+                          },
+                          $m_hrSettings->{admin}{jabber}
+                      ),
+                    )
+                : Tr( td(),
+                      td()
+                ),
+                $m_hrSettings->{admin}{jahoo}
+                ? Tr(
                     td( {  align => 'left',
-                           class => "value"
-                        },
-                        $m_hrSettings->{admin}{email}
-                    ),
-                ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'Aim'
-                    ),
-                    td(),
-                    td( {  align => 'left',
-                           class => "value"
-                        },
-                        $m_hrSettings->{admin}{aim}
-                    ),
-                ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'MSN'
-                    ),
-                    td(),
-                    td( {  align => 'left',
-                           class => "value"
-                        },
-                        $m_hrSettings->{admin}{msn}
-                    ),
-                ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'Jabber'
-                    ),
-                    td(),
-                    td( {  align => 'left',
-                           class => "value"
-                        },
-                        $m_hrSettings->{admin}{jabber}
-                    ),
-                ),
-                Tr( td( {  align => 'left',
                            class => "label"
                         },
                         'Yahoo'
@@ -199,30 +227,41 @@ $m_sContent .= table(
                             $m_hrSettings->{admin}{jahoo}
                         )
                     ),
+                    )
+                : Tr( td(),
+                      td()
                 ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'Telefon'
-                    ),
-                    td(),
-                    td( {  align => 'left',
-                           class => "value"
-                        },
-                        $m_hrSettings->{admin}{tel}
-                    ),
+                $m_hrSettings->{admin}{tel}
+                ? Tr( td( { align => 'left',
+                            class => "label"
+                          },
+                          'Telefon'
+                      ),
+                      td(),
+                      td( { align => 'left',
+                            class => "value"
+                          },
+                          $m_hrSettings->{admin}{tel}
+                      ),
+                    )
+                : Tr( td(),
+                      td()
                 ),
-                Tr( td( {  align => 'left',
-                           class => "label"
-                        },
-                        'Anschrift'
-                    ),
-                    td(),
-                    td( {  align => 'left',
-                           class => "value"
-                        },
-                        qq|<a target="_blank" href="http://maps.google.com/maps?q=$m_hrSettings->{admin}{street}+$m_hrSettings->{admin}{number},+$m_hrSettings->{admin}{postcode}+$m_hrSettings->{admin}{town},+$m_hrSettings->{admin}{number}&amp;um=1&amp;sa=X&amp;oi=geocode_result&amp;resnum=1&amp;ct=title">$m_hrSettings->{admin}{street}.$m_hrSettings->{admin}{number}</a><br/>$m_hrSettings->{admin}{postcode} $m_hrSettings->{admin}{town}|
-                    ),
+                $m_hrSettings->{admin}{street}
+                ? Tr(td( {  align => 'left',
+                            class => "label"
+                         },
+                         'Anschrift'
+                     ),
+                     td(),
+                     td( {  align => 'left',
+                            class => "value"
+                         },
+                         qq|<a target="_blank" href="http://maps.google.com/maps?q=$m_hrSettings->{admin}{street}+$m_hrSettings->{admin}{number},+$m_hrSettings->{admin}{postcode}+$m_hrSettings->{admin}{town},+$m_hrSettings->{admin}{number}&amp;um=1&amp;sa=X&amp;oi=geocode_result&amp;resnum=1&amp;ct=title">$m_hrSettings->{admin}{street}.$m_hrSettings->{admin}{number}</a><br/>$m_hrSettings->{admin}{postcode} $m_hrSettings->{admin}{town}|
+                     ),
+                    )
+                : Tr( td(),
+                      td()
                 ),
             )
         )
@@ -230,11 +269,11 @@ $m_sContent .= table(
 );
 
 # my $TITLE = translate('contact');
-
+#
 # use CGI::QuickFormR;
 # $m_sContent .=
-#     '<div style="width:50%;" align="center"><div align="right"><div align="left">';
-# show_form( -HEADER   => $TITLE,
+#     '<div style="width:50%;" align="center"><div align="left">';
+# show_form(  -HEADER   => qq(<div style="padding-left:50px;"><h2>$TITLE</h2>),
 #            -ACCEPT   => \&on_valid_form,
 #            -CHECK    => ( param('checkForm') ? 1 : 0 ),
 #            -LANGUAGE => $ACCEPT_LANGUAGE,
@@ -264,7 +303,7 @@ $m_sContent .= table(
 #                         },
 #            ],
 #            -BUTTONS => [ { -name => translate('submit_message') }, ],
-#            -FOOTER  => '<br/>',
+#            -FOOTER  => '</div><br/',
 # );
 # my $htm = GetHtml();
 # if ( defined $htm ) {
@@ -272,7 +311,7 @@ $m_sContent .= table(
 # }
 # sub validName { $_[0] =~ /^\w{3,}$/; }
 # sub validBody { $_[0] =~ /^.{3,32766}$/; }
-# 
+#
 # sub on_valid_form {
 #     use Mail::Sendmail;
 #     my %mail = ( To      => $m_hrSettings->{admin}{email},
@@ -284,7 +323,7 @@ $m_sContent .= table(
 #     );
 #     sendmail(%mail) or warn $Mail::Sendmail::error;
 # }
-# $m_sContent .= "</div></div></div>";
+# $m_sContent .= "</div></div>";
 
 $m_sContent .= qq|
 <pre>$m_hrSettings->{admin}{signature}<pre>

@@ -7,14 +7,14 @@ use vars
 @MySQL::Admin::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
 use MySQL::Admin::Config;
 @ISA                              = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Translate::VERSION = '0.41';
+$MySQL::Admin::Translate::VERSION = '0.42';
 $DefaultClass                     = 'MySQL::Admin::Translate'
     unless defined $MySQL::Admin::Translate::DefaultClass;
 $defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
-MySQL::Admin::Translate - manage translations for CGI::LZE
+MySQL::Admin::Translate - Translations for MySQL::Admin.
 
 =head1 SYNOPSIS
 

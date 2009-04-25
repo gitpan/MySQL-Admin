@@ -83,20 +83,20 @@ use vars qw(
     qw(action ContentHeader Body maxlength openFile ChangeDb action Unique);
 @ISA = qw(Exporter MySQL::Admin);
 
-$MySQL::Admin::GUI::VERSION = '0.41';
+$MySQL::Admin::GUI::VERSION = '0.42';
 $m_bMod_perl = ( $ENV{MOD_PERL} ) ? 1 : 0;
 
 local $^W = 0;
 
 =head1 NAME
 
-MySQL::Admin::GUI - MySQL::Admin user front end
+MySQL::Admin::GUI - MySQL User front end
 
 =head1 SYNOPSIS
 
         use MySQL::Admin::GUI;
-
-        Body("config/settings.pl");
+        ContentHeader("config/settings.pl");
+        print Body();
 
 
 =head2 EXPORT
@@ -235,7 +235,7 @@ sub ContentHeader {
 
 =head2 Body()
 
-     Body();
+     print Body();
 
 =cut
 
@@ -556,17 +556,17 @@ sub maxlength {
 
 =head2 openFile
 
-        my $m_sFile = openFile("filename");
+        my $file = openFile("filename");
 
 =cut
 
 sub openFile {
-    my $m_sFile = shift;
-    if ( -e $m_sFile ) {
+    my $file = shift;
+    if ( -e $file ) {
         use Fcntl qw(:flock);
         use Symbol;
         my $fh = gensym;
-        open $fh, $m_sFile or warn "$!: $m_sFile $/";
+        open $fh, $file or warn "$!: $file $/";
         seek $fh, 0, 0;
         my @lines = <$fh>;
         close $fh;
@@ -618,7 +618,7 @@ sub action {
 
        };
 
-       ChangeDb(\%action);
+       ChangeDb(\%db);
 
 =cut
 
@@ -654,7 +654,7 @@ L<CGI> L<MySQL::Admin>
 L<DBI> L<DBI::Library> L<DBI::Library::Database>
 L<MySQL::Admin::GUI::Main> L<HTML::TabWidget>
 L<HTML::Window> L<HTML::Menu::Pages>
-L<HTML::Menu::TreeView> L<HTML::Editor::BBCODE> L<HTML::LZE::Editor>
+L<HTML::Menu::TreeView> L<HTML::Editor::BBCODE> L<HTML::Editor>
 
 =head1 AUTHOR
 
@@ -662,7 +662,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (C) 2005-2008 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

@@ -12,17 +12,17 @@ our $server;
 @MySQL::Admin::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %MySQL::Admin::Main::EXPORT_TAGS = ( 'all' => [qw(initMain Header Footer)] );
 @MySQL::Admin::Main::ISA         = qw( Exporter Template::Quick);
-$MySQL::Admin::Main::VERSION     = '0.41';
+$MySQL::Admin::Main::VERSION     = '0.42';
 $DefaultClass                    = 'MySQL::Admin::Main'
     unless defined $MySQL::Admin::Main::DefaultClass;
 
 =head1 NAME
 
-MySQL::Admin::Main.pm  Main template for CGI::LZE::GUI
+MySQL::Admin::Main.pm  Main template for MySQL::Admin::GUI
 
 =head1 SYNOPSIS
 
-see l<CGI::LZE::GUI>
+see l<MySQL::Admin::GUI>
 
 =head1 DESCRIPTION
 

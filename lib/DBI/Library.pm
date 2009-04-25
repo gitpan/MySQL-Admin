@@ -17,7 +17,7 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.41';
+$DBI::Library::VERSION = '0.42';
 $tbl                   = 'querys';
 $driver                = 'mysql';
 require Exporter;
@@ -37,13 +37,13 @@ FO Syntax
 
 use DBI::Library qw(:all);
 
-my $m_dbh = initDB({name => 'LZE',host => 'localhost',user => 'root',password =>'',style=> 'lze'});
+my $dbh = initDB({name => 'LZE',host => 'localhost',user => 'root',password =>'',style=> 'lze'});
 
 OO Syntax
 
 use DBI::Library;
 
-        my ($m_oDatabase,$m_dbh) = new DBI::Library(
+        my ($database,$dbh) = new DBI::Library(
 
                 {
 
@@ -73,9 +73,9 @@ use DBI::Library;
 
         );
 
-        $m_oDatabase->addexecute(\%execute);
+        $database->addexecute(\%execute);
 
-        $m_oDatabase->showTables();
+        $database->showTables();
 
 =head2 Export Tags
 
@@ -94,10 +94,10 @@ DBI::Library is a DBI subclass providing a dynamic SQL Libary.
 
 =head2 new()
 
-        my $m_oDatabase = new DBI::Library();
+        my $database = new DBI::Library();
 
 
-        my ($m_oDatabase,$m_dbh) = new DBI::Library(
+        my ($database,$m_dbh) = new DBI::Library(
 
                                         {
 
@@ -127,7 +127,7 @@ sub new {
 
 =head2 initDB()
 
-        my $m_dbh = initDB(
+        my $dbh = initDB(
 
                 {
 
@@ -234,7 +234,7 @@ sub CurrentPass {
 
 =head2  tableExists()
 
-$bool =  $m_oDatabase->tableExists($table);
+$bool =  $database->tableExists($table);
 
 =cut
 
@@ -248,7 +248,7 @@ sub tableExists {
 
 =head2 tableLength
 
-$length  = $m_oDatabase->tableLength($table);
+$length  = $database->tableLength($table);
 
 =cut
 
@@ -285,7 +285,7 @@ add sql statments to yourdatabase for later use witdh useexecute();
 
         );
 
-        $m_oDatabase->addexecute(\%execute);
+        $database->addexecute(\%execute);
 
         print join '<br/>' ,$m_oDatabase->showTables();
 
@@ -376,9 +376,9 @@ example:
 
         );
 
-        $m_oDatabase->addexecute(\%execute5);
+        $database->addexecute(\%execute5);
 
-        my $ref = $m_oDatabase->joins({identifier => {1 => 'news', 2 => 'querys'}});
+        my $ref = $database->joins({identifier => {1 => 'news', 2 => 'querys'}});
 
 =cut
 
@@ -403,7 +403,7 @@ sub useexecute {
 
 =head2 deleteexecute()
 
-        deleteexecute($m_sTitle);
+        deleteexecute($title);
 
 =cut
 
@@ -418,7 +418,7 @@ sub deleteexecute {
 
 =head2 fetch_array()
 
-        @A = $m_oDatabase->fetch_array($sql);
+        @A = $database->fetch_array($sql);
 
 =cut
 
@@ -443,7 +443,7 @@ $sth->finish();' );
 
 =head2 fetch_AoH()
 
-@aoh = $m_oDatabase->fetch_AoH($sql)
+@aoh = $database->fetch_AoH($sql)
 
 =cut
 
@@ -468,7 +468,7 @@ $sth->finish();' );
 
 =head2 fetch_hashref()
 
-$hashref = $m_oDatabase->fetch_hashref($sql)
+$hashref = $database->fetch_hashref($sql)
 
 =cut
 
@@ -513,7 +513,7 @@ $sth->execute() or warn $m_dbh->errstr;
 
 =head2 quote()
 
-        $quotedString = $m_oDatabase->quote($sql);
+        $quotedString = $database->quote($sql);
 
 =cut
 
@@ -570,7 +570,7 @@ sub getSelf {
 
 statements add by addexecute can called like
 
-$m_oDatabase->showTables()
+$database->showTables()
 
 =cut
 

@@ -5,8 +5,10 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.41';
-use HTML::Entities;
+$HTML::Editor::BBCODE::VERSION = '0.42';
+use Parse::BBCode;
+use Syntax::Highlight::Engine::Kate;
+# use Syntax::Highlight::Perl;
 
 =head1 NAME
 
@@ -14,9 +16,9 @@ HTML::Editor::BBCODE - BBCODE for HTML::Editor
 
 =head1 required Modules
 
-HTML::Entities,
-
 Syntax::Highlight::Engine::kate
+
+Parse::BBCode
 
 =head1 SYNOPSIS
 
@@ -37,6 +39,8 @@ Syntax::Highlight::Engine::kate
         print $test;
 
 =head1 DESCRIPTION
+
+see <L Parse::BBCode> and <L Syntax::Highlight::Engine::kate>
 
 Supported BBCODE
 
@@ -151,52 +155,119 @@ sub BBCODE {
     my $string          = shift;
     my $ACCEPT_LANGUAGE = shift;
     $ACCEPT_LANGUAGE = defined $ACCEPT_LANGUAGE ? $ACCEPT_LANGUAGE : 'de';
-    my $rplc;
-    $$string =~
-        s/\[(code)=(Perl|Java|C\+\+|XML|Ruby|Python|PHP|JavaScript|HTML|CSS|Bash)\](.*?)\[\/code\]/formatString($3,$2)/egs;
-    $$string =~ s/\[code\](.*?)\[\/code\]/formatString($1,'Perl')/egs;
-    $$string = encode_entities($$string);
-    $$string =~ s:\[(u)\](.*?)\[/\1\]:<$1>$2</$1>:gs;
-    $$string =~ s:\[(b)\](.*?)\[/\1\]:<$1>$2</$1>:gs;
-    $$string =~ s/\[(b)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(i)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(ol)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(ul)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(li)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(h1)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(h2)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(h3)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(h4)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(h5)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(s)\]([^\[\/\1\]]*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(sub)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[(sup)\](.*?)\[\/\1\]/<$1>$2<\/$1>/gs;
-    $$string =~ s/\[hr\]/<hr\/>/gs;
-    $$string =~
-        s/\[color=(.*?)\](.*?)\[\/color\]/<span style="color:$1;background-color:#E6DADE;">$2<\/span>/gs;
-    $$string =~ s/\[right\](.*?)\[\/right\]/<div align="right">$1<\/div>/gs;
-    $$string =~
-        s/\[center\](.*?)\[\/center\]/<div align="center">$1<\/div>/gs;
-    $$string =~ s/\[left\](.*?)\[\/left\]/<div align="left">$1<\/div>/gs;
-    $$string =~
-        s/\[url=(.*?)\](.*?)\[\/url\]/<a style="color:#000000;background-color:#E6DADE;" href="$1">$2<\/a>/gs;
-    $$string =~
-        s/\[email=(.*?)\](.*?)\[\/email\]/<a style="color:#000000;" target="_blank" href="mailto:$1">$2<\/a>/gs;
-    $$string =~ s/\[(img)\](.*?)\[\/\1\]/<img border="0" src="$2" alt=""\/>/g;
-    $$string =~
-        s/\[(google)\](.*?)\[\/\1\]/<a style="color:#000000;" target="_blank" href="http:\/\/www.google.de\/search?q=$2">Google:$2<\/a>/gs;
-    $$string =~
-        s/\[blog=(.*?)\](.*?)\[\/blog\]/<table  cellpadding="0" cellspacing="0" border="0"><tr><td><table  cellpadding="5" cellspacing="0"  border="0" class="blog"><tr><td>$2<\/td><\/tr><\/table><\/td><\/tr><tr><td><b><a href="$1" class="link">Quelle<\/a><\/b><\/td><\/tr><\/table>/gs;
-    $$string =~ s/\n/\n<br\/>/ig;
-    $$string =~
-        s/:\)/<img src="\/images\/smiley.gif" alt=":)" border="0"\/>/g;
-    $$string =~ s/;D/<img src="\/images\/grin.gif" alt=";D" border="0"\/>/g;
-    $$string =~ s/8\)/<img src="\/images\/cool.gif" alt="8)" border="0"\/>/g;
-    $$string =~
-        s/:-\*/<img src="\/images\/kiss.gif" alt=":-*" border="0"\/>/g;
-    $$string =~ s/:\(/<img src="\/images\/angry.gif" alt=":(" border="0"\/>/g;
-    $$string =~ s/:\(/<img src="\/images\/angry.gif" alt=":(" border="0"\/>/g;
-    $$string =~ s/\[Formatstring(\d+)\/\]/$formatString[$1]/egs;
+    my $p = Parse::BBCode->new(
+        {  tags => {
+               '' => sub {
+                   my $e = Parse::BBCode::escape_html( $_[2] );
+                   $e =~ s/\r?\n|\r/<br\/>\n/g;
+                   $e;
+               },
+               i     => '<i>%s</i>',
+               b     => '<b>%{parse}s</b>',
+               u     => '<u>%{parse}s</u>',
+               h1    => '<h1>%{parse}s</h1>',
+               h2    => '<h2>%{parse}s</h2>',
+               h3    => '<h3>%{parse}s</h3>',
+               h4    => '<h4>%{parse}s</h4>',
+               h5    => '<h5>%{parse}s</h5>',
+               ol    => '<ol>%{parse}s</ol>',
+               ul    => '<ul>%{parse}s</ul>',
+               li    => '<li>%{parse}s</li>',
+               sup   => '<sup>%{parse}s</sup>',
+               s     => '<s>%{parse}s</s>',
+               sub   => '<sub>%{parse}s</sub>',
+               size  => '<font size="%a">%{parse}s</font>',
+               url   => '<a href="%{link}A">%{parse}s</a>',
+               quote => 'block:<blockquote>%s</blockquote>',
+               color => '<span style="color:%{uri}A">%{parse}s</span>',
+               img   => '<img src="%{parse}s" border="0" alt=""/>',
+               email =>
+                   'Email:<a target="_blank" href="mailto:%{uri}A">%{parse}s</a>',
+               google =>
+                   'Google:<a href="http://www.google.de/search?q=%{uri}A">%{parse}s</a>',
+               blog =>
+                   '<table  cellpadding="0" cellspacing="0" border="0"><tr><td><table  cellpadding="5" cellspacing="0"  border="0" class="blog"><tr><td>%{parse}s</td></tr></table></td></tr><tr><td><b><a href="%{uri}A" class="link">Quelle</a></b></td></tr></table>',
+               left   => '<div align="left">%{parse}s</div>',
+               center => '<div align="center">%{parse}s</div>',
+               right  => '<div align="right">%{parse}s</div>',
+               code   => {
+                   code => sub {
+                       my ( $parser, $attr, $content, $attribute_fallback ) =
+                           @_;
+                       if ( $attr eq 'Perl' ) {
+                         use Syntax::Highlight::Perl ':FULL';
+                              my $color_Keys = {
+                                             'Variable_Scalar'   => 'Variable_ # or Scalar',
+                                             'Variable_Array'    => 'Variable_Array',
+                                             'Variable_Hash'     => 'Variable_Hash',
+                                             'Variable_Typeglob' => 'Variable_Typeglob',
+                                             'Subroutine'        => 'Subroutine',
+                                             'Quote'             => 'Quote',
+                                             'String'            => 'String',
+                                             'Comment_Normal'    => 'Comment_Normal',
+                                             'Comment_POD'       => 'Comment_POD',
+                                             'Bareword'          => 'Bareword',
+                                             'Package'           => 'Package',
+                                             'Number'            => 'Number',
+                                             'Operator'          => 'Operator',
+                                             'Symbol'            => 'Symbol',
+                                             'Character'         => 'Character',
+                                             'Directive'         => 'Directive',
+                                             'Label'             => 'Label',
+                                             'Line'              => 'Line',
+                              };
+                           my $formatter = new Syntax::Highlight::Perl;
+                           $formatter->define_substitution( '<' => '&lt;',
+                                                            '>' => '&gt;',
+                                                            '&' => '&amp;',
+                           );    # HTML escapes.
+                           while ( my ( $type, $style ) =
+                                   each %{$color_Keys} )
+                           {
+                               $formatter->set_format( $type,
+                                   [ qq|<span class="$style">|, '</span>' ] );
+                           }
+                           my $perldoc_Keys = {
+                                     'Builtin_Operator' => 'Builtin_Operator',
+                                     'Builtin_Function' => 'Builtin_Function',
+                                     'Keyword'          => 'Keyword',
+                           };
+                           while ( my ( $type, $style ) =
+                                   each %{$perldoc_Keys} )
+                           {
+                               $formatter->set_format(
+                                   $type,
+                                   [  qq|<a onclick="window.open('http://perldoc.perl.org/search.html?q='+this.innerHTML)" class="$style">|,
+                                      "</a>"
+                                   ]
+                               );
+                           }
+                           $content = $formatter->format_string($$content);
+
+                       } elsif ( $parser =~
+                           /(Java|C\+\+|XML|Ruby|Python|PHP|JavaScript|HTML|CSS|Bash)/
+                           )
+                       {
+                           $content = formatString( $$content, $1 );
+                       } else {
+                           $content = Parse::BBCode::escape_html($$content);
+                       }
+                       return qq|<div style="100%;overflow:auto"><pre>$content</pre></div>|;
+                   },
+                   parse => 0,
+                   class => 'block',
+               },
+               hr => { class  => 'block',
+                       output => '<hr/>',
+                       single => 1,
+               },
+               br => { class  => 'block',
+                       output => '<br/>',
+                       single => 1,
+               },
+           },
+        }
+    );
 
     if ( $ACCEPT_LANGUAGE eq 'de' ) {
         $$string =~ s/\[en\](.*?)\[\/en\]//gs;
@@ -205,6 +276,8 @@ sub BBCODE {
         $$string =~ s/\[en\](.*?)\[\/en\]/$1/gs;
         $$string =~ s/\[de\](.*?)\[\/de\]//gs;
     }
+
+    $$string = $p->render($$string);
 }
 
 sub formatString {
@@ -247,15 +320,15 @@ sub formatString {
         },
     );
     my $rplc = $hl->highlightText($string);
-    $currentstring++;
-    $formatString[$currentstring] =
-        qq(<div style="100%;overflow:auto"><pre>$rplc</pre></div>);
-    return "[Formatstring$currentstring/]";
+    $rplc = qq(<div style="100%;overflow:auto"><pre>$rplc</pre></div>);
+    return $rplc;
 }
 
 =head1 AUTHOR
 
 Dirk Lindner <lze@cpan.org>
+
+L<CGI> L<Parse::BBCode> L<HTML::Editor> L<MySQL::Admin::GUI>
 
 =head1 LICENSE
 

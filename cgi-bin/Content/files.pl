@@ -63,7 +63,7 @@ sub showDir {
     } elsif ( param('sort') ) {
         sortTree(1);
     }
-     
+
     my $hf = "$ENV{SCRIPT_NAME}?action=openFile&file=$elinks";
     my %parameter = ( path   => $m_hrSettings->{cgi}{bin} . '/templates',
                       style  => $m_sStyle,
@@ -176,7 +176,7 @@ sub showDir {
 sub OpenFile {
     my $f = defined param('file') ? param('file') : shift;
     return unless defined $f;
-     SWITCH: {
+SWITCH: {
         if ( -d $f ) {
             &showDir($f);
             last SWITCH;
@@ -187,7 +187,7 @@ sub OpenFile {
                      translate('back') )
                 . "</div>";
             my $content = getFile($f);
-            $content =~s/<\/textarea>/[\%TEXTAREA\%]/gi;
+            $content =~ s/<\/textarea>/[\%TEXTAREA\%]/gi;
             &showEditor( "Edit File: $f<br/>", $content, 'saveFile', $f );
             last SWITCH;
         }
@@ -211,8 +211,8 @@ sub OpenFile {
 }
 
 sub saveFile {
-    my $txt     = param('txt');
-    $txt =~s/\[%TEXTAREA%\]/<\/textarea>/gi;
+    my $txt = param('txt');
+    $txt =~ s/\[%TEXTAREA%\]/<\/textarea>/gi;
     my $m_sFile = param('file');
     use Fcntl qw(:flock);
     use Symbol;

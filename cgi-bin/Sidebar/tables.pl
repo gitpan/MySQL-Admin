@@ -60,7 +60,8 @@ $m_sContent .= qq|
     . translate('edit')
     . qq'</option>
 <option value="ShowDumpTable" '
-    . ( param('action') eq 'ShowDumpTable' ? 'selected="selected"' : '' ) . '>'
+    . ( param('action') eq 'ShowDumpTable' ? 'selected="selected"' : '' )
+    . '>'
     . translate('Export')
     . qq'</option>
 <option value="AnalyzeTable" '
@@ -68,13 +69,17 @@ $m_sContent .= qq|
     . translate('AnalyzeTable')
     . qq'</option>
 <option value="OptimizeTable" '
-    . ( param('action') eq 'OptimizeTable' ? 'selected="selected"' : '' ) . '>'
+    . ( param('action') eq 'OptimizeTable' ? 'selected="selected"' : '' )
+    . '>'
     . translate('OptimizeTable')
     . qq'</option>
 <option value="RepairTable" '
     . ( param('action') eq 'RepairTable' ? 'selected="selected"' : '' ) . '>'
-    . translate('RepairTable').q|</option
-</select><br/><br/><a href="$ENV{SCRIPT_NAME}?action=ShowTables" >|.translate('database').' </a></div>';
+    . translate('RepairTable')
+    . q|</option
+</select><br/><br/><a href="$ENV{SCRIPT_NAME}?action=ShowTables" >|
+    . translate('database')
+    . ' </a></div>';
 $m_sContent .= Tree( \@dbs, $m_sStyle );
 $m_sContent .= $window->windowFooter();
 $m_sContent .= '</td></tr>';

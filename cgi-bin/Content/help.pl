@@ -152,12 +152,12 @@ Group users
 <span style="color: #000000;"> &lt;/VirtualHost&gt;</span>
 </pre>
 <h2><a name="video">Video Tutorials</a></h2><br/>
-<a href="ftp://lindnerei.de/install_CGI_CMS.mpeg">Install Demo Video</a><br/>
+<a href="ftp://lindnerei.de/install_MySQL_Admin.mpeg">Install Demo Video</a><br/>
 <a href="ftp://lindnerei.de/bbcode_demo.mpeg">BBcode Demo</a><br/>
 <a href="ftp://lindnerei.de/blog_demo.mpeg">Future Demo</a><br/>
 <h2><a name="dev">Developer</a></h2>
 <h2><a name="modules">Module</a></h2>
-<a href="http://search.cpan.org/dist/CGI-CMS/">MySQL::Admin</a><br/>
+<a href="http://search.cpan.org/dist/MySQL-Admin/">MySQL::Admin</a><br/>
 <a href="http://search.cpan.org/dist/HTML-Menu-TreeView/">HTML-Menu-TreeView</a><br/>
 <h2><a name="examples">Examples</a></h2>
 <a href="'http://lindnerei.sourceforge.net/cgi-bin/examples/window.pl">HTML::Window</a><br/>

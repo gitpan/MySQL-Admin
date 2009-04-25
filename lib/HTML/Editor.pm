@@ -30,7 +30,7 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ( 'all' => [qw(initEditor show )] );
 
-$HTML::Editor::VERSION = '0.41';
+$HTML::Editor::VERSION = '0.42';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 
@@ -198,6 +198,8 @@ sub getSelf {
 =head1 AUTHOR
 
 Dirk Lindner <lze@cpan.org>
+
+L<CGI> L<HTML::Editor::BBCODE> L<MySQL::Admin::GUI>
 
 =head1 LICENSE
 

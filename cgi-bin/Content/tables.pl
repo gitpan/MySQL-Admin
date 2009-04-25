@@ -584,7 +584,7 @@ sub ShowTable {
         ShowDbHeader( $tbl, 1, "Show" );
 
         $m_sContent .= qq|
-                     <div style="overflow:auto;"><form action="$ENV{SCRIPT_NAME}?$eid" method="get" enctype="multipart/form-data">
+                     <div style="overflow:auto;"><form action="$ENV{SCRIPT_NAME}" method="get" enctype="multipart/form-data">
                      <input type="hidden" name="action" value="MultipleAction"/>
                      <input type="hidden" name="table" value="$tbl"/>
                      <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="layout" width="100%"><tr><td></td><td colspan="$rws">|
@@ -774,9 +774,8 @@ sub MultipleAction {
                     my ( $u, $h ) = split /\//, $col;
                     $u = $m_oDatabase->quote($u);
                     $h = $m_oDatabase->quote($h);
-                    ExecSql(
-                        "DELETE FROM mysql.user where user  = $u  && Host = $h"
-                    );
+                    $u .= "&& Host = $h" if ( $h ne "NULL" );
+                    ExecSql( "DELETE FROM mysql.user where user  = $u" );
                     last SWITCH;
                 }
                 if ( $a eq "truncate" ) {
@@ -1067,7 +1066,7 @@ sub ShowNewEntry {
                           class    => 'none',
         );
         my $window = new HTML::Window( \%parameter );
-        $m_sContent .= $window->windowHeader();
+        $m_sContent .= br() . $window->windowHeader();
         $m_sContent .= qq(
               <div align="center">
               <form action="$ENV{SCRIPT_NAME}?" method="get" name="action" enctype="multipart/form-data">
@@ -1264,7 +1263,7 @@ sub ShowTables {
         }
         $m_sContent .= qq(
               <tr onmouseover="this.className = 'overDb';" onmouseout="this.className = '';">
-              <td width="20" class="values"><input type="checkbox" name="markBox$i" class="markBox" value="$a[$i]->{Name}/$eid" /></td>
+              <td width="20" class="values"><input type="checkbox" name="markBox$i" class="markBox" value="$a[$i]->{Name}" /></td>
               <td class="values"><a href="$ENV{SCRIPT_NAME}?action=ShowTable&amp;table=$a[$i]->{Name}&amp;desc=0">$a[$i]->{Name}</a></td>
               <td class="values">$a[$i]->{Rows}</td><td class="values">$a[$i]->{Engine}</td><td class="values">$kb</td>
               <td class="values" width="16"><a href="$ENV{SCRIPT_NAME}?action=DropTable&amp;table=$a[$i]->{Name}&amp;$eid" onclick="return confirm(' $trdelete?')"><img src="/style/$m_sStyle/buttons/delete.png" align="middle" alt="" border="0"/></a></td>
@@ -2146,8 +2145,12 @@ sub ShowDbHeader {
     my $rb = new HTML::TabWidget();
     $m_sContent .= $rb->Menu( \%parameter );
     $m_sContent .= tabwidgetHeader();
-    $m_sContent .= '<div id="TableMenu" '
-        . ( $selected ? 'style="width:100%;"' : 'style="display:none;width:100%;"' ) . '>';
+    $m_sContent .=
+        '<div id="TableMenu" '
+        . ( $selected
+            ? 'style="width:100%;"'
+            : 'style="display:none;width:100%;"' )
+        . '>';
     $m_sContent .= a(
                { class => $current eq "Show" ? 'currentLink' : 'link',
                  href  => "$ENV{SCRIPT_NAME}?action=ShowTable&amp;table=$tbl",
@@ -2213,9 +2216,15 @@ sub ShowDbHeader {
                translate("Delete")
     );
     $m_sContent .= qq|$PAGES</div><div id="NewEntry" style="display:none;">|;
+
     &ShowNewEntry($tbl) if $m_oDatabase->tableExists($tbl);
-    $m_sContent .= qq|</div><div id="DatabaseMenu" |
-        . ( $selected ? 'style="display:none;width:100%;"' : 'style="width:100%"' ) . '>';
+
+    $m_sContent .=
+        qq|</div><div id="DatabaseMenu" |
+        . ( $selected
+            ? 'style="display:none;width:100%;"'
+            : 'style="width:100%"' )
+        . '>';
     $m_sContent .= a(
         {  class => $current eq "Show" ? 'currentLink' : 'link',
            href =>
@@ -2242,7 +2251,9 @@ sub ShowDbHeader {
     );
     my $sql      = defined param('sql') ? param('sql') : $SQL;
     my $exec     = translate('ExecSql');
-    my $newtable = translate('Create Table');
+    my $newtable = translate('CreateTable');
+    my $newUser  = translate('createuser');
+    my $connect  = translate('connect');
     my $fields   = translate('fields');
     $m_sContent .= qq|<br/>
    <table align="left" border="0" cellspacing="5" cellpadding="0"  summary="layout" >
@@ -2251,15 +2262,14 @@ sub ShowDbHeader {
 <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
 <table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
     <tr>
-      <td class="caption" colspan="4" onclick="displayTree('CreateUser')">|
-        . translate('CreateUser')
-        . qq|</td>
+      <td class="caption" colspan="4" onclick="displayTree('CreateUser')" style="cursor:pointer;">|
+        . translate('CreateUser') . qq|</td>
     </tr>
     <tr id="CreateUser" style="display:none;">
       <td class="values"><input type="text" name="name" value="Name" onfocus="this.value=''" style="width:80px;" /></td>
       <td class="values"><input type="text" name="host" value="Host" onfocus="this.value=''" style="width:80px;" /></td>
       <td class="values"><input type="text" name="password" value="password" onfocus="this.value=''" style="width:80px;" /></td>
-      <td class="values"><input type="submit" name="submit" value="Create User" /></td>
+      <td class="values"><input type="submit" name="submit" value="$newUser" /></td>
     </tr>
 </table>
 <input type="hidden" name="action" value="CreateUser" />
@@ -2269,9 +2279,8 @@ sub ShowDbHeader {
 <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
 <table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
     <tr>
-      <td class="caption" colspan="4" onclick="displayTree('CreateTable')">|
-        . translate('CreateTable')
-        . qq|</td>
+      <td class="caption" colspan="4" onclick="displayTree('CreateTable')" style="cursor:pointer;">|
+        . translate('CreateTable') . qq|</td>
     </tr>
     <tr id="CreateTable" style="display:none;">
       <td class="values"><input type="text" name="table" value="Name" onfocus="this.value=''" style="width:80px;" /></td>
@@ -2287,15 +2296,14 @@ sub ShowDbHeader {
     <input type="hidden" name="m_ChangeCurrentDb" value="$m_sCurrentDb"/>
     <table align="left" border="0" cellspacing="0" cellpadding="2" summary="M_currentDb">
     <tr >
-      <td class="caption" colspan="4" onclick="displayTree('m_ChangeCurrentDb')">|
-        . translate('ChangeCurrentDb')
-        . qq|</td>
+      <td class="caption" colspan="4" onclick="displayTree('m_ChangeCurrentDb')" style="cursor:pointer;">|
+        . translate('ChangeCurrentDb') . qq|</td>
     </tr>
     <tr id="m_ChangeCurrentDb" style="display:none;">
       <td class="values"><input type="text" name="m_shost" value="$m_sCurrentHost"/></td>
       <td class="values"><input type="text" name="m_suser" value="$m_sCurrentUser"/></td>
       <td class="values"><input type="password" name="m_spass" value="$m_sCurrentPass"/></td>
-      <td class="values"><input type="submit" name="submit" value="connect" /></td>
+      <td class="values"><input type="submit" name="submit" value="$connect" /></td>
     </tr>
 </table>
 </form><br/><br/>
@@ -2429,7 +2437,7 @@ sub ShowUsers {
                      <td class="values"><a href="$ENV{SCRIPT_NAME}?action=ShowRights&amp;user=$a[$i]->{User}&amp;host=$a[$i]->{Host}">$a[$i]->{User}</a></td>
                      <td class="values">$a[$i]->{Host}</td>
                      <td class="values">$sRights</td>
-                     <td class="values" width="16"><a href="$ENV{SCRIPT_NAME}?action=DeleteUsery&amp;table=mysql&amp;user=$a[$i]->{User}&amp;host=$a[$i]->{Host}" onclick="return confirm(' $trdelete?')"><img src="/style/$m_sStyle/buttons/delete.png" align="middle" alt="" border="0"/></a></td>
+                     <td class="values" width="16"><a href="$ENV{SCRIPT_NAME}?action=DeleteUser&amp;table=mysql&amp;user=$a[$i]->{User}&amp;host=$a[$i]->{Host}" onclick="return confirm(' $trdelete?')"><img src="/style/$m_sStyle/buttons/delete.png" align="middle" alt="" border="0"/></a></td>
                      <td class="values" width="16"><a href="$ENV{SCRIPT_NAME}?action=ShowRights&amp;user=$a[$i]->{User}&amp;host=$a[$i]->{Host}"><img src="/style/$m_sStyle/buttons/edit.png" border="0" alt="$change" title="$change"/></a></td>
               </tr>
        );
@@ -2692,17 +2700,18 @@ sub ShowRights {
         . HasRight('max_user_connections') . qq|"/></td>
     </tr>
         <tr>
-      <td class="caption" colspan="2">Host</td>
-      <td class="caption" colspan="2">Datenbank</td>
-      <td class="caption" colspan="2">Tabelle</td>
-      <td class="caption" colspan="2">User</td>
+      <td class="caption" colspan="2">| . translate("Host") . qq|</td>
+      <td class="caption" colspan="2">| . translate("database") . qq|</td>
+      <td class="caption" colspan="2">| . translate("table") . qq|</td>
+      <td class="caption" colspan="2">| . translate("User") . qq|</td>
     </tr>
     <tr onmouseover="this.className='overDb';" onmouseout="this.className='';">
       <td class="values" colspan="2"><input type="text" name="$UNIQUE_HOST" value="$hostname"/></td>
       <td class="values" colspan="2">| . GetDatabases($UNIQUE_DB) . qq|</td>
       <td class="values" colspan="2">| . GetTables($UNIQUE_TBL) . qq|</td>
       <td class="values" colspan="2">|
-        . GetUsers( $UNIQUE_USER, $uname ) . qq|</td>
+        . GetUsers( $UNIQUE_USER, $uname )
+        . qq|</td>
     </tr>
      <tr>
         <td><a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a>
@@ -3027,9 +3036,9 @@ action
 =cut
 
 sub DeleteUser {
-    my $password = $m_oDatabase->quote( param('password') );
-    my $name     = $m_oDatabase->quote( param('name') );
-    my $host     = $m_oDatabase->quote( param('host') );
+    my $name = $m_oDatabase->quote( param('user') );
+    my $host = $m_oDatabase->quote( param('host') );
+    $name .= "\@$host" if ( defined $host );
     ExecSql("DROP USER $name");
     ShowUsers();
 }
