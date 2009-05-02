@@ -6,14 +6,14 @@ use vars qw($m_hrActions $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Actions::EXPORT = qw(loadActions saveActions $m_hrActions);
 use MySQL::Admin::Config;
 @MySQL::Admin::Actions::ISA     = qw( Exporter MySQL::Admin::Config);
-$MySQL::Admin::Actions::VERSION = '0.42';
+$MySQL::Admin::Actions::VERSION = '0.43';
 $DefaultClass                   = 'MySQL::Admin::Actions'
     unless defined $MySQL::Admin::Actions::DefaultClass;
 $defaultconfig = '%CONFIG%';
 
 =head1 NAME
 
-MySQL::Admin::Actions - actions for CGI::LZE
+MySQL::Admin::Actions - actions for Mysql::Admin
 
 =head1 SYNOPSIS
 

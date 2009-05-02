@@ -78,8 +78,7 @@ $m_sContent .= qq|
     . translate('RepairTable')
     . q|</option
 </select><br/><br/><a href="$ENV{SCRIPT_NAME}?action=ShowTables" >|
-    . translate('database')
-    . ' </a></div>';
+    . translate('database') . ' </a></div>';
 $m_sContent .= Tree( \@dbs, $m_sStyle );
 $m_sContent .= $window->windowFooter();
 $m_sContent .= '</td></tr>';

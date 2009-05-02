@@ -2,7 +2,15 @@ use vars qw($akt $m_nEnd $length $m_nStart $thread $replyId );
 
 sub show {
     my $threadlength = $m_oDatabase->tableLength('news');
-    $m_nStart = $m_nStart > $threadlength ? $threadlength- 1 : $m_nStart;
+    my $lpp =
+          defined param('links_pro_page')
+        ? param('links_pro_page') =~ /(\d\d?\d?)/
+            ? $1
+            : 10
+        : 10;
+    $m_nStart = $m_nStart >= $threadlength ? $threadlength- $lpp : $m_nStart;
+    $m_nEnd =
+        $m_nStart+ $lpp > $threadlength ? $threadlength : $m_nStart+ $lpp;
     my %needed = ( action => 'news',
                    start  => $m_nStart,
                    end    => $m_nEnd,

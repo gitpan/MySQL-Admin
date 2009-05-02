@@ -21,7 +21,7 @@ use vars qw(
 @HTML::Menu::Pages::EXPORT = qw(makePages);
 @ISA                       = qw(Exporter);
 
-$HTML::Menu::Pages::VERSION = '0.42';
+$HTML::Menu::Pages::VERSION = '0.43';
 
 $DefaultClass = 'HTML::Menu::Pages'
     unless defined $HTML::Menu::Pages::DefaultClass;
@@ -146,14 +146,14 @@ sub ebis {
                      template => "pages.htm",
                      name     => 'pages'
     );
-    my @data = ( {  name  => 'header',
-                    pages => '<a class ="menuLink3" href="'
-                        . ( $mod_rewrite
-                            ? "/$m_hrAction.html&amp;$append"
-                            : "$ENV{SCRIPT_NAME}?action=$m_hrAction&amp;$append"
-                        )
-                        . '">'
-                        . $pages . '</a>',
+    my @data = ( { name  => 'header',
+                   pages => '<a class ="menuLink3" href="'
+                       . ($mod_rewrite
+                          ? "/$m_hrAction.html&amp;$append"
+                          : "$ENV{SCRIPT_NAME}?action=$m_hrAction&amp;$append"
+                       )
+                       . '">'
+                       . $pages . '</a>',
                  },
     );
 

@@ -174,7 +174,7 @@ CREATE TABLE IF NOT EXISTS news (
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: testpass','2007-04-23 19:06:42','admin',0,'0','/news','news',0,1);
+INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: youu have set it during make','2007-04-23 19:06:42','admin',0,'0','/news','news',0,1);
 CREATE TABLE IF NOT EXISTS querys (
   title varchar(100) NOT NULL default '',
   description text NOT NULL,
@@ -247,7 +247,6 @@ CREATE TABLE IF NOT EXISTS users (
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO users (pass,`user`,date,email,`right`,name,firstname,street,city,postcode,phone,sid,ip,id) VALUES('fe7374a18d3f8ca9547e49aa39a2dd67','admin','0000-00-00','lindnerei@o2online.de',5,'Nachname','Vorname','Strasse','Stadt','Postleitzahl','Telefonnummer','0008e525bc0894a780297b7f3aed6f58','::1',1);
 INSERT INTO users (pass,`user`,date,email,`right`,name,firstname,street,city,postcode,phone,sid,ip,id) VALUES('guest','guest','0000-00-00','guest@guestde',0,'guest','guest','guest','guest','57072','445566','hghsdf7','dd',2);
 CREATE TABLE IF NOT EXISTS exploit (
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,

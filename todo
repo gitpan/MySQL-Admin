@@ -1,18 +1,18 @@
 #alles testen
 unicode
-     Captcha Registrieren
+     Captcha Registrieren login
 
 Datenbank
-       forms überprüfen js
-       suchen
+       save newtable tabelle wieder anzeigen
+       Datenbank erstellen, löschen
+       suchen (Ajax)
        SHOW VARIABLES; ShowProcesslist Create View
        change charset drop, create database
        SQL EDITOR FELDNAMEN AUSWAHL(Ajax)
        Export Optionen
 news
-       leere seite wird angezeigt wenn der letzte beitrag der Seite gelöscht wird.
        attachment wird gelöscht(aus der Datenbank) beim bearbeiten.(attachments verwalten).
-       links_pro_page für suche einbauen.s
+       links_pro_page für suche einbauen.
        trash (wiederherstellen)
 lesezeichen
        import: als neuer ordner einfügen
@@ -21,5 +21,3 @@ edittree
        treeview name="#setzen" und per url# nach einfügen dort hinspringen
 Files
        upload files im explorer.
-       Nach Datum sotieren geht nicht richtig status merken.
-       Admin Password per Build.PL setzen

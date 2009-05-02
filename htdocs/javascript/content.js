@@ -707,3 +707,95 @@ var cAction ='ShowTables';
 function setAction(n){
        cAction = n;
 }
+//<<API
+//CreateUser
+function CheckFormCreateUser(){
+       var f = document.CreateUser;
+       var ret = true;
+       var array = new Array();
+       var error = false;
+       if (f.name.value==""){
+              array.push("Name");
+              ret = false;
+              error = true;
+       }
+       if (f.host.value==""){
+              array.push("Host");
+              ret = false;
+              error = true;
+       }
+      if (f.password.value==""){
+              array.push("Passwort")
+              ret = false;
+              error = true;
+       }
+       if(error){
+              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+       }
+       return ret;
+}
+
+function CheckFormNewTable(){
+       var f = document.NewTable; 
+       var ret = true;
+       var array = new Array();
+       var error = false;
+       if (f.table.value==""){
+              array.push("Name");
+              ret = false;
+              error = true;
+       }
+       if (f.count.value==""){
+              array.push("Spalten");
+              ret = false;
+              error = true;
+       }
+       if(error){
+              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+       }
+       return ret;
+}
+
+function CheckFormCurrentDb(){
+       var f = document.CurrentDb;
+       var ret = true;
+       var array = new Array();
+       var error = false;
+       if (f.m_suser.value==""){
+              array.push("User");
+              ret = false;
+              error = true;
+       }
+       if (f.m_shost.value==""){
+              array.push("Host");
+              ret = false;
+              error = true;
+       }
+      if (f.m_spass.value==""){
+              array.push("Passwort")
+              ret = false;
+              error = true;
+       }
+       if(error){
+              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+       }
+       return ret;
+}
+
+function DisplayDbHeader(header){
+       if(header == 'm_ChangeCurrentDb'){
+          document.getElementById('m_ChangeCurrentDb').style.display = "";
+          document.getElementById('CreateTable').style.display = "none";
+          document.getElementById('CreateUser').style.display = "none";
+       }
+       if(header == 'CreateTable'){
+          document.getElementById('CreateTable').style.display = "";
+          document.getElementById('CreateUser').style.display = "none";
+          document.getElementById('m_ChangeCurrentDb').style.display = "none";
+       }
+       if(header == 'CreateUser'){
+          document.getElementById('CreateUser').style.display = "";
+          document.getElementById('CreateTable').style.display = "none";
+          document.getElementById('m_ChangeCurrentDb').style.display = "none";
+       }
+}

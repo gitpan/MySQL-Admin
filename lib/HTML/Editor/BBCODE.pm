@@ -5,9 +5,10 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.42';
+$HTML::Editor::BBCODE::VERSION = '0.43';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
+
 # use Syntax::Highlight::Perl;
 
 =head1 NAME
@@ -195,27 +196,27 @@ sub BBCODE {
                        my ( $parser, $attr, $content, $attribute_fallback ) =
                            @_;
                        if ( $attr eq 'Perl' ) {
-                         use Syntax::Highlight::Perl ':FULL';
-                              my $color_Keys = {
-                                             'Variable_Scalar'   => 'Variable_ # or Scalar',
-                                             'Variable_Array'    => 'Variable_Array',
-                                             'Variable_Hash'     => 'Variable_Hash',
-                                             'Variable_Typeglob' => 'Variable_Typeglob',
-                                             'Subroutine'        => 'Subroutine',
-                                             'Quote'             => 'Quote',
-                                             'String'            => 'String',
-                                             'Comment_Normal'    => 'Comment_Normal',
-                                             'Comment_POD'       => 'Comment_POD',
-                                             'Bareword'          => 'Bareword',
-                                             'Package'           => 'Package',
-                                             'Number'            => 'Number',
-                                             'Operator'          => 'Operator',
-                                             'Symbol'            => 'Symbol',
-                                             'Character'         => 'Character',
-                                             'Directive'         => 'Directive',
-                                             'Label'             => 'Label',
-                                             'Line'              => 'Line',
-                              };
+                           use Syntax::Highlight::Perl ':FULL';
+                           my $color_Keys = {
+                                 'Variable_Scalar' => 'Variable_ # or Scalar',
+                                 'Variable_Array'  => 'Variable_Array',
+                                 'Variable_Hash'   => 'Variable_Hash',
+                                 'Variable_Typeglob' => 'Variable_Typeglob',
+                                 'Subroutine'        => 'Subroutine',
+                                 'Quote'             => 'Quote',
+                                 'String'            => 'String',
+                                 'Comment_Normal'    => 'Comment_Normal',
+                                 'Comment_POD'       => 'Comment_POD',
+                                 'Bareword'          => 'Bareword',
+                                 'Package'           => 'Package',
+                                 'Number'            => 'Number',
+                                 'Operator'          => 'Operator',
+                                 'Symbol'            => 'Symbol',
+                                 'Character'         => 'Character',
+                                 'Directive'         => 'Directive',
+                                 'Label'             => 'Label',
+                                 'Line'              => 'Line',
+                           };
                            my $formatter = new Syntax::Highlight::Perl;
                            $formatter->define_substitution( '<' => '&lt;',
                                                             '>' => '&gt;',
@@ -252,7 +253,8 @@ sub BBCODE {
                        } else {
                            $content = Parse::BBCode::escape_html($$content);
                        }
-                       return qq|<div style="100%;overflow:auto"><pre>$content</pre></div>|;
+                       return
+                           qq|<div style="100%;overflow:auto"><pre>$content</pre></div>|;
                    },
                    parse => 0,
                    class => 'block',

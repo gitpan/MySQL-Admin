@@ -52,10 +52,10 @@ my $class = Module::Build->subclass(
               }
 
               sub ACTION_realclean {
-              my $self = shift;
-              $m_hrSettings->{database}{password} = '';
-              saveSettings("$cwd/cgi-bin/config/settings.pl");
-              $self->SUPER::ACTION_realclean;
+                    my $self = shift;
+                    $m_hrSettings->{database}{password} = '';
+                    saveSettings("$cwd/cgi-bin/config/settings.pl");
+                    $self->SUPER::ACTION_realclean;
               }
 
               sub ACTION_install {
@@ -85,12 +85,20 @@ my $class = Module::Build->subclass(
                               local $/;
                               my $m_sFile = <IN>;
                               foreach my $sql (split /;\n/, $m_sFile) {
-                              $m_oDatabase->void($sql);
-                              print $/, $sql, $/, $@ if $@;
+                                   $m_oDatabase->void($sql);
+                                   print $/, $sql, $/, $@ if $@;
                               }
+                              use MD5;
+                              my $md5 = new MD5;
+                              $md5->add('admin');
+                              $md5->add($self->{'properties'}{password});
+                              my $fingerprint = $md5->hexdigest();
+                              $m_oDatabase->void(qq/insert into users (user,pass,email,`right`) values(?,?,?,5)/, 'admin',$fingerprint , $self->{'properties'}{email} );
+                              print $/, $sql, $/, $@ if $@;
                     } else {
                               warn $@;
                     }
+
                     my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
                     system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{DocumentRoot}");
                     system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{bin}");
@@ -266,7 +274,8 @@ $inctance->{properties}{dbpass}      = $m_hrSettings->{database}{password} ? $m_
 $inctance->{properties}{group}       = $m_hrSettings->{files}{group}       ? $m_hrSettings->{files}{group}       : 'wwwrun';
 $inctance->{properties}{owner}       = $m_hrSettings->{files}{owner}       ? $m_hrSettings->{files}{owner}       : $ENV{USER};
 $inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0755';
-
+$inctance->{properties}{password}    = int( rand(1000)+ 1 ) x 3;
+$inctance->{properties}{email}       = "none";
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
 $inctance->{properties}{dbuser}      = $inctance->args('dbuser')      if $inctance->args('dbuser');
 $inctance->{properties}{sqlhost}     = $inctance->args('sqlhost')     if $inctance->args('sqlhost');
@@ -279,6 +288,8 @@ $inctance->{properties}{chmod}       = $inctance->args('chmod')       if $inctan
 $inctance->{properties}{owner}       = $inctance->args('owner')       if $inctance->args('owner');
 $inctance->{properties}{server}      = $inctance->args('server')      if $inctance->args('server');
 $inctance->{properties}{mod_rewrite} = $inctance->args('mod_rewrite') if $inctance->args('mod_rewrite');
+$inctance->{properties}{password}    = $inctance->args('password')    if $inctance->args('password');
+$inctance->{properties}{email}       = $inctance->args('email')       if $inctance->args('email');
 $inctance->{properties}{install_path}{perl}  = $prefix . $inctance->{properties}{cgi};
 $inctance->{properties}{install_path}{rhtml} = $prefix . $inctance->{properties}{htd};
 
@@ -310,40 +321,41 @@ unless ($skip) {
     $inctance->{properties}{dbpass} = $inctance->{properties}{dbpass} ? $inctance->{properties}{dbpass} : "";
     $inctance->{properties}{dbpass} = Module::Build->prompt("Enter your Mysql password", $inctance->{properties}{dbpass});
     $inctance->{properties}{dbname} = $inctance->{properties}{dbname} ? $inctance->{properties}{dbname} : "LZE";
-    $inctance->{properties}{dbname} = Module::Build->prompt("Enter your Mysql Database Name", $inctance->{properties}{dbname});
-    $inctance->{properties}{owner} = $inctance->{properties}{owner} ? $inctance->{properties}{owner} : $ENV{USER};
-    $inctance->{properties}{owner} = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
-    $inctance->{properties}{group} = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
-    $inctance->{properties}{group} = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
-    $inctance->{properties}{chmod} = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0755';
-    $inctance->{properties}{chmod} = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
+    $inctance->{properties}{dbname}   = Module::Build->prompt("Enter your Mysql Database Name", $inctance->{properties}{dbname});
+    $inctance->{properties}{owner}    = $inctance->{properties}{owner} ? $inctance->{properties}{owner} : $ENV{USER};
+    $inctance->{properties}{owner}    = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
+    $inctance->{properties}{group}    = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
+    $inctance->{properties}{group}    = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
+    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0755';
+    $inctance->{properties}{chmod}    = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
+    $inctance->{properties}{password} = Module::Build->prompt("Enter Password for login!", $inctance->{properties}{password});
+    $inctance->{properties}{email}    = Module::Build->prompt("Enter your email adress!", $inctance->{properties}{email});
 }
 
 $m_hrSettings = {
     config => "$inctance->{properties}{cgi}/config/settings.pl",
     admin  => {
-        email     => 'your@email.org',
-        firstname => 'Firstname',
-        name      => 'Name',
-        street    => 'example 33',
-        town      => 'Berlin',
-                       'firstname' => 'Max',
-                       'number' => '',
-                       'postocde' => '',
-                       'street' => '',
-                       'town' => 'Berlin',
-                       'jahoo' => '',
-                       'msn' => '',
-                       'icq' => '',
-                       'tel' => '',
-                       'postcode' => '10965',
-                       'country' => 'Deutschland',
-                       'tonwn' => 'Berlin',
-                       'name' => 'Musterman',
-                       'aim' => '',
-                       'signature' => '',
-                       'skype' => '',
-                       'jabber' => ''
+        email      => 'dirk.lindner(a)gmx.de',
+        firstname  => 'Dirk',
+        name       => 'Lindner',
+        street     => 'example 33',
+        town       => 'Berlin',
+        number     => '',
+        postocde   => '10965',
+        street     => '',
+        town       => 'Berlin',
+        jahoo      => '',
+        msn        => '',
+        icq        => '350108541',
+        tel        => '',
+        postcode   => '10965',
+        country    => 'Deutschland',
+        tonwn      => 'Berlin',
+        name       => 'Musterman',
+        aim        => '',
+        signature  => "perl -e'&{sub{s~~shift~e;s-(&*{*{*#*L*.Z*.E*.)-chr$&-eg;print}}(100105114107)'",
+        skype      => 'pro_soccer',
+        jabber     => ''
     },
     cgi => {
         expires      => '+1y',
@@ -370,7 +382,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.42',
+    version   => '0.43',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

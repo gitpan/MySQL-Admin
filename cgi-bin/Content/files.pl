@@ -1,14 +1,21 @@
 use vars qw($r);
 use URI::Escape;
 use HTML::Entities;
-no warnings "uninitialized";
 
+# # no warnings "uninitialized";
+# my $m_hrAction;
 sub EditFile {
     my $name = defined param('name') ? param('name') : $m_hrAction;
     my @n = $m_oDatabase->fetch_array(
                                   "select file from `actions` where action=?",
                                   $name );
     OpenFile("$m_hrSettings->{cgi}{bin}/Content/$n[0]");
+}
+use POSIX 'floor';
+
+sub round {
+    my $x = shift;
+    floor( $x+ 0.5 );
 }
 
 sub showDir {
@@ -19,50 +26,132 @@ sub showDir {
 
     $m_sSubfolder =~ s?/$??g;
     my $links = $m_sSubfolder =~ ?^(.*/)[^/]+$? ? $1 : $m_sSubfolder;
+    my $fname =
+        $m_sSubfolder =~ ?^.*/([^/]+)$?
+        ? qq(<span style="color:white">$1</span>)
+        : $m_sSubfolder;
     $links =~ s?//?/?g;
 
     my $elinks     = uri_escape($links);
     my $esubfolder = uri_escape($m_sSubfolder);
     $r = 0;
-
+    my $orderby  = defined param('orderBy')  ? param('orderBy')  : 'Name';
+    my $byColumn = defined param('byColumn') ? param('byColumn') : -1;
+    my $state    = param('desc')== 1         ? 1                 : 0;
+    my $newstate = $state                    ? 0                 : 1;
     my @t = readFiles( $m_sSubfolder, 0 );
-    columns(
-        a(  {  href =>
-                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&sort=1",
-               class => "treeviewLink$m_nSize"
-            },
-            'Name'
-            )
-            . '&#160;',
-        a(  {  href =>
-                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=0",
-               class => "treeviewLink$m_nSize"
-            },
-            'Size'
-            )
-            . '&#160;',
-        a(  {  href =>
-                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=1",
-               class => "treeviewLink$m_nSize"
-            },
-            'Permission'
-            )
-            . '&#160;',
-        a(  {  href =>
-                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=2",
-               class => "treeviewLink$m_nSize"
-            },
-            'Last Modified'
-            )
-            . '&#160;'
-    );
-    border(1);
-
-    if ( defined param('byColumn') ) {
-        orderByColumn( param('byColumn') );
+    if ($byColumn) {
+        orderByColumn($byColumn);
+        desc(1) if $state;
     } elsif ( param('sort') ) {
         sortTree(1);
+        desc(1) if $state;
     }
+    TrOver(1);
+    @t = sort { lc( $a->{mtime} ) cmp lc( $b->{mtime} ) } @t
+        if $orderby eq 'mTime';
+    @t = sort { lc( $a->{size} ) <=> lc( $b->{size} ) } @t
+        if $orderby eq 'Size';
+    @t = reverse @t if $state;
+    columns(
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&sort=1&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'Name'
+                . (
+                param('sort')
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&orderBy=Size&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'Size'
+                . (
+                $orderby eq 'Size'
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=0&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'Permission'
+                . (
+                $byColumn== 0 && !param('sort')
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=2&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'UID'
+                . (
+                $byColumn== 2
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&byColumn=3&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'GID'
+                . (
+                $byColumn== 3
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        a(  {  href =>
+                   "$ENV{SCRIPT_NAME}?action=openFile&file=$esubfolder&orderBy=mTime&desc=$newstate",
+               class => "treeviewLink$m_nSize",
+               align => "left"
+            },
+            'Last Modified'
+                . (
+                $orderby eq 'mTime'
+                ? ( $state
+                    ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                    : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+                    )
+                : ''
+                )
+            )
+            . '&#160;',
+        "",
+    );
 
     my $hf = "$ENV{SCRIPT_NAME}?action=openFile&file=$elinks";
     my %parameter = ( path   => $m_hrSettings->{cgi}{bin} . '/templates',
@@ -76,10 +165,11 @@ sub showDir {
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= div(
         { align => 'center' },
+
         a(  {  href  => $hf,
                class => "treeviewLink$m_nSize"
             },
-            $links
+            $links . $fname
             )
             . br()
             . a(
@@ -103,14 +193,18 @@ sub showDir {
                    "javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$esubfolder&chmod='+encodeURIComponent(a);",
                class => "treeviewLink$m_nSize"
             },
-            "Chmod"
+            "Chmod",
             )
+            . br()
             . br()
             . Tree( \@t, $m_sStyle )
             . br()
             . $window->windowFooter()
     );
     border(0);
+    TrOver(0);
+    sortTree(0);
+    use User::pwent;
 
     sub readFiles {
         my @TREEVIEW;
@@ -129,20 +223,34 @@ sub showDir {
                     my $efl = uri_escape($fl);
                     my $href =
                         "$ENV{SCRIPT_NAME}?action=openFile&amp;file=$efl";
+                    my ( $sec,  $min,  $hour, $mday, $mon,
+                         $year, $wday, $yday, $isdst
+                    ) = localtime( $sb->mtime );
+                    $year += 1900;
+                    $mon  = sprintf( "%02d", $mon );
+                    $mday = sprintf( "%02d", $mday );
+                    $min  = sprintf( "%02d", $min );
+                    $hour = sprintf( "%02d", $hour );
+                    $sec  = sprintf( "%02d", $sec );
+                    my ( $gname, $passwd, $gid, $members ) =
+                        getgrgid $sb->gid;
+
                     if ( -d $fl ) {
                         push @TREEVIEW,
                             {
                             text    => $d,
                             href    => "$href/",
                             empty   => 1,
-                            columns => [ sprintf( "%s",   $sb->size ),
-                                         sprintf( "%04o", $sb->mode & 07777 ),
-                                         sprintf(
-                                             "%s", scalar localtime $sb->mtime
-                                         )
+                            mtime   => $sb->mtime,
+                            size    => $sb->size,
+                            columns => [
+                                  sprintf( "%s",   $sb->size ),
+                                  sprintf( "%04o", $sb->mode & 07777 ),
+                                  getpwuid( $sb->uid )->name,
+                                  $gname,
+                                  "$year-$mon-$mday $hour:$min:$sec",
+                                  qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
                             ],
-                            addition =>
-                                qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
                             };
                         last TYPE;
                     }
@@ -152,14 +260,16 @@ sub showDir {
                             {
                             text    => "$d",
                             href    => "$href",
-                            columns => [ sprintf( "%s",   $sb->size ),
-                                         sprintf( "%04o", $sb->mode & 07777 ),
-                                         sprintf(
-                                             "%s", scalar localtime $sb->mtime
-                                         )
+                            mtime   => $sb->mtime,
+                            size    => $sb->size,
+                            columns => [
+                                  sprintf( "%s",   $sb->size ),
+                                  sprintf( "%04o", $sb->mode & 07777 ),
+                                  ( getpwuid( $sb->uid )->name ),
+                                  $gname,
+                                  "$year-$mon-$mday $hour:$min:$sec",
+                                  qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="$href"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
                             ],
-                            addition =>
-                                qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">&#160;chmod</a></td><td><a class="treeviewLink$m_nSize" href="$href"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
                             image => (
                                 -e "$m_hrSettings->{cgi}{DocumentRoot}/style/$m_sStyle/$m_nSize/mimetypes/$suffix.png"
                                 ) ? "$suffix.png" : 'link.gif',

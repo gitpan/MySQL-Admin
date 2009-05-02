@@ -588,41 +588,57 @@ sub ShowTable {
                      <input type="hidden" name="action" value="MultipleAction"/>
                      <input type="hidden" name="table" value="$tbl"/>
                      <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="layout" width="100%"><tr><td></td><td colspan="$rws">|
-            . div(
-            { align => 'right' },
-            translate('links_pro_page') 
-                . '&#160;|&#160;'
-                . a(
-                {  href =>
-                       "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=10&von=$m_nStart&orderBy=$field&desc=$state",
-                   class => $lpp== 10 ? 'menuLink2' : 'menuLink3'
-                },
-                '10'
+            . (
+            $count > 20
+            ? div(
+                { align => 'right' },
+                translate('links_pro_page') 
+                    . '&#160;|&#160;'
+                    . a(
+                    {  href =>
+                           "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=10&von=$m_nStart&orderBy=$field&desc=$state",
+                       class => $lpp== 10 ? 'menuLink2' : 'menuLink3'
+                    },
+                    '10'
+                    )
+                    . (
+                    $count > 20
+                    ? '&#160;|&#160;'
+                        . a(
+                        {  href =>
+                               "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=20&von=$m_nStart&orderBy=$field&desc=$state",
+                           class => $lpp== 20 ? 'menuLink2' : 'menuLink3'
+                        },
+                        '20'
+                        )
+                    : ''
+                    )
+                    . (
+                    $count > 30
+                    ? '&#160;|&#160;'
+                        . a(
+                        {  href =>
+                               "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=30&von=$m_nStart&orderBy=$field&desc=$state",
+                           class => $lpp== 30 ? 'menuLink2' : 'menuLink3'
+                        },
+                        '30'
+                        )
+                    : ''
+                    )
+                    . (
+                    $count > 100
+                    ? '&#160;|&#160;'
+                        . a(
+                        {  href =>
+                               "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=100&von=$m_nStart&orderBy=$field&desc=$state",
+                           class => $lpp== 100 ? 'menuLink2' : 'menuLink3'
+                        },
+                        '100'
+                        )
+                    : ''
+                    )
                 )
-                . '&#160;'
-                . a(
-                {  href =>
-                       "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=20&von=$m_nStart&orderBy=$field&desc=$state",
-                   class => $lpp== 20 ? 'menuLink2' : 'menuLink3'
-                },
-                '20'
-                )
-                . '&#160;'
-                . a(
-                {  href =>
-                       "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=30&von=$m_nStart&orderBy=$field&desc=$state",
-                   class => $lpp== 30 ? 'menuLink2' : 'menuLink3'
-                },
-                '30'
-                )
-                . '&#160;'
-                . a(
-                {  href =>
-                       "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=100&von=$m_nStart&orderBy=$field&desc=$state",
-                   class => $lpp== 100 ? 'menuLink2' : 'menuLink3'
-                },
-                '100'
-                )
+            : ''
             ) . '</td></tr><tr><td class="caption"></td>';
         for ( my $i = 0; $i <= $rows; $i++ ) {
             $m_sContent .= qq|<td class="caption">|;
@@ -775,7 +791,7 @@ sub MultipleAction {
                     $u = $m_oDatabase->quote($u);
                     $h = $m_oDatabase->quote($h);
                     $u .= "&& Host = $h" if ( $h ne "NULL" );
-                    ExecSql( "DELETE FROM mysql.user where user  = $u" );
+                    ExecSql("DELETE FROM mysql.user where user  = $u");
                     last SWITCH;
                 }
                 if ( $a eq "truncate" ) {
@@ -1211,6 +1227,13 @@ sub DeleteEntry {
     }
 }
 
+use POSIX 'floor';
+
+sub round {
+    my $x = shift;
+    floor( $x+ 0.5 );
+}
+
 =head2 ShowTables()
 
 Action
@@ -1228,7 +1251,87 @@ sub ShowTables {
     );
     my $window = new HTML::Window( \%parameter );
     $m_sContent .= br() . $window->windowHeader();
+
+    my $orderby = defined param('orderBy') ? param('orderBy') : 'Name';
+
+    my $state = param('desc') ? 1 : 0;
+    my $nstate = $state ? 0 : 1;
+    my $lpp = defined param('links_pro_page') ? param('links_pro_page') : 30;
+    $lpp = $lpp =~ /(\d\d\d?)/ ? $1 : $lpp;
+    my $end = $m_nStart+ $lpp > $#a ? $#a : $m_nStart+ $lpp;
+
+    if ( $#a > $lpp ) {
+        my %needed = (
+             start       => $m_nStart,
+             length      => $#a,
+             style       => $m_sStyle,
+             mod_rewrite => 0,
+             action      => "ShowTables",
+             append =>
+                 "&table=$tbl&links_pro_page=$lpp&orderBy=$field&desc=$state",
+             path           => $m_hrSettings->{cgi}{bin},
+             links_pro_page => $lpp,
+        );
+        $PAGES = makePages( \%needed );
+    } else {
+        $end = $#a;
+    }
+    @a = sort { round( $a->{$orderby} ) <=> round( $b->{$orderby} ) } @a;
+    @a = reverse @a if $state;
+
+    # print $#a;
     ShowDbHeader( $m_sCurrentDb, 0, 'Show' );
+    $m_sContent .= div(
+        { align => 'right' },
+        translate('links_pro_page') 
+            . '&#160;|&#160;'
+            . (
+            $#a > 10
+            ? a({  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowTables&table=$tbl&links_pro_page=10&von=$m_nStart&orderBy=$field&desc=$state",
+                   class => $lpp== 10 ? 'menuLink2' : 'menuLink3'
+                },
+                '10'
+                )
+            : ''
+            )
+            . (
+            $#a > 20
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowTables&table=$tbl&links_pro_page=20&von=$m_nStart&orderBy=$field&desc=$state",
+                   class => $lpp== 20 ? 'menuLink2' : 'menuLink3'
+                },
+                '20'
+                )
+            : ''
+            )
+            . (
+            $#a > 30
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowTables&table=$tbl&links_pro_page=30&von=$m_nStart&orderBy=$field&desc=$state",
+                   class => $lpp== 30 ? 'menuLink2' : 'menuLink3'
+                },
+                '30'
+                )
+            : ''
+            )
+            . (
+            $#a > 100
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowTables&table=$tbl&links_pro_page=100&von=$m_nStart&orderBy=$field&desc=$state",
+                   class => $lpp== 100 ? 'menuLink2' : 'menuLink3'
+                },
+                '100'
+                )
+            : ''
+            )
+    ) if $#a > 20;
     $m_sContent .= qq(
               <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
               <input type="hidden" name="action" value="MultipleDbAction"/>
@@ -1236,16 +1339,49 @@ sub ShowTables {
               <table align="left" border="0" cellpadding="2"  cellspacing="0" summary="ShowTables" width="100%">
               <tr>
               <td class="caption"></td>
-              <td class="caption">Name</td>
-              <td class="caption">Rows</td>
-              <td class="caption">Type</td>
-              <td class="caption">Size (kb)</td>
+              <td class="caption" > )
+        . (
+          $orderby eq "Name"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowTables&amp;table=$a[$i]->{Name}&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Name&amp;desc=$nstate">Name</a></td>
+              <td class="caption"> )
+        . (
+          $orderby eq "Rows"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowTables&amp;table=$a[$i]->{Name}&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Rows&amp;desc=$nstate">Rows</a></td>
+              <td class="caption"> )
+        . (
+          $orderby eq "Type"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowTables&amp;table=$a[$i]->{Name}&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Type&amp;desc=$nstate">Type</a></td>
+              <td class="caption"> )
+        . (
+          $orderby eq "Size"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowTables&amp;table=$a[$i]->{Name}&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Data_length&amp;desc=$nstate">Size (kb)</a></td>
               <td class="caption"></td>
               <td class="caption"></td>
               <td class="caption"></td>
               </tr>
     );
-    for ( my $i = 0; $i <= $#a; $i++ ) {
+
+    for ( my $i = $m_nStart; $i < $end; $i++ ) {
         my $kb = sprintf( "%.2f",
                           ( $a[$i]->{Index_length}+ $a[$i]->{Data_length} )/
                               1024 );
@@ -1271,6 +1407,7 @@ sub ShowTables {
               <td class="values" width="16"><a href="$ENV{SCRIPT_NAME}?action=ShowTableDetails&amp;table=$a[$i]->{Name}&amp;$eid"><img src="/style/$m_sStyle/buttons/details.png" border="0" alt="Details" title="Details" width="16" /></a></td>
               </tr>
        );
+
     }
     my $delete   = translate('delete');
     my $mmark    = translate('selected');
@@ -2145,12 +2282,11 @@ sub ShowDbHeader {
     my $rb = new HTML::TabWidget();
     $m_sContent .= $rb->Menu( \%parameter );
     $m_sContent .= tabwidgetHeader();
-    $m_sContent .=
-        '<div id="TableMenu" '
+    $m_sContent .= '<div id="TableMenu" '
         . ( $selected
             ? 'style="width:100%;"'
-            : 'style="display:none;width:100%;"' )
-        . '>';
+            : 'style="display:none;width:100%;"'
+        ) . '>';
     $m_sContent .= a(
                { class => $current eq "Show" ? 'currentLink' : 'link',
                  href  => "$ENV{SCRIPT_NAME}?action=ShowTable&amp;table=$tbl",
@@ -2215,16 +2351,15 @@ sub ShowDbHeader {
                },
                translate("Delete")
     );
-    $m_sContent .= qq|$PAGES</div><div id="NewEntry" style="display:none;">|;
+    $m_sContent .= qq|</div><div id="NewEntry" style="display:none;">|;
 
     &ShowNewEntry($tbl) if $m_oDatabase->tableExists($tbl);
 
-    $m_sContent .=
-        qq|</div><div id="DatabaseMenu" |
+    $m_sContent .= qq|</div><div id="DatabaseMenu" |
         . ( $selected
             ? 'style="display:none;width:100%;"'
-            : 'style="width:100%"' )
-        . '>';
+            : 'style="width:100%"'
+        ) . '>';
     $m_sContent .= a(
         {  class => $current eq "Show" ? 'currentLink' : 'link',
            href =>
@@ -2256,13 +2391,15 @@ sub ShowDbHeader {
     my $connect  = translate('connect');
     my $fields   = translate('fields');
     $m_sContent .= qq|<br/>
+   <table align="left" border="0" cellspacing="5" cellpadding="0"  summary="layout" width="100%">
+    <tr>  <td valign="top">
    <table align="left" border="0" cellspacing="5" cellpadding="0"  summary="layout" >
     <tr>
    <td valign="top">
-<form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
+<form name="CreateUser" action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data" onsubmit="return CheckFormCreateUser()">
 <table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
     <tr>
-      <td class="caption" colspan="4" onclick="displayTree('CreateUser')" style="cursor:pointer;">|
+      <td class="caption" colspan="4" onclick="DisplayDbHeader('CreateUser')" style="cursor:pointer;">|
         . translate('CreateUser') . qq|</td>
     </tr>
     <tr id="CreateUser" style="display:none;">
@@ -2276,10 +2413,10 @@ sub ShowDbHeader {
 </form>
 </td>
       <td valign="top" align="left">
-<form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
+<form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data" onsubmit="return CheckFormNewTable()"  name="NewTable">
 <table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
     <tr>
-      <td class="caption" colspan="4" onclick="displayTree('CreateTable')" style="cursor:pointer;">|
+      <td class="caption" colspan="4" onclick="DisplayDbHeader('CreateTable')" style="cursor:pointer;">|
         . translate('CreateTable') . qq|</td>
     </tr>
     <tr id="CreateTable" style="display:none;">
@@ -2291,12 +2428,12 @@ sub ShowDbHeader {
 </table>
 <input type="hidden" name="action" value="ShowNewTable" />
 </form>
-</td><td>
-<form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
+</td><td valign="top" align="left">
+<form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data" onsubmit="return CheckFormCurrentDb()" name="CurrentDb">
     <input type="hidden" name="m_ChangeCurrentDb" value="$m_sCurrentDb"/>
     <table align="left" border="0" cellspacing="0" cellpadding="2" summary="M_currentDb">
     <tr >
-      <td class="caption" colspan="4" onclick="displayTree('m_ChangeCurrentDb')" style="cursor:pointer;">|
+      <td class="caption" colspan="4" onclick="DisplayDbHeader('m_ChangeCurrentDb')" style="cursor:pointer;">|
         . translate('ChangeCurrentDb') . qq|</td>
     </tr>
     <tr id="m_ChangeCurrentDb" style="display:none;">
@@ -2306,13 +2443,16 @@ sub ShowDbHeader {
       <td class="values"><input type="submit" name="submit" value="$connect" /></td>
     </tr>
 </table>
-</form><br/><br/>
+</form>
 </td>
     </tr>
-</table><br/><br/>
+</table>
+</td>
+    </tr>
+</table>
 </div>
+<div align="center">$PAGES<div>
 <div id="SQLRIGHTS">
-
 </div>
 <div id="SqlEditor" style="display:none;">
 <br/>
@@ -2710,8 +2850,7 @@ sub ShowRights {
       <td class="values" colspan="2">| . GetDatabases($UNIQUE_DB) . qq|</td>
       <td class="values" colspan="2">| . GetTables($UNIQUE_TBL) . qq|</td>
       <td class="values" colspan="2">|
-        . GetUsers( $UNIQUE_USER, $uname )
-        . qq|</td>
+        . GetUsers( $UNIQUE_USER, $uname ) . qq|</td>
     </tr>
      <tr>
         <td><a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a>
@@ -3042,4 +3181,3 @@ sub DeleteUser {
     ExecSql("DROP USER $name");
     ShowUsers();
 }
-

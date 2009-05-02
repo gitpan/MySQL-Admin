@@ -1,18 +1,11 @@
 $VAR1 = {
           'guest' => {
-                       '81bbbdaf645434ca76fdb13f350eccae' => {
-                                                               'timestamp' => 1240661436,
+                       '1c3c869ff2708806f26d63d166de8ff3' => {
+                                                               'timestamp' => 1241282295,
                                                                'sub' => 'main',
                                                                'user' => 'guest',
                                                                'file' => 't/content.pl',
                                                                'action' => 'main'
-                                                             },
-                       '1bd7ea39ff290ac4072bf1d0cab8db8b' => {
-                                                               'sub' => 'main',
-                                                               'timestamp' => 1240661427,
-                                                               'action' => 'main',
-                                                               'file' => 't/content.pl',
-                                                               'user' => 'guest'
                                                              }
                      }
         };

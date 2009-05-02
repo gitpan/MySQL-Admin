@@ -1,4 +1,10 @@
-Revision history for Perl MySQL::Admin 0.42
+Revision history for Perl MySQL::Admin 0.43
+
+0.43
+      language Buttons
+      Sort Exlorer Tables
+      Html::Menu::TreeView 1.05(cvs) is required
+      Admin Password will be set during Build.PL
 0.42
        Benutzt jetzt Parse::BBCode
        Smilies sind rausgeflogen

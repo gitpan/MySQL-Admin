@@ -26,7 +26,7 @@ $VAR1 = { 'htmlright' => 2,
                        'town'      => 'Berlin'
           },
           'language' => 'en',
-          'version'  => '0.42',
+          'version'  => '0.43',
           'cgi'      => {
                      'bin'          => 'cgi-bin/',
                      'style'        => 'lze',

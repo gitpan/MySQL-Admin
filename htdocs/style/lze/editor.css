@@ -44,8 +44,6 @@ span.Variable_{color:#800;}
 .sc { color: #000000;} /* semicolon */
 .v  { color: #070C76;} /* v-string */
 .w  { color: #070C76;} /* bareword */
-
-
 td.header{
 text-align:left;
 vertical-align:top;
