@@ -29,7 +29,7 @@ use DBI::Library qw(:all $m_dbh $dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember createMenu catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.43';
+$DBI::Library::Database::VERSION = '0.44';
 $mod_rewrite                     = 0;
 $min_secs                        = 10;
 
@@ -905,7 +905,7 @@ sub TableCount4Db {
     my ( $self, @p ) = getSelf(@_);
     my @count = $self->fetch_array("show tables from $p[0]");
     warn $@ if $@;
-    return $#count;
+    return $#count > 0 ? $#count : 0;
 }
 
 =head2 GetCharacterSet()

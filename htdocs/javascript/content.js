@@ -412,7 +412,7 @@ function checkLogin(){
               error = true;
        }
        if(error){
-              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+              alert("Insert"+ array.join(" and "));
        }
        return ret;
 }
@@ -730,7 +730,7 @@ function CheckFormCreateUser(){
               error = true;
        }
        if(error){
-              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+              alert("Insert"+ array.join(" and "));
        }
        return ret;
 }
@@ -751,7 +751,7 @@ function CheckFormNewTable(){
               error = true;
        }
        if(error){
-              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+              alert("Insert"+ array.join(" and "));
        }
        return ret;
 }
@@ -777,7 +777,7 @@ function CheckFormCurrentDb(){
               error = true;
        }
        if(error){
-              alert("Bitte geben Sie "+ array.join(" und ")+" an.");
+              alert("Insert"+ array.join(" and "));
        }
        return ret;
 }
@@ -785,17 +785,42 @@ function CheckFormCurrentDb(){
 function DisplayDbHeader(header){
        if(header == 'm_ChangeCurrentDb'){
           document.getElementById('m_ChangeCurrentDb').style.display = "";
-          document.getElementById('CreateTable').style.display = "none";
-          document.getElementById('CreateUser').style.display = "none";
+          document.getElementById('CreateTable').style.display       = "none";
+          document.getElementById('CreateUser').style.display        = "none";
+          document.getElementById('CreateDatabase').style.display    = "none";
        }
        if(header == 'CreateTable'){
-          document.getElementById('CreateTable').style.display = "";
-          document.getElementById('CreateUser').style.display = "none";
+          document.getElementById('CreateTable').style.display       = "";
+          document.getElementById('CreateUser').style.display        = "none";
           document.getElementById('m_ChangeCurrentDb').style.display = "none";
+          document.getElementById('CreateDatabase').style.display    = "none";
        }
        if(header == 'CreateUser'){
-          document.getElementById('CreateUser').style.display = "";
-          document.getElementById('CreateTable').style.display = "none";
+          document.getElementById('CreateUser').style.display        = "";
+          document.getElementById('CreateTable').style.display       = "none";
+          document.getElementById('m_ChangeCurrentDb').style.display = "none";
+          document.getElementById('CreateDatabase').style.display    = "none";
+       }
+       if(header == 'CreateDatabase'){
+          document.getElementById('CreateDatabase').style.display    = "";
+          document.getElementById('CreateTable').style.display       = "none";
+          document.getElementById('CreateUser').style.display        = "none";
           document.getElementById('m_ChangeCurrentDb').style.display = "none";
        }
+}
+
+function CheckFormCreateDatabase(){
+       var f = document.CreateUser;
+       var ret = true;
+       var array = new Array();
+       var error = false;
+       if (f.name.value==""){
+              array.push("Name");
+              ret = false;
+              error = true;
+       }
+       if(error){
+              alert("Insert"+ array.join(" and "));
+       }
+       return ret;
 }

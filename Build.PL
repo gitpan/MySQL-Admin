@@ -79,22 +79,26 @@ my $class = Module::Build->subclass(
                     $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
                     eval 'use lib qw(lib);use DBI::Library ';
                     unless ($@) {
-                              my $m_oDatabase = new DBI::Library();
-                              $m_oDatabase->initDB(\%conf);
-                              open(IN, "extra/install.sql") or die $!;
-                              local $/;
-                              my $m_sFile = <IN>;
-                              foreach my $sql (split /;\n/, $m_sFile) {
-                                   $m_oDatabase->void($sql);
-                                   print $/, $sql, $/, $@ if $@;
-                              }
-                              use MD5;
+                         my $m_oDatabase = new DBI::Library();
+                         $m_oDatabase->initDB(\%conf);
+                         open(IN, "extra/install.sql") or die $!;
+                         local $/;
+                         my $m_sFile = <IN>;
+                         foreach my $sql (split /;\n/, $m_sFile) {
+                              $m_oDatabase->void($sql);
+                              print $/, $sql, $/, $@ if $@;
+                         }
+                         eval 'use MD5';
+                         unless ($@) {
                               my $md5 = new MD5;
                               $md5->add('admin');
                               $md5->add($self->{'properties'}{password});
                               my $fingerprint = $md5->hexdigest();
                               $m_oDatabase->void(qq/insert into users (user,pass,email,`right`) values(?,?,?,5)/, 'admin',$fingerprint , $self->{'properties'}{email} );
                               print $/, $sql, $/, $@ if $@;
+                         }else{
+                              $m_oDatabase->void(qq/insert into users (user,pass,`right`) values('admin','0008e525bc0894a780297b7f3aed6f58',5)/ );
+                         }
                     } else {
                               warn $@;
                     }
@@ -262,6 +266,8 @@ unless ($@) {
 } else {
     do "$cwd/cgi-bin/config/settings.pl";
 }
+
+
 $inctance->{properties}{htd}         = $m_hrSettings->{cgi}{DocumentRoot}  ? $m_hrSettings->{cgi}{DocumentRoot}  : '/srv/www//htdocs';
 $inctance->{properties}{cgi}         = $m_hrSettings->{cgi}{bin}           ? $m_hrSettings->{cgi}{bin}           : '/srv/www/cgi-bin';
 $inctance->{properties}{server}      = $m_hrSettings->{cgi}{serverName}    ? $m_hrSettings->{cgi}{serverName}    : 'localhost';
@@ -274,8 +280,8 @@ $inctance->{properties}{dbpass}      = $m_hrSettings->{database}{password} ? $m_
 $inctance->{properties}{group}       = $m_hrSettings->{files}{group}       ? $m_hrSettings->{files}{group}       : 'wwwrun';
 $inctance->{properties}{owner}       = $m_hrSettings->{files}{owner}       ? $m_hrSettings->{files}{owner}       : $ENV{USER};
 $inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0755';
-$inctance->{properties}{password}    = int( rand(1000)+ 1 ) x 3;
-$inctance->{properties}{email}       = "none";
+$inctance->{properties}{password}    = $m_hrSettings->{admin}{pass}        ? $m_hrSettings->{admin}{pass}        : 'testpass';
+$inctance->{properties}{email}       = $m_hrSettings->{admin}{email}       ? $m_hrSettings->{admin}{email}       : '';
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
 $inctance->{properties}{dbuser}      = $inctance->args('dbuser')      if $inctance->args('dbuser');
 $inctance->{properties}{sqlhost}     = $inctance->args('sqlhost')     if $inctance->args('sqlhost');
@@ -298,7 +304,7 @@ $inctance->{properties}{install_path}{lib} = $prefix . $inctance->{properties}{c
 
 unless ($skip) {
     my $an = Module::Build->prompt(
-        "Should i use settings from previous previous version $/ Document root: $inctance->{properties}{htd} $/ cgi-bin directory:  $inctance->{properties}{cgi} $/ Server Name: $inctance->{properties}{server} $/ Script Alias  $inctance->{properties}{alias} $/ mod_rewrite:  $inctance->{properties}{mod_rewrite} $/ Mysql Server host:  $inctance->{properties}{sqlhost} $/ Mysql user name: $inctance->{properties}{dbuser} $/ Mysql password:  $inctance->{properties}{dbpass} $/ Mysql Database Name:  $inctance->{properties}{dbname}$/Files group:  $inctance->{properties}{group}$/ Files owner:  $inctance->{properties}{owner} $/ Files chmod:  $inctance->{properties}{chmod}",
+        "Should i use settings from previous previous version $/ Document root: $inctance->{properties}{htd} $/ cgi-bin directory:  $inctance->{properties}{cgi} $/ Server Name: $inctance->{properties}{server} $/ Script Alias  $inctance->{properties}{alias} $/ mod_rewrite:  $inctance->{properties}{mod_rewrite} $/ Mysql Server host:  $inctance->{properties}{sqlhost} $/ Mysql user name: $inctance->{properties}{dbuser} $/ Mysql password:  $inctance->{properties}{dbpass} $/ Mysql Database Name:  $inctance->{properties}{dbname}$/Files group:  $inctance->{properties}{group}$/ Files owner:  $inctance->{properties}{owner} $/ Files chmod:  $inctance->{properties}{chmod} $/ Password: $inctance->{properties}{password} $/ Email:$inctance->{properties}{email}$/",
         'yes'
     );
     $skip = $an eq 'yes' ? 1 : 0;
@@ -335,7 +341,8 @@ unless ($skip) {
 $m_hrSettings = {
     config => "$inctance->{properties}{cgi}/config/settings.pl",
     admin  => {
-        email      => 'dirk.lindner(a)gmx.de',
+        email      => 'lzer(a)cpan.org',
+        password   =>  $inctance->{properties}{password},
         firstname  => 'Dirk',
         name       => 'Lindner',
         street     => 'example 33',
@@ -351,7 +358,6 @@ $m_hrSettings = {
         postcode   => '10965',
         country    => 'Deutschland',
         tonwn      => 'Berlin',
-        name       => 'Musterman',
         aim        => '',
         signature  => "perl -e'&{sub{s~~shift~e;s-(&*{*{*#*L*.Z*.E*.)-chr$&-eg;print}}(100105114107)'",
         skype      => 'pro_soccer',
@@ -382,7 +388,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.43',
+    version   => '0.44',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

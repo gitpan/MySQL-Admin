@@ -1,9 +1,11 @@
-Revision history for Perl MySQL::Admin 0.43
-
+Revision history for Perl MySQL::Admin 0.44
+0.44
+      Database Overeview (ShowDatabases),Delete and Create Databases (DropDatabase CreateDatabase)
+      some fixes, default password
 0.43
       language Buttons
       Sort Exlorer Tables
-      Html::Menu::TreeView 1.05(cvs) is required
+      Html::Menu::TreeView 1.05 is required
       Admin Password will be set during Build.PL
 0.42
        Benutzt jetzt Parse::BBCode

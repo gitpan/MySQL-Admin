@@ -67,11 +67,8 @@ extra/startup.pl
 extra/uninstall.sql
 htdocs/favicon.ico
 htdocs/gallery/perl.jpg
-htdocs/images/admin.jpg
-htdocs/images/mail.png
 htdocs/images/minus.png
 htdocs/images/plus.png
-htdocs/images/Thumbs.db
 htdocs/javascript/content.js
 htdocs/javascript/editor.js
 htdocs/javascript/search.js

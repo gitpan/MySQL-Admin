@@ -18,7 +18,7 @@ use Template::Quick;
         qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)
     ]
 );
-$HTML::Window::VERSION = '0.43';
+$HTML::Window::VERSION = '0.44';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 

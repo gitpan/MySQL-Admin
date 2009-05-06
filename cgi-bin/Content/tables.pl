@@ -17,7 +17,7 @@ Form um eine Neue tabelle zu erstelle anzeigen
 =cut
 
 sub ShowNewTable {
-    my $tbl   = $_[0] ? shift : param('table');
+    my $tbl   = $_[0] ? shift : param('table');#todo parameter wieder nzeigen
     my $count = $_[0] ? shift : param('count');
     my $newentry = translate('CreateNewTable');
     my $save     = translate('save');
@@ -182,23 +182,8 @@ sub SaveNewTable {
         ExecSql($sql);
         EditTable($tbl);
     } else {
-        ShowTables();
+        ShowNewTable();
     }
-}
-
-=head2 NewDatabase()
-
-Action:
-
-NewDatabase(table)
-
-=cut
-
-sub NewDatabase {
-    my $db = param('db') ? param('db') : shift;
-    my $tbl2 = $m_dbh->quote_identifier($tbl);
-    ExecSql("Create DATABASE $tbl2");
-    ShowTables($tbl);
 }
 
 =head2 ShowDumpTable()
@@ -294,7 +279,17 @@ Export Datenbank
 =cut
 
 sub DumpDatabase {
-    my @tables = $m_oDatabase->fetch_array("show tables");
+    my $sql =
+        ( defined $_[0] )
+        ? "show tables from " . $m_dbh->quote_identifier( $_[0] )
+        : "show tables";
+    my @tables = $m_oDatabase->fetch_array($sql);
+    ChangeDb( { name => ( defined $_[0] ) ? $_[0] : $m_sCurrentDb,
+                host => $m_sCurrentHost,
+                user => $m_sCurrentUser,
+                password => $m_sCurrentPass,
+              }
+    );
     for ( my $n = 0; $n <= $#tables; $n++ ) { DumpTable( $tables[$n] ); }
 }
 
@@ -587,7 +582,7 @@ sub ShowTable {
                      <div style="overflow:auto;"><form action="$ENV{SCRIPT_NAME}" method="get" enctype="multipart/form-data">
                      <input type="hidden" name="action" value="MultipleAction"/>
                      <input type="hidden" name="table" value="$tbl"/>
-                     <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="layout" width="100%"><tr><td></td><td colspan="$rws">|
+                     <table align="center" border="0" cellpadding="2" cellspacing="0" summary="layout" width="100%"><tr><td></td><td colspan="$rws">|
             . (
             $count > 20
             ? div(
@@ -713,13 +708,13 @@ sub ShowTable {
               <table align="center" border="0" cellpadding="0"  cellspacing="0" summary="layout" width="100%" ><tr>
               <td><a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a>
               </td><td align="right">
-              <select  name="MultipleAction"  onchange="this.form.submit();">
+              <select  name="MultipleAction"  onchange="if(this.value != '$mmark' )this.form.submit();">
               <option  value="$mmark" selected="selected">$mmark</option>
               <option value="delete">$delete</option>
               <option value="export">$export</option>
               </select>
               </td></tr></table>
-};
+        };
         $m_sContent .= qq|</td></tr></table></form></div>|;
         $m_sContent .= $window->windowFooter() . br();
     } else {
@@ -856,13 +851,26 @@ sub MultipleDbAction {
         $m_sContent .= br() . $window->windowHeader();
         ShowDbHeader( $m_sCurrentDb, 0, 'Export' );
         $m_sContent .=
-            qq(<div  class="dumpBox" style="padding-top:5px;width:100%;padding-right:2px;"><textarea style="width:100%;height:800px;">);
+            qq(<div align="left" class="dumpBox" style="width:100%;padding-top:5px;padding-right:2px;overflow:auto;"><textarea style="width:100%;height:800px;">);
+    }
+    if ( $a eq "exportDb" ) {
+        $m_sContent .= br() . $window->windowHeader();
+        ShowDbHeader( $m_sCurrentDb, 0, 'Export' );
+        $m_sContent .=
+            qq(<div align="left" class="dumpBox" style="width:100%;padding-top:5px;padding-right:2px;overflow:auto;"><textarea style="width:100%;height:800px;">);
     }
     for ( my $i = 0; $i <= $#params; $i++ ) {
         if ( $params[$i] =~ /markBox\d?/ ) {
             my $tbl  = param( $params[$i] );
             my $tbl2 = $m_dbh->quote_identifier($tbl);
         SWITCH: {
+                if ( $a eq "dropDb" ) {
+                    ExecSql("Drop database $tbl2");
+                    last SWITCH;
+                }
+                if ( $a eq "exportDb" ) {
+                    DumpDatabase($tbl);
+                }
                 if ( $a eq "delete" ) {
                     ExecSql("Drop table $tbl2");
                     last SWITCH;
@@ -890,11 +898,14 @@ sub MultipleDbAction {
             }
         }
     }
-    if ( $a eq "export" ) {
-        $m_sContent .= qq(</textarea>);
-        $m_sContent .= '</div>' . $window->windowFooter();
+    if ( $a eq "exportDb" || $a eq "export" ) {
+        $m_sContent .= qq(</textarea></div>) . $window->windowFooter();
     } else {
-        ShowTables();
+          if ( $a eq "dropDb" ){
+               ShowDatabases();
+          }else{
+               ShowTables();
+          }
     }
 }
 
@@ -924,7 +935,7 @@ sub EditEntry {
                 . $m_oDatabase->quote( param( $p_key[$#p_key] ) );
         } else {
             $eid .=
-                "$p_key[0] = " . $m_oDatabase->quote( param( $p_key[0] ) );
+                "$p_key[0] = " . $m_oDatabase->quote( param( $p_key[0] ) ?  param( $p_key[0] )  :  $rid);
         }
 
         my $ed = translate('Edit Entry');
@@ -994,7 +1005,7 @@ EditAction()
 
 =cut
 
-sub EditAction {
+sub EditAction {    #todo geht nicht
     my $name = defined param('name') ? param('name') : $m_hrAction;
     unless ( $m_sCurrentDb eq $m_hrSettings->{database}{name} ) {
         ChangeDb( { name     => $m_hrSettings->{database}{name},
@@ -1007,7 +1018,7 @@ sub EditAction {
     my @id =
         $m_oDatabase->fetch_array( "select id from `actions` where action=?",
                                    $name );
-    if ( defined $id[0] ) { EditEntry( 'actions', $id[0] ); }
+    if ( $id[0] >= 0 ) { EditEntry( 'actions', $id[0] ); }
     else                  { ShowTable('actions'); }
 }
 
@@ -1229,9 +1240,15 @@ sub DeleteEntry {
 
 use POSIX 'floor';
 
+=head2 round()
+
+dmit richtig sortiert wird.
+
+=cut
+
 sub round {
     my $x = shift;
-    floor( $x+ 0.5 );
+    floor( $x+ 0.5 ) if ( $x =~ /\d+/ );
 }
 
 =head2 ShowTables()
@@ -1425,7 +1442,7 @@ sub ShowTables {
               <tr><td colspan="2" align="left">
               <a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a></td>
               <td  align="right">
-              <select name="MultipleDbAction" onchange="this.form.submit();">
+              <select name="MultipleDbAction" onchange="if(this.value != '$mmark' )this.form.submit();">
               <option value="$mmark" selected="selected">$mmark</option>
               <option value="delete">$delete</option>
               <option value="export">$export</option>
@@ -2360,26 +2377,34 @@ sub ShowDbHeader {
             ? 'style="display:none;width:100%;"'
             : 'style="width:100%"'
         ) . '>';
-    $m_sContent .= a(
-        {  class => $current eq "Show" ? 'currentLink' : 'link',
-           href =>
-               "$ENV{SCRIPT_NAME}?action=ShowTables&amp;database=$m_sCurrentDb",
-           title => translate("ShowTables") . "($m_sCurrentDb)"
-        },
-        translate("Datenbank") . "($m_sCurrentDb)"
+    $m_sContent .= a( {  class => $current eq "ShowDatabases"
+                         ? 'currentLink'
+                         : 'link',
+                         href  => "$ENV{SCRIPT_NAME}?action=ShowDatabases",
+                         title => translate("Databases")
+                      },
+                      translate("Databases")
     ) . '&#160;|&#160;';
     $m_sContent .= a(
-        {  class => $current eq "ShowUsers" ? 'currentLink' : 'link',
-           href =>
-               "$ENV{SCRIPT_NAME}?action=ShowUsers&amp;database=$m_sCurrentDb",
-           title => translate('ShowUsers') . "($m_sCurrentDb)"
-        },
-        translate('ShowUsers') . "($m_sCurrentDb)"
+          { class => $current eq "Show" ? 'currentLink' : 'link',
+            href =>
+                "$ENV{SCRIPT_NAME}?action=ShowTables&database=$m_sCurrentDb",
+            title => translate("ShowTables") . "($m_sCurrentDb)"
+          },
+          translate("Database") . "($m_sCurrentDb)"
+    ) . '&#160;|&#160;';
+    $m_sContent .= a(
+           { class => $current eq "ShowUsers" ? 'currentLink' : 'link',
+             href =>
+                 "$ENV{SCRIPT_NAME}?action=ShowUsers&database=$m_sCurrentDb",
+             title => translate('ShowUsers') . "($m_sCurrentDb)"
+           },
+           translate('ShowUsers') . "($m_sCurrentDb)"
     ) . '&#160;|&#160;';
     $m_sContent .= a(
         {  class => $current eq "Export" ? 'currentLink' : 'link',
            href =>
-               "$ENV{SCRIPT_NAME}?action=ShowDumpDatabase&amp;database=$m_sCurrentDb",
+               "$ENV{SCRIPT_NAME}?action=ShowDumpDatabase&database=$m_sCurrentDb",
            title => translate("ExportDatabase"),
         },
         translate("Export")
@@ -2395,7 +2420,26 @@ sub ShowDbHeader {
     <tr>  <td valign="top">
    <table align="left" border="0" cellspacing="5" cellpadding="0"  summary="layout" >
     <tr>
-   <td valign="top">
+    <td valign="top" align="left">
+<form name="CreateDatabase" action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data" onsubmit="return CheckFormCreateDatabase()">
+<table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
+    <tr>
+      <td class="caption" colspan="4" onclick="DisplayDbHeader('CreateDatabase')" style="cursor:pointer;">|
+        . translate('CreateDatabase') . qq|</td>
+    </tr>
+    <tr id="CreateDatabase" style="display:none;">
+      <td class="values"><input type="text" name="name" value="|
+        . translate('name')
+        . qq|" onfocus="this.value=''" style="width:120px;" /></td>
+      <td class="values"><input type="submit" name="submit" value="|
+        . translate('create')
+        . qq|" /></td>
+    </tr>
+</table>
+<input type="hidden" name="action" value="CreateDatabase" />
+</form>
+</td>
+<td valign="top" align="left">
 <form name="CreateUser" action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data" onsubmit="return CheckFormCreateUser()">
 <table align="left" border="0" cellspacing="0" cellpadding="2"  summary="newTable">
     <tr>
@@ -2405,7 +2449,7 @@ sub ShowDbHeader {
     <tr id="CreateUser" style="display:none;">
       <td class="values"><input type="text" name="name" value="Name" onfocus="this.value=''" style="width:80px;" /></td>
       <td class="values"><input type="text" name="host" value="Host" onfocus="this.value=''" style="width:80px;" /></td>
-      <td class="values"><input type="text" name="password" value="password" onfocus="this.value=''" style="width:80px;" /></td>
+      <td class="values"><input type="password" name="password" value="" style="width:80px;" /></td>
       <td class="values"><input type="submit" name="submit" value="$newUser" /></td>
     </tr>
 </table>
@@ -2595,7 +2639,7 @@ sub ShowUsers {
               <a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a>
               <a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a></td>
               <td  align="right">
-              <select name="MultipleAction" onchange="this.form.submit();">
+              <select name="MultipleAction" onchange="if(this.value != '$mmark' )this.form.submit();">
               <option value="$mmark" selected="selected">$mmark</option>
               <option value="deleteUser" >$delete</option>
               </select>
@@ -3181,3 +3225,224 @@ sub DeleteUser {
     ExecSql("DROP USER $name");
     ShowUsers();
 }
+
+=head2 ShowDatabases()
+
+Action
+
+=cut
+
+sub ShowDatabases {
+    my @a = $m_oDatabase->fetch_AoH("SHOW DATABASES");
+    for ( my $i = 0; $i <= $#a; $i++ ) {
+        my $kb = 0;
+        my $db = $m_dbh->quote_identifier( $a[$i]->{Database} );
+        my @b  = $m_oDatabase->fetch_AoH("SHOW TABLE STATUS from $db ");
+        for ( my $j = 0; $j <= $#b; $j++ ) {
+            $kb += $b[$j]->{Index_length}+ $b[$i]->{Data_length};
+        }
+        $a[$i]->{Size} = $kb > 0 ? sprintf( "%.2f", $kb/ 1024 ) : 0;
+        $a[$i]->{Tables} = $#b > 0 ? $#b : 0;
+    }
+
+    my %parameter = ( path     => $m_hrSettings->{cgi}{bin} . '/templates',
+                      style    => $m_sStyle,
+                      template => "wnd.htm",
+                      server   => $m_hrSettings->{serverName},
+                      id       => 'ShowDatabases',
+                      class    => 'max',
+    );
+    my $window = new HTML::Window( \%parameter );
+    $m_sContent .= br() . $window->windowHeader();
+
+    my $orderby = defined param('orderBy') ? param('orderBy') : 'Name';
+
+    my $state = param('desc') ? 1 : 0;
+    my $nstate = $state ? 0 : 1;
+    my $lpp = defined param('links_pro_page') ? param('links_pro_page') : 30;
+    $lpp = $lpp =~ /(\d\d\d?)/ ? $1 : $lpp;
+    my $end = $m_nStart+ $lpp > $#a ? $#a : $m_nStart+ $lpp;
+
+    if ( $#a > $lpp ) {
+        my %needed = (
+                start       => $m_nStart,
+                length      => $#a,
+                style       => $m_sStyle,
+                mod_rewrite => 0,
+                action      => "ShowDatabases",
+                append => "&links_pro_page=$lpp&orderBy=$orderby&desc=$state",
+                path   => $m_hrSettings->{cgi}{bin},
+                links_pro_page => $lpp,
+        );
+        $PAGES = makePages( \%needed );
+    } else {
+        $end = $#a;
+    }
+    @a = sort { round( $a->{$orderby} ) <=> round( $b->{$orderby} ) } @a;
+    @a = reverse @a if $state;
+
+    ShowDbHeader( $m_sCurrentDb, 0, 'ShowDatabases' );
+    $m_sContent .= div(
+        { align => 'right' },
+        translate('links_pro_page') 
+            . '&#160;|&#160;'
+            . (
+            $#a > 10
+            ? a({  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowDatabases&links_pro_page=10&von=$m_nStart&orderBy=$orderby&desc=$state",
+                   class => $lpp== 10 ? 'menuLink2' : 'menuLink3'
+                },
+                '10'
+                )
+            : ''
+            )
+            . (
+            $#a > 20
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowDatabases&links_pro_page=20&von=$m_nStart&orderBy=$orderby&desc=$state",
+                   class => $lpp== 20 ? 'menuLink2' : 'menuLink3'
+                },
+                '20'
+                )
+            : ''
+            )
+            . (
+            $#a > 30
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowDatabases&links_pro_page=30&von=$m_nStart&orderBy=$orderby&desc=$state",
+                   class => $lpp== 30 ? 'menuLink2' : 'menuLink3'
+                },
+                '30'
+                )
+            : ''
+            )
+            . (
+            $#a > 100
+            ? '&#160;'
+                . a(
+                {  href =>
+                       "$ENV{SCRIPT_NAME}?action=ShowDatabases&links_pro_page=100&von=$m_nStart&orderBy=$orderby&desc=$state",
+                   class => $lpp== 100 ? 'menuLink2' : 'menuLink3'
+                },
+                '100'
+                )
+            : ''
+            )
+    ) if $#a > 20;
+    $m_sContent .= qq(
+              <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
+              <input type="hidden" name="action" value="MultipleDbAction"/>
+              <div align="center" style="padding-top:5px;overflow:auto;width:100%">
+              <table align="left" border="0" cellpadding="2"  cellspacing="0" summary="ShowDatabases" width="100%">
+              <tr>
+              <td class="caption"></td>
+              <td class="caption" > )
+        . (
+          $orderby eq "Name"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowDatabases&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Name&amp;desc=$nstate">Name</a></td>
+              <td class="caption"> )
+        . (
+          $orderby eq "Tables"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png"   border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowDatabases&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Tables&amp;desc=$nstate">Tables</a></td>
+              <td class="caption"> )
+        . (
+          $orderby eq "Size"
+        ? $state
+                ? qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="" title="up" width="16" height="16" align="left"/>|
+                : qq|&#160;<img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="" title="down" align="left"/>|
+        : ''
+        )
+        . qq(<a href="$ENV{SCRIPT_NAME}?action=ShowDatabases&amp;links_pro_page=$lpp&amp;von=$m_nStart&amp;orderBy=Size&amp;desc=$nstate">Size (kb)</a></td>
+              <td class="caption"></td>
+              </tr>
+    );
+
+    for ( my $i = $m_nStart; $i <= $end; $i++ ) {
+        my $trdatabase = translate('database');
+        my $trdelete   = translate('delete');
+        my $change     = translate('EditTable');
+        $m_sContent .= qq(
+              <tr onmouseover="this.className = 'overDb';" onmouseout="this.className = '';">
+              <td width="20" class="values"><input type="checkbox" name="markBox$i" class="markBox" value="$a[$i]->{Database}" /></td>
+              <td class="values"><a href="$ENV{SCRIPT_NAME}?action=ShowTables&amp;m_ChangeCurrentDb=$a[$i]->{Database}&amp;desc=0">$a[$i]->{Database}</a></td>
+              <td class="values">$a[$i]->{Tables}</td>
+              <td class="values">$a[$i]->{Size}</td>
+              <td class="values" align="right"><a href="$ENV{SCRIPT_NAME}?action=DropDatabase&amp;db=$a[$i]->{Database}" onclick="return confirm(' $trdelete?')"><img src="/style/$m_sStyle/buttons/delete.png" align="right" alt="" border="0"/></a></td>
+              </tr>
+       );
+
+    }
+    my $drop     = translate('drop_database');
+    my $mmark    = translate('selected');
+    my $markAll  = translate('select_all');
+    my $umarkAll = translate('unselect_all');
+    my $export   = translate('export');
+    $m_sContent .= qq|
+              <tr>
+              <td><img src="/style/$m_sStyle/buttons/feil.gif" border="0" alt=""/></td>
+              <td colspan="7" align="left">
+              <table align="center" border="0" cellpadding="0"  cellspacing="0" summary="ShowDatabases" width="100%">
+              <tr><td colspan="2" align="left">
+              <a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a></td>
+              <td  align="right">
+              <select name="MultipleDbAction" onchange="if(this.value != '$mmark' )this.form.submit();">
+              <option value="$mmark" selected="selected">$mmark</option>
+              <option value="dropDb">$drop</option>
+              <option value="exportDb">$export</option>
+              </select>
+              </td>
+              </tr></table>
+              </td>
+              </tr>
+              </table>
+              </form>
+              </div>
+    |;
+    $m_sContent .= $window->windowFooter();
+}
+
+=head2 DropDatabase()
+
+Action
+
+=cut
+
+sub DropDatabase {
+    my $db = param('db') ? param('db') : shift;
+    my $db2 = $m_dbh->quote_identifier($db);
+    ExecSql("Drop DATABASE $db2");
+     ChangeDb( { name     => 'LZE',
+            host     => $m_sCurrentHost,
+            user     => $m_sCurrentUser,
+            password => $m_sCurrentPass,
+    });
+    ShowDatabases();
+}
+
+=head2 CreateDatabase()
+
+Action
+
+=cut
+
+sub CreateDatabase {
+    my $db = param('name') ? param('name') : shift;
+    my $db2 = $m_dbh->quote_identifier($db);
+    ExecSql("Create DATABASE $db2");
+    ShowDatabases();
+}
+

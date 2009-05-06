@@ -69,7 +69,7 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('EditEntry','tables.pl','EditEntry',5,'tables;navigation;','EditEntry',78);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('NewEntry', 'tables.pl','NewEntry',5,'tables;navigation;','NewEntry',79);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('NewTable','tables.pl','NewTable',5,'tables;navigation','NewTable',80);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('NewDatabase','tables.pl','NewDatabase',5,'tables;navigation','NewDatabase',81);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('CreateDatabase','tables.pl','CreateDatabase',5,'tables;navigation','CreateDatabase',81);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('OptimizeTable','tables.pl','OptimizeTable',5,'tables;navigation','OptimizeTable',82);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('RepairTable','tables.pl','RepairTable',5,'tables;navigation','RepairTable',84);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('SaveEditTable','tables.pl','SaveEditTable',5,'tables;navigation','SaveEditTable',85);
@@ -77,7 +77,7 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowNewTable','tables.pl','ShowNewTable',5,'tables;navigation','ShowNewTable',87);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('SaveEntry','tables.pl','SaveEntry',5,'tables;navigation;','SaveEntry',88);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DropFulltext','tables.pl','DropFulltext',5,'tables;navigation','DropFulltext',89);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowTables','tables.pl',,'ShowTables',5,'tables;navigation;','ShowTables',90);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowTables','tables.pl','ShowTables',5,'tables;navigation','ShowTables',90);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowTableDetails','tables.pl','ShowTableDetails',5,'tables;navigation;','ShowTableDetails',91);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowTable','tables.pl','ShowTable',5,'tables;navigation;','ShowTable',92);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('TruncateTable','tables.pl','TruncateTable',5,'tables;navigation','TruncateTable',93);
@@ -90,7 +90,6 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('SaveEntry','tables.pl','SaveEntry',5,'tables;navigation','SaveEntry',100);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('NewEntry','tables.pl','NewEntry',5,'tables;navigation','NewEntry',101);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DeleteEntry','tables.pl','DeleteEntry',5,'tables;navigation','DeleteEntry',102);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowTables','tables.pl','ShowTables',5,'tables;navigation','ShowTables',103);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('MultipleAction','tables.pl','MultipleAction',5,'tables;navigation','MultipleAction',104);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowDumpDatabase','tables.pl','DumpDatabase',5,'tables;navigation','ShowDumpDatabase',105);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowNewTable','tables.pl','ShowNewTable',5,'tables;navigation','ShowNewTable',106);
@@ -117,6 +116,8 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowUsers','tables.pl','ShowUsers',5,'tables;navigation','ShowUsers',129);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('CreateUser','tables.pl','CreateUser',5,'tables;navigation','CreateUser',130);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DeleteUser','tables.pl','DeleteUser',5,'tables;navigation','DeleteUser',131);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DropDatabase','tables.pl','DropDatabase',5,'tables;navigation','DropDatabase',132);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowDatabases','tables.pl','ShowDatabases',5,'tables;navigation','ShowDatabases',133);
 CREATE TABLE IF NOT EXISTS box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
@@ -174,7 +175,8 @@ CREATE TABLE IF NOT EXISTS news (
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: youu have set it during make','2007-04-23 19:06:42','admin',0,'0','/news','news',0,1);
+INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: If you dont have set it during make it is testpass','2007-04-23 19:06:42','admin',0,'0','/news','news',0,1);
+INSERT INTO news (`title`,`body`,`date`,`user`,`right`,`attach`,`cat`,`action`,`sticky`,`id`,`format`) values('0.44','      Database Overeview (ShowDatabases),Delete and Create Databases (DropDatabase CreateDatabase)\r\n      some fixes, default password','2009-05-06 16:34:43','admin','0','0','news','news','0','2','bbcode');
 CREATE TABLE IF NOT EXISTS querys (
   title varchar(100) NOT NULL default '',
   description text NOT NULL,
@@ -208,7 +210,7 @@ CREATE TABLE IF NOT EXISTS submenuadmin (
   PRIMARY KEY  (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('settings','settings','link.gif',5,NULL,1);
-INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('database','showTables','gear.png',5,'',8);
+INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('database','showDatabases','link.gif',5,'',8);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('navigation','editTreeview','',5,'',9);
 INSERT INTO submenuadmin (title,`action`,src,`right`,submenu,id) VALUES('env','env','link.gif',5,NULL,10);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Edit links','linkseditTreeview','link.gif',5,'',12);

@@ -1,15 +1,17 @@
 #alles testen
+Build.pm
 unicode
-     Captcha Registrieren login
+     Captcha Registrieren
+Firsttime
 
 Datenbank
        save newtable tabelle wieder anzeigen
-       Datenbank erstellen, löschen
        suchen (Ajax)
-       SHOW VARIABLES; ShowProcesslist Create View
-       change charset drop, create database
+       SHOW VARIABLES; ShowProcesslist  Create View
+       change charset
        SQL EDITOR FELDNAMEN AUSWAHL(Ajax)
        Export Optionen
+       Exec SQL ausgabe quoten treenlinie
 news
        attachment wird gelöscht(aus der Datenbank) beim bearbeiten.(attachments verwalten).
        links_pro_page für suche einbauen.
@@ -20,4 +22,4 @@ edittree
        confirm delete usw quote textarea
        treeview name="#setzen" und per url# nach einfügen dort hinspringen
 Files
-       upload files im explorer.
+       upload files im explorer. chown sortierung wieder abschalten

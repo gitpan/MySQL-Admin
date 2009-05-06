@@ -30,7 +30,7 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ( 'all' => [qw(initEditor show )] );
 
-$HTML::Editor::VERSION = '0.43';
+$HTML::Editor::VERSION = '0.44';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 
