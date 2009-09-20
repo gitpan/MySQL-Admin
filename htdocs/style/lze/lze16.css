@@ -60,6 +60,22 @@ font-size:22px;
 color:#000;
 background-color:#eee;
 }
+a.catLink{
+cursor:pointer;
+color:black;
+}
+a.catLink:hover{
+cursor:pointer;
+color:white;
+}
+a.catLinkPressed{
+cursor:pointer;
+color:red;
+}
+a.catLinkPressed:hover{
+cursor:pointer;
+color:red;
+}
 /* margin */
 td.content{
 width:100%;

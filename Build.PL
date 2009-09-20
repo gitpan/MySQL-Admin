@@ -1,7 +1,6 @@
 use strict;
 use vars qw($m_hrSettings $skip $cwd $prefix);
 use Module::Build;
-
 my $class = Module::Build->subclass(
     class => "Module::Build::Custom",
     code  => <<'END');
@@ -343,23 +342,19 @@ unless ($skip) {
 $m_hrSettings = {
     config => "$inctance->{properties}{cgi}/config/settings.pl",
     admin  => {
-        email      => 'lzer(a)cpan.org',
+        email      => 'lze(a)cpan.org',
         password   =>  $inctance->{properties}{password},
         firstname  => 'Dirk',
         name       => 'Lindner',
-        street     => 'example 33',
+        street     => 'example',
         town       => 'Berlin',
-        number     => '',
+        number     => '33',
         postocde   => '10965',
-        street     => '',
-        town       => 'Berlin',
         jahoo      => '',
         msn        => '',
         icq        => '350108541',
         tel        => '',
-        postcode   => '10965',
         country    => 'Deutschland',
-        tonwn      => 'Berlin',
         aim        => '',
         signature  => "perl -e'&{sub{s~~shift~e;s-(&*{*{*#*L*.Z*.E*.)-chr$&-eg;print}}(100105114107)'",
         skype      => 'pro_soccer',
@@ -371,7 +366,7 @@ $m_hrSettings = {
         serverName   => $inctance->{properties}{server},
         DocumentRoot => $inctance->{properties}{htd},
         bin          => $inctance->{properties}{cgi},
-        title        => 'Lindnerei',
+        title        => 'MySQL::Admin',
         style        => 'lze',
         mod_rewrite  => $inctance->{properties}{mod_rewrite},
         alias        => $inctance->{properties}{alias},
@@ -390,7 +385,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.47',
+    version   => '0.48',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",
@@ -413,7 +408,7 @@ $m_hrSettings = {
         messages  => 10,
         right     => 5
     },
-    size      => 22,
+    size      => 16,
     htmlright => 2,
     files     => {
         group => $inctance->{properties}{group},

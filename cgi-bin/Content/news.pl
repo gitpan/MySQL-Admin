@@ -288,7 +288,7 @@ sub addReply
     my $headline = param('headline');
     my $reply    = param('reply');
     my $format   = 'bbcode';
-    if (defined $format) {$format = 'html' if param('format') eq 'on';}
+    if (defined param('format')) {$format = 'html' if param('format') eq 'on';}
     my $result = 0;
     if ($m_nRight < $m_hrSettings->{uploads}{right}) {
         my $captcha = Authen::Captcha->new(data_folder   => "$m_hrSettings->{cgi}{bin}/config/",
@@ -297,7 +297,7 @@ sub addReply
     } else {
         $result = 1;
     }
-    if ((param('submit') ne translate("preview")) && $result >= 1) {
+    if (defined param('submit') && (param('submit') ne translate("preview")) && $result >= 1) {
         if (param('file')) {
             my $attach = (split(/[\\\/]/, param('file')))[-1];
             my $cit = $attach =~ /^(\S+)\.[^\.]+$/ ? $1 : 0;
@@ -417,7 +417,7 @@ sub showMessage
           if (-e "$m_hrSettings->{uploads}{path}/$ref->{attach}");
 
         $m_sContent .= "</table>" . $window->windowFooter();
-        my @rps = $m_oDatabase->fetch_array("select count(*) from replies where refererId = $id;");
+        my @rps = $m_oDatabase->fetch_array("select count(*) from replies where refererId = ?;",$id);
 
         if ($rps[0] > 0) {
             $m_nStart = $m_nStart > $rps[0] ? $rps[0] - 1 : $m_nStart;
@@ -429,7 +429,7 @@ sub showMessage
                           replyId => $id,
                           id      => 'c',
             );
-            showThread(\%needed);
+            $m_sContent .=  showThread(\%needed);
         }
     } else {
         &show();
@@ -446,7 +446,7 @@ sub readcats
     my @cats = $m_oDatabase->fetch_AoH("select * from cats where `right` <= ?", $m_nRight);
     my $cats = translate('catslist');
     my $list =
-qq|<a id="catLink" class="catLink" onclick="var o =  getElementPosition('catLink');move('catlist',o.x,o.y+20);displayTree('catlist');">$cats</a><select id="catlist" name="catlist" size="5" multiple="multiple" style="display:none;position:absolute;">|;
+    qq|<a id="catLink" class="catLink" onclick="var o =  getElementPosition('catLink');move('catlist',o.x,o.y+20);displayTree('catlist');var e =document.getElementById('catLink');e.className = (e.className == 'catLink') ? 'catLinkPressed' :'catLink';">$cats</a><select id="catlist" name="catlist" size="5" multiple="multiple" style="display:none;position:absolute;">|;
     for (my $i = 0; $i <= $#cats; $i++) {
         my $catname = lc($cats[$i]->{name});
         $list .=
@@ -615,28 +615,32 @@ sub showThread
     );
     my $pages = makePages(\%needed);
     $itht .= '<tr><td>' . $pages . '</td></tr>';
-    $itht .= '<tr><td>' . &threadBody($thread) . '</td></tr>';
+    $itht .= '<tr><td>' . threadBody($thread) . '</td></tr>';
     $itht .= '<tr><td>' . $pages . '</td></tr>';
     $itht .= '</table>';
+
     return $itht;
 }
 
 sub threadBody
 {
+
     my $th = shift;
-    my @output;
+    my $output;
     if (($m_oDatabase->tableExists($th))) {
-        push @output, '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%">';
-        my $answers = defined $replyId ? " && refererId =$replyId" : '';
+        $output .=  '<table border="0" cellpadding="0" cellspacing="10" summary="contentLayout" width="100%">';
+        
         my $lpp = defined param('links_pro_page') ? param('links_pro_page') =~ /(\d\d?\d?)/ ? $1 : 10 : 10;
         my $qcats = $m_oDatabase->fetch_string("SELECT cats FROM users where user = ?", $m_sUser);
         $qcats = $m_oDatabase->quote($qcats);
+        my $answers = defined $replyId ? " && refererId =$replyId" : "&& cat REGEXP($qcats)";
         my $sql_read =
-qq/select title,body,date,id,user,attach,format from $th where `right` <= $m_nRight $answers  && cat REGEXP($qcats) order by date desc LIMIT $m_nStart,$lpp /;
+qq/select title,body,date,id,user,attach,format from $th where `right` <= $m_nRight $answers  order by date desc LIMIT $m_nStart,$lpp /;
         my $sth = $m_dbh->prepare($sql_read);
         $sth->execute();
 
         while (my @data = $sth->fetchrow_array()) {
+
             my $headline    = $data[0];
             my $body        = $data[1];
             my $datum       = $data[2];
@@ -713,17 +717,17 @@ qq(&#160;<a href="#" target="_blank" onclick="window.open('http://www.facebook.c
                 $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
             }
             BBCODE(\$body, $ACCEPT_LANGUAGE) if ($format eq 'bbcode');
-            $h1 .=
-qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$m_sUsername</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>
+            
+            $h1 .= qq(<table align="left" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%"><tr ><td align="left">$menu</td></tr><tr><td align="left"><table align="left" border ="0" cellpadding="0" cellspacing="0" summary="user_datum"  width="100%"><tr><td align="left">$m_sUsername</td><td align="right">$datum</td></tr></table></td></tr><tr><td align="left">$body</td></tr>
             );
             $h1 .= qq(<tr><td><a href="/downloads/$attach">$attach</a></td></tr>) if (-e "$m_hrSettings->{uploads}{path}/$attach");
             $h1 .= qq(<tr><td align="left">$reply</td></tr></table>);
             $h1 .= $win->windowFooter();
-            push @output, qq|$h1</td></tr>|;
+            $output .=  qq|$h1</td></tr>|;
         }
-        push @output, "</table>";
-    }
-    return "@output";
+        $output .= "</table>";
+        }
+        return $output;
 }
 
 sub saveUpload

@@ -1,5 +1,6 @@
 use vars qw/$RIBBONCONTENT $PAGES $SQL %m_hUserRights/;
 no warnings "uninitialized";
+use utf8;
 ChangeDb(
          {
           name     => $m_sCurrentDb,
@@ -496,6 +497,9 @@ sub ExecSql
 '<table border="0" cellpadding="5" cellspacing="0" class="dataBaseTable"  summary="SelectEntry" width="100%" style="border-bottom:1px solid black;border-right:1px solid black;">';
                         $parameter{id} = "ExecSql$id";
                         while (my ($spaltenname, $inhalt) = each(%$ergebnis)) {
+                        if (!utf8::is_utf8($inhalt)) {
+                                 utf8::decode($inhalt);
+                        }
                             $RIBBONCONTENT .=
 qq|<tr><td class="caption" valign="top" align="left" style="border-left:1px solid black;border-top:1px solid black;" width="120">$spaltenname</td><td valign="top" align="left" class="value" style="border-left:1px solid black;border-top:1px solid black;" width="*">|
                               . encode_entities($inhalt)

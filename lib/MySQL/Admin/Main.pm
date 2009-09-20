@@ -11,7 +11,7 @@ our $server;
 @MySQL::Admin::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %MySQL::Admin::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
 @MySQL::Admin::Main::ISA         = qw( Exporter Template::Quick);
-$MySQL::Admin::Main::VERSION     = '0.47';
+$MySQL::Admin::Main::VERSION     = '0.48';
 $DefaultClass                    = 'MySQL::Admin::Main' unless defined $MySQL::Admin::Main::DefaultClass;
 
 =head1 NAME

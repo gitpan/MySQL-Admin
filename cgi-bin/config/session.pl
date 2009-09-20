@@ -1,12 +1,19 @@
 $VAR1 = {
-         'guest' => {
-                     'e2d31340ba358e60482028aa7394eb22' => {
-                                                            'timestamp' => 1253437397,
-                                                            'sub'       => 'main',
-                                                            'user'      => 'guest',
-                                                            'file'      => 't/content.pl',
-                                                            'action'    => 'main'
+          'guest' => {
+                       '4d7d518c74735850e05d0d3631f56434' => {
+                                                               'timestamp' => 1253469906,
+                                                               'sub' => 'main',
+                                                               'user' => 'guest',
+                                                               'file' => 't/content.pl',
+                                                               'action' => 'main'
+                                                             },
+                       '7fb3274de3f8649e30469c0e59cf5d0f' => {
+                                                               'sub' => 'main',
+                                                               'timestamp' => 1253469862,
+                                                               'action' => 'main',
+                                                               'file' => 't/content.pl',
+                                                               'user' => 'guest'
+                                                             }
                      }
-         }
-};
-$session = $VAR1;
+        };
+$session =$VAR1;

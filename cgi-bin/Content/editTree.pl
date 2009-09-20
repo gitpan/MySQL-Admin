@@ -341,6 +341,8 @@ sub editEntry
     my $t    = shift;
     my $find = shift;
     my $href = "$ENV{SCRIPT_NAME}?action=editTreeviewEntry&amp;dump=$m_sPdmp";
+    language('de') if $ENV{HTTP_ACCEPT_LANGUAGE} =~ /^de.*/;
+    my $node = help();
     for (my $i = 0; $i < @$t; $i++) {
         if (@$t[$i]->{rid} == $find) {
             $m_sContent .= br() . $m_oWindow->windowHeader();
@@ -350,8 +352,7 @@ sub editEntry
               . $href
               . "#a$m_nPrid"
               . '"><table align=" center " class=" mainborder " cellpadding="0"  cellspacing="0" summary="mainLayolut">';
-            language('de') if $ENV{HTTP_ACCEPT_LANGUAGE} =~ /^de.*/;
-            my $node = help();
+
             foreach my $key (sort(keys %{@$t[$i]})) {
                 $m_sContent .= "<tr><td></td><td>$node->{$key}</td></tr>" if (defined $node->{$key});
                 $m_sContent .= qq(<tr><td>$key </td><td><input type="text" value="@$t[$i]->{$key}" name="$key"></td></tr>)

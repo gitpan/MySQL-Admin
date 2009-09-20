@@ -26,7 +26,7 @@ use DBI::Library qw(:all $m_dbh $dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.47';
+$DBI::Library::Database::VERSION = '0.48';
 $mod_rewrite                     = 0;
 $min_secs                        = 10;
 
@@ -841,7 +841,7 @@ sub fetch_string
 {
     my ($self, @p) = getSelf(@_);
     my @a = $self->fetch_array(@p);
-    return "@a";
+    return $a[0];
 }
 
 #html erzeugende funktionen

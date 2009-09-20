@@ -1,4 +1,9 @@
-Revision history for Perl MySQL::Admin 0.47
+Revision history for Perl MySQL::Admin 0.48
+0.48
+     ".htaccess" fixed
+     pages.html fixed
+     multiple cats fixed.
+     showThread fixed
 0.47
      This Version is not Backward Compatible !
      charset changed to utf8

@@ -6,7 +6,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.47';
+$HTML::Editor::BBCODE::VERSION = '0.48';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
 
@@ -241,7 +241,7 @@ sub BBCODE
                              );
                          }
                          $content = $formatter->format_string($$content);
-                     } elsif ($parser =~ /(Java|C\+\+|XML|Ruby|Python|PHP|JavaScript|HTML|CSS|Bash)/) {
+                         } elsif ($parser =~ /(Java|C\+\+|XML|Ruby|Python|PHP|JavaScript|HTML|CSS|Bash|SQL)/) {
                          $content = formatString($$content, $1);
                      } else {
                          $content = Parse::BBCode::escape_html($$content);

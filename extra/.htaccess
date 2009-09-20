@@ -5,8 +5,9 @@ RewriteRule index.html /cgi-bin/lze.pl
 RewriteRule hilfe.html /cgi-bin/lze.pl?action=bbcodehelp
 RewriteRule ^about.html(.*)?$ /cgi-bin/lze.pl?action=about?$1 [PT]
 RewriteRule ^news.html(.*)?$  /cgi-bin/lze.pl?action=news?$1 [PT]
+RewriteRule  (.+)/(.+)/news.html(.+)? /cgi-bin/lze.pl?action=news&von=$1&bis=$2$3 [PT]
 RewriteRule ^showMessage(.+)\.html$ /cgi-bin/lze.pl?action=showThread&reply=$1 [PT]
-RewriteRule  news(\d+)\.html$ /cgi-bin/lze.pl?action=showThread&reply=$1 [PT]
+RewriteRule  ^news(\d+)\.html$ /cgi-bin/lze.pl?action=showThread&reply=$1 [PT]
 RewriteRule  edit([^-]+)-(.+)\.html$ /cgi-bin/lze.pl?action=edit&edit=$2&thread=$1 [PT]
 RewriteRule  reply([^\d]+)-(.+)\.html$ /cgi-bin/lze.pl?action=reply&reply=$2&thread=$1 [PT]
 RewriteRule ^makeNews.html /cgi-bin/lze.pl?action=makenews

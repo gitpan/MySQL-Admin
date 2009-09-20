@@ -3,7 +3,7 @@ use strict;
 use warnings;
 use utf8;
 use vars
-    qw( $m_dbh $dsn $DefaultClass $m_hrSettings  @EXPORT_OK @ISA %functions $m_sStyle $m_nRight $tbl $driver $m_oDatabase $host $pass $m_sUser);
+    qw( $m_dbh $dsn $DefaultClass $m_hrSettings  @EXPORT_OK @ISA %functions $m_sStyle $m_nRight $m_tbl $driver $m_oDatabase $host $pass $m_sUser);
 $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
 @DBI::Library::EXPORT_OK
     = qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver  useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $dsn $m_dbh selectTable);
@@ -18,8 +18,8 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.47';
-$tbl                   = 'querys';
+$DBI::Library::VERSION = '0.48';
+$m_tbl                   = 'querys';
 $driver                = 'mysql';
 require Exporter;
 use DBI;
@@ -166,7 +166,6 @@ sub initDB {
         }
         ) or print "$DBI::Library::errs";
         $self->void("SET NAMES 'utf8_general_ci'");
-    
     if( !$install && $m_oDatabase eq 'LZE' ) {
         my @q = $self->fetch_array("select title from querys");
         $functions{$_} = $_ foreach (@q);
@@ -391,7 +390,7 @@ sub useexecute {
     my $sth      = $m_dbh->prepare($sql);
     $sth->execute($m_sTitle) or warn $m_dbh->errstr;
     my ( $sqlexec, $return ) = $sth->fetchrow_array();
-    $sqlexec =~ s/<TABLE>/$tbl/g;
+    $sqlexec =~ s/<TABLE>/$m_tbl/g;
     if( ref $p[0] eq 'HASH' ) {
         my $ref = shift(@p);
         foreach my $key ( keys %{ $ref->{identifier} } ) {
@@ -477,6 +476,9 @@ $hashref = $database->fetch_hashref($sql)
 sub fetch_hashref {
     my ( $self, @p ) = getSelf(@_);
     my $sql = shift @p;
+#     for(my $i = 0; $i < $#p; $i++){
+#     utf8::decode($p[$i]) if (!utf8::is_utf8($p[$i]));
+#     }
     my $h;
     eval( '
 my $sth = $m_dbh->prepare($sql);
@@ -485,7 +487,6 @@ $sth->execute(@p) or warn $m_dbh->errstr;
 } else {
 $sth->execute() or warn $m_dbh->errstr;
 }
-my @r;
 $h = $sth->fetchrow_hashref();
 $sth->finish();
 ' );
@@ -502,6 +503,9 @@ void(sql)
 sub void {
     my ( $self, @p ) = getSelf(@_);
     my $sql = shift @p;
+    for(my $i = 0; $i < $#p; $i++){
+    utf8::decode($p[$i]) if (!utf8::is_utf8($p[$i]));
+    }
     my $sth = $m_dbh->prepare($sql);
     eval( '
 if(defined $p[0]) {
@@ -537,7 +541,7 @@ default : querys;
 
 sub selectTable {
     my ( $self, @p ) = getSelf(@_);
-    $tbl = $m_dbh->quote_identifier( $p[0] );
+    $m_tbl = $m_dbh->quote_identifier( $p[0] );
 }
 
 =head1 Privat
@@ -630,10 +634,14 @@ sub execute {
 
 sub fetch {
     my ( $sth, @args ) = @_;
-    my $rv;
-    eval('$rv = $sth->SUPER::fetch(@args)');
+
+    my $row;
+    eval('$row = $sth->SUPER::fetch(@args)');
     return "$@" if $@;
-    return $rv;
+    if ($row) {
+    utf8::encode($row->[1])  if(utf8::is_utf8($row->[1]));
+    }
+    return $row;
 }
 
 =head1 AUTHOR

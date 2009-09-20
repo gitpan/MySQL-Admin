@@ -374,10 +374,17 @@ function printButtons(){
        }
        document.write("</tr></table>");
 }
+var lang = 'Perl';
+function setlang(stext){
+       lang = stext;
+}
+function getLang(){
+       return lang;
+}
 
 function printenlarged(){
        if(bbcode == true){
-              document.write("<input type=\"button\" name=\"en\" value=\"En\" onclick=\"insertT('en')\"/><input type=\"button\" name=\"de\" value=\"De\" onclick=\"insertT('de')\"/><input type=\"button\" name=\"google\" value=\"google\" onclick=\"insertT('google')\"/><input type=\"button\" type=\"h1\" name=\"h1\" value=\"h1\" onclick=\"insertT('h1')\"/><input type=\"button\" type=\"h2\" name=\"h2\" value=\"h2\" onclick=\"insertT('h2')\"/><input type=\"button\" type=\"h3\" name=\"h3\" value=\"h3\" onclick=\"insertT('h3')\"/><input type=\"button\" type=\"h4\" name=\"h4\" value=\"h4\" onclick=\"insertT('h4')\"/><input type=\"button\" type=\"ol\" name=\"ol\" value=\"ol\" onclick=\"insertT('ol')\"/><input type=\"button\" type=\"ul\" name=\"ul\" value=\"ul\" onclick=\"insertT('ul')\"/><input type=\"button\" type=\"li\" name=\"li\" value=\"li\" onclick=\"insertT('li')\"/><br/><input type=\"button\" name=\"perl\" value=\"Perl\" onclick=\"insertT('code')\"/><input type=\"button\" name=\"Cpp\" value=\"C++\" onclick=\"insertT('coden=Cpp','code')\"/><input type=\"button\" name=\"Bash\" value=\"Bash\" onclick=\"insertT('coden=Bash','code')\"/><input type=\"button\" name=\"HTML\" value=\"HTML\" onclick=\"insertT('coden=HTML','code')\"/><input type=\"button\" name=\"Java\" value=\"Java\" onclick=\"insertT('coden=Java','code')\"/><input type=\"button\" name=\"Java\" value=\"Python\" onclick=\"insertT('coden=Python','code')\"/><input type=\"button\" name=\"CSS\" value=\"CSS\" onclick=\"insertT('coden=CSS','code')\"/><input type=\"button\" name=\"JavaScript\" value=\"JS\" onclick=\"insertT('coden=JavaScript','code')\"/><input type=\"button\" name=\"PHP\" value=\"PHP\" onclick=\"insertT('coden=PHP','code')\"/><input type=\"button\" name=\"Ruby\" value=\"Ruby\" onclick=\"insertT('coden=Ruby','code')\"/><input type=\"button\" name=\"XML\" value=\"XML\" onclick=\"insertT('coden=XML','code')\"/>");
+              document.write("<input type=\"button\" style=\"height:16px;font-size:12px;\" name=\"en\" value=\"En\" onclick=\"insertT('en')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" name=\"de\" value=\"De\" onclick=\"insertT('de')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" name=\"google\" value=\"google\" onclick=\"insertT('google')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\"  type=\"h1\" name=\"h1\" value=\"h1\" onclick=\"insertT('h1')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"h2\" name=\"h2\" value=\"h2\" onclick=\"insertT('h2')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"h3\" name=\"h3\" value=\"h3\" onclick=\"insertT('h3')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"h4\" name=\"h4\" value=\"h4\" onclick=\"insertT('h4')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"ol\" name=\"ol\" value=\"ol\" onclick=\"insertT('ol')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"ul\" name=\"ul\" value=\"ul\" onclick=\"insertT('ul')\"/><input type=\"button\" style=\"height:16px;font-size:12px;\" type=\"li\" name=\"li\" value=\"li\" onclick=\"insertT('li')\"/><select align=\"right\" id=\"lang\" style=\"height:16px;font-size:12px;\" name=\"lang\" onChange=\"setlang(this.options[this.selectedIndex].value);\"><option value=\"Perl\" selected=\"selected\">Perl</option><option value=\"C++\">Cpp</option<option value=\"Bash\">Bash</option><option value=\"HTML\">HTML</option><option value=\"Java\">Java</option><option value=\"Python\">Python</option><option value=\"CSS\">CSS</option><option value=\"PHP\">PHP</option><option value=\"JavaScript\">JavaScript</option><option value=\"Ruby\">Ruby</option><option value=\"XML\">XML</option><option value=\"SQL\">SQL</option></select><img style=\"background-color:black;\" src=\"/style/"+style+"/buttons/button.gif\" alt=\"\" border=\"1\" style =\"cursor:pointer;\" onclick=\"insertT('code='+getLang(),'code')\" class=\"editorButtons\" border=\"0\"/>");
        }
 }
 
@@ -664,6 +671,9 @@ function getWindowSize() {
               o.y = document.documentElement.clientHeight;
               return o;
        }
+       o.x = 0;
+       o.y = 0;
+       return o;
 }
 function ScroBarWidth(){
        //2 verschachtelte divs erzeugen.

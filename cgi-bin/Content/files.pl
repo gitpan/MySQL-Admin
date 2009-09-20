@@ -430,9 +430,18 @@ sub makeDir
 
 sub chownFile
 {
-    my $chown = param('chown');
-    my $sFile = param('file');
-    chown $uid, $gid, $sFile;
+   my $user = param('user');
+   my $uid = getpwnam($user);
+   my $gid  = param('gid');
+   my $g = getgrnam($gid);
+   my $sFile = param('file');
+   use POSIX qw(sysconf _PC_CHOWN_RESTRICTED);
+   $can_chown_giveaway = not sysconf(_PC_CHOWN_RESTRICTED);
+   $m_sContent .= "Not allowed" unless $can_chown_giveaway;
+   my $cnt = chown  $uid, $g, $sFile ;
+   $m_sContent .= "Ok" if $cnt > 0;
+    my $d = $sFile =~ ?^(.*)/[^/]+$? ? $1 : $m_hrSettings->{cgi}{bin};
+    &showDir($d);
 }
 
 sub chmodFile
