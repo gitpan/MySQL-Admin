@@ -351,6 +351,7 @@ htdocs/style/lze/window/str.jpg
 htdocs/style/lze/window/undockwin.png
 htdocs/style/lze/window/undockwino.png
 lib/CGI/QuickFormR.pm
+lib/CGI/QuickFormR.pm.ERR
 lib/DBI/Library.pm
 lib/DBI/Library/Database.pm
 lib/HTML/Editor.pm

@@ -1,4 +1,6 @@
-Revision history for Perl MySQL::Admin 0.48
+Revision history for Perl MySQL::Admin 0.49
+0.49
+     clean html (pages.html fixed)
 0.48
      ".htaccess" fixed
      pages.html fixed

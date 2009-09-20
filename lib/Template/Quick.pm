@@ -8,7 +8,7 @@ use vars qw($defaultconfig $tmp $DefaultClass @EXPORT_OK @ISA $m_sStyle $m_bMod_
 @ISA                          = qw(Exporter);
 @Template::Quick::EXPORT      = qw(initTemplate appendHash Template initArray);
 %Template::Quick::EXPORT_TAGS = ('all' => [qw(initTemplate appendHash Template initArray  )]);
-$Template::Quick::VERSION     = '0.48';
+$Template::Quick::VERSION     = '0.5';
 $DefaultClass                 = 'Template::Quick' unless defined $Template::Quick::DefaultClass;
 our %tmplate;
 $m_sStyle      = 'lze';

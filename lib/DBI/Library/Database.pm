@@ -26,7 +26,7 @@ use DBI::Library qw(:all $m_dbh $dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.48';
+$DBI::Library::Database::VERSION = '0.5';
 $mod_rewrite                     = 0;
 $min_secs                        = 10;
 
