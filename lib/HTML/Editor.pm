@@ -1,6 +1,7 @@
 package HTML::Editor;
 use HTML::Window;
 use MySQL::Admin qw(translate);
+use utf8;
 use strict;
 use warnings;
 use vars qw(
@@ -30,7 +31,7 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ( 'all' => [qw(initEditor show )] );
 
-$HTML::Editor::VERSION = '0.44';
+$HTML::Editor::VERSION = '0.47';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 

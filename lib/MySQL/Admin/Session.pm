@@ -6,10 +6,9 @@ use vars qw( $session $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Session::EXPORT = qw(loadSession saveSession $session);
 use MySQL::Admin::Config;
 @MySQL::Admin::Session::ISA     = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Session::VERSION = '0.44';
-$DefaultClass                   = 'MySQL::Admin::Session'
-    unless defined $MySQL::Admin::Session::DefaultClass;
-$defaultconfig = '%CONFIG%';
+$MySQL::Admin::Session::VERSION = '0.47';
+$DefaultClass                   = 'MySQL::Admin::Session' unless defined $MySQL::Admin::Session::DefaultClass;
+$defaultconfig                  = '%CONFIG%';
 
 =head1 NAME
 
@@ -33,8 +32,9 @@ loadConfig() saveSession() $session
 
 =cut
 
-sub new {
-    my ( $class, @initializer ) = @_;
+sub new
+{
+    my ($class, @initializer) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -44,22 +44,22 @@ sub new {
 
 =cut
 
-sub loadSession {
-    my ( $self, @p ) = getSelf(@_);
-    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
-    if ( -e $do ) {
-        do $do;
-    }
+sub loadSession
+{
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if (-e $do) {do $do;}
 }
 
 =head2 saveSession
 
 =cut
 
-sub saveSession {
-    my ( $self, @p ) = getSelf(@_);
+sub saveSession
+{
+    my ($self, @p) = getSelf(@_);
     my $l = defined $p[0] ? $p[0] : $defaultconfig;
-    $self->SUPER::saveConfig( $l, $session, 'session' );
+    $self->SUPER::saveConfig($l, $session, 'session');
 }
 
 =head1 Private
@@ -68,15 +68,11 @@ sub saveSession {
 
 =cut
 
-sub getSelf {
-    return @_
-        if defined( $_[0] )
-            && ( !ref( $_[0] ) )
-            && ( $_[0] eq 'MySQL::Admin::Session' );
-    return ( defined( $_[0] )
-                 && ( ref( $_[0] ) eq 'MySQL::Admin::Session'
-                      || UNIVERSAL::isa( $_[0], 'MySQL::Admin::Session' ) )
-    ) ? @_ : ( $MySQL::Admin::Session::DefaultClass->new, @_ );
+sub getSelf
+{
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'MySQL::Admin::Session');
+    return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin::Session' || UNIVERSAL::isa($_[0], 'MySQL::Admin::Session')))
+      ? @_
+      : ($MySQL::Admin::Session::DefaultClass->new, @_);
 }
-
 1;

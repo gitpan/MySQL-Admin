@@ -2,15 +2,13 @@ package MySQL::Admin::Translate;
 use strict;
 use warnings;
 require Exporter;
-use vars
-    qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
+use vars qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
 use MySQL::Admin::Config;
 @ISA                              = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Translate::VERSION = '0.44';
-$DefaultClass                     = 'MySQL::Admin::Translate'
-    unless defined $MySQL::Admin::Translate::DefaultClass;
-$defaultconfig = '%CONFIG%';
+$MySQL::Admin::Translate::VERSION = '0.47';
+$DefaultClass                     = 'MySQL::Admin::Translate' unless defined $MySQL::Admin::Translate::DefaultClass;
+$defaultconfig                    = '%CONFIG%';
 
 =head1 NAME
 
@@ -42,8 +40,9 @@ loadTranslate() saveTranslate() $lang
 
 =cut
 
-sub new {
-    my ( $class, @initializer ) = @_;
+sub new
+{
+    my ($class, @initializer) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -53,22 +52,22 @@ sub new {
 
 =cut
 
-sub loadTranslate {
-    my ( $self, @p ) = getSelf(@_);
-    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
-    if ( -e $do ) {
-        do $do;
-    }
+sub loadTranslate
+{
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if (-e $do) {do $do;}
 }
 
 =head2  saveTranslate()
 
 =cut
 
-sub saveTranslate {
-    my ( $self, @p ) = getSelf(@_);
+sub saveTranslate
+{
+    my ($self, @p) = getSelf(@_);
     my $l = defined $p[0] ? $p[0] : $defaultconfig;
-    $self->SUPER::saveConfig( $l, $lang, 'lang' );
+    $self->SUPER::saveConfig($l, $lang, 'lang');
 }
 
 =head1 Private
@@ -77,15 +76,12 @@ sub saveTranslate {
 
 =cut
 
-sub getSelf {
-    return @_
-        if defined( $_[0] )
-            && ( !ref( $_[0] ) )
-            && ( $_[0] eq 'MySQL::Admin::Translate' );
-    return ( defined( $_[0] )
-                 && ( ref( $_[0] ) eq 'MySQL::Admin::Translate'
-                      || UNIVERSAL::isa( $_[0], 'MySQL::Admin::Translate' ) )
-    ) ? @_ : ( $MySQL::Admin::Translate::DefaultClass->new, @_ );
+sub getSelf
+{
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'MySQL::Admin::Translate');
+    return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin::Translate' || UNIVERSAL::isa($_[0], 'MySQL::Admin::Translate')))
+      ? @_
+      : ($MySQL::Admin::Translate::DefaultClass->new, @_);
 }
 
 =head2 see Also

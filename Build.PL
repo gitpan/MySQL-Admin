@@ -18,13 +18,15 @@ my $class = Module::Build->subclass(
 
               sub ACTION_build {
               my $self = shift;
+              mkpath($release);
               &change($dir);
               $release = "$cwd/blib/perl/";
               $dir     = "$cwd/cgi-bin/";
+              mkpath($release);
               &change($dir);
               $self->SUPER::ACTION_build;
               &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/lze.pl");
-#             copy("extra/startup.pl", "$cwd/blib/perl/config/startup.pl") or die "Copy failed: $!";
+              &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/rpc.pl");
 
               if(-e "$m_hrSettings->{cgi}{bin}/config/links.pl") {
                      copy("$m_hrSettings->{cgi}{bin}/config/links.pl", "$cwd/blib/perl/config/links.pl") or die "Copy failed: $m_hrSettings->{cgi}{bin}/config/links.pl $!";
@@ -94,10 +96,10 @@ my $class = Module::Build->subclass(
                               $md5->add('admin');
                               $md5->add($self->{'properties'}{password});
                               my $fingerprint = $md5->hexdigest();
-                              $m_oDatabase->void(qq/insert into users (user,pass,email,`right`) values(?,?,?,5)/, 'admin',$fingerprint , $self->{'properties'}{email} );
+                              $m_oDatabase->void(qq/insert into users (user,pass,email,`right`,cats) values(?,?,?,5,'news|draft|member')/, 'admin',$fingerprint , $self->{'properties'}{email} );
                               print $/, $sql, $/, $@ if $@;
                          }else{
-                              $m_oDatabase->void(qq/insert into users (user,pass,`right`) values('admin','0008e525bc0894a780297b7f3aed6f58',5)/ );
+                              $m_oDatabase->void(qq/insert into users (user,pass,`right`,cats) values('admin','0008e525bc0894a780297b7f3aed6f58',5,'news|draft')/ );
                          }
                     } else {
                               warn $@;
@@ -238,13 +240,13 @@ my $inctance = $class->new(
     requires    => {
         'Test::More'                      => ">=0.7",
         'Module::Build'                   => ">=0.2808",
-        'HTML::Menu::TreeView'            => ">=1.04",
+        'HTML::Menu::TreeView'            => ">=1.09",
         'DBI'                             => ">=1.50",
-        'CGI'                             => ">=3.29",
+        'CGI'                             => ">=3.47",
         'HTML::Parser'                    => ">=3.56",
         'Syntax::Highlight::Engine::Kate' => ">=0.04",
         'MD5'                             => ">=2.03",
-#       'CGI::Ajax'                       => ">=0.706",
+        'Frontier::RPC2'                  => ">=0.07b4",
         'Authen::Captcha'                 => ">=1.023",
         'Mail::Sendmail'                  => ">=0.79",
         'Parse::BBCode'                   => ">=0.08",
@@ -388,7 +390,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.44',
+    version   => '0.47',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

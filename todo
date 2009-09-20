@@ -1,25 +1,2 @@
 #alles testen
-Build.pm
-unicode
-     Captcha Registrieren
-Firsttime
-
-Datenbank
-       save newtable tabelle wieder anzeigen
-       suchen (Ajax)
-       SHOW VARIABLES; ShowProcesslist  Create View
-       change charset
-       SQL EDITOR FELDNAMEN AUSWAHL(Ajax)
-       Export Optionen
-       Exec SQL ausgabe quoten treenlinie
-news
-       attachment wird gelöscht(aus der Datenbank) beim bearbeiten.(attachments verwalten).
-       links_pro_page für suche einbauen.
-       trash (wiederherstellen)
-lesezeichen
-       import: als neuer ordner einfügen
-edittree
-       confirm delete usw quote textarea
-       treeview name="#setzen" und per url# nach einfügen dort hinspringen
-Files
-       upload files im explorer. chown sortierung wieder abschalten
+Demo.

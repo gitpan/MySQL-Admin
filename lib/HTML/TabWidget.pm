@@ -1,12 +1,13 @@
 package HTML::TabWidget;
 use strict;
 use warnings;
+use utf8;
 require Exporter;
 use vars qw($DefaultClass @ISA  $m_bMod_perl $action $scriptname);
 our $m_sStyle;
 use Template::Quick;
 @HTML::TabWidget::ISA     = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION = '0.44';
+$HTML::TabWidget::VERSION = '0.47';
 $DefaultClass             = 'HTML::TabWidget'
     unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK

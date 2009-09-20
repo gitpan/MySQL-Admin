@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS actions (
+CREATE TABLE actions (
   `action` varchar(100) NOT NULL default '',
   `file` varchar(100) NOT NULL default '',
   title varchar(100) NOT NULL default '',
@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS actions (
   sub varchar(25) NOT NULL default 'main',
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('news','news.pl','Blog',0,'news;navigation;verify','show',1);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('settings','quick.pl','Settings',5,'','main',2);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addNews','news.pl','newMessage',1,'news;navigation;verify','addNews',3);
@@ -36,19 +36,17 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('lostpass','login.pl','lostpass',0,0,'lostpass',38);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('getpass','login.pl','getpass',0,0,'getpass',39);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showDir','files.pl','Files',5,'navigation','showDir',42);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('openFile','files.pl','openFile',5,'navigation','OpenFile',43);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('FileOpen','files.pl','FileOpen',5,'navigation','FileOpen',43);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('newFile','files.pl','newFile',5,'navigation','newFile',44);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('saveFile','files.pl','saveFile',5,'navigation','saveFile',45);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showMessage','news.pl','blog',0,'news;navigation;verify','main',18);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('chmodFile','files.pl','chmodFile',5,'navigation','chmodFile',49);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('deleteFile','files.pl','deleteFile',5,'navigation','deleteFile',50);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('impressum','impressum.pl','Impressum',0,'navigation','main',51);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('makeDir','files.pl','Files',5,'navigation','makeDir',52);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('newGbookEntry','gbook.pl','gbook',0,'navigation','newGbookEntry',55);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('addnewGbookEntry','gbook.pl','gbook',0,'navigation','addnewGbookEntry',56);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('gbook','gbook.pl','gbook',0,'navigation','showGbook',57);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('deleteExploit','admin.pl','Admin',5,'navigation','deleteExploit',59);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('help','help.pl','help',0,'help;navigation','main',60);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('showEditor','news.pl','NewPost',0,'navigation;verify','showEditor',61);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('AddFulltext','tables.pl','AddFulltext',5,'tables;navigation','AddFulltext',62);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('AnalyzeTable','tables.pl','AnalyzeTable',5,'tables;navigation','AnalyzeTable',63);
@@ -110,7 +108,6 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('SaveNewIndex','tables.pl','SaveNewIndex',5,'tables;navigation','SaveNewIndex',123);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ChangeEngine','tables.pl','ChangeEngine',5,'tables;navigation','ChangeEngine',124);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ChangeAutoInCrementValue','tables.pl','ChangeEngine',5,'tables;navigation','ChangeAutoInCrementValue',125);
-INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ChangeCharset','tables.pl','ChangeCharset',5,'tables;navigation','ChangeCharset',126);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowRights','tables.pl','ShowRights',5,'tables;navigation','ShowRights',127);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('SaveRights','tables.pl','SaveRights',5,'tables;navigation','SaveRights',128);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowUsers','tables.pl','ShowUsers',5,'tables;navigation','ShowUsers',129);
@@ -118,7 +115,11 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DeleteUser','tables.pl','DeleteUser',5,'tables;navigation','DeleteUser',131);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('DropDatabase','tables.pl','DropDatabase',5,'tables;navigation','DropDatabase',132);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowDatabases','tables.pl','ShowDatabases',5,'tables;navigation','ShowDatabases',133);
-CREATE TABLE IF NOT EXISTS box (
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowProcesslist','tables.pl','ShowProcesslist',5,'tables;navigation','ShowProcesslist',134);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowVariables','tables.pl','ShowVariables',5,'tables;navigation','ShowVariables',135);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('chownFile','files.pl','chownFile',5,'tables;navigation','chownFile',136);
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ImportFireFoxBookmarks','links.pl','ImportFireFoxBookmarks',5,'navigation','ImportFireFoxBookmarks',137);
+CREATE TABLE box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
   `right` int(1) NOT NULL default '0',
@@ -126,23 +127,22 @@ CREATE TABLE IF NOT EXISTS box (
   `id` int(11) NOT NULL auto_increment,
   `dynamic` varchar(10) default NULL,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO box (`file`,position,`right`,name,id,dynamic) VALUES('navigation.pl','disabled',0,'navigation',1,'right');
 INSERT INTO box (`file`,position,`right`,name,id,dynamic) VALUES('verify.pl','disabled',0,'verify',3,'right');
 INSERT INTO box (`file`,position,`right`,name,id,dynamic) VALUES('login.pl','disabled',0,'login',4,'0');
 INSERT INTO box (`file`,position,`right`,name,id,dynamic) VALUES('tables.pl','disabled',5,'database',10,'right');
 INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES('news.pl','disabled',0,'blog','right',7);
-INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES('help.pl','disabled',0,'help','right',8);
-INSERT INTO box (`file`,position,`right`,name,dynamic,id) VALUES('feeds.pl','disabled',0,'help','right',9);
-CREATE TABLE IF NOT EXISTS cats (
+CREATE TABLE cats (
   `name` varchar(100) NOT NULL default '',
   `right` int(11) NOT NULL default '0',
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO cats (name,`right`, id) VALUES('news',0, 1);
 INSERT INTO cats (name,`right`, id) VALUES('member',1,2);
-CREATE TABLE IF NOT EXISTS navigation (
+INSERT INTO cats (name,`right`, id) VALUES('draft',2,5);
+CREATE TABLE navigation (
        title varchar(100) NOT NULL default '',
        `action` varchar(100) NOT NULL default '',
        src varchar(100) NOT NULL default '',
@@ -152,15 +152,13 @@ CREATE TABLE IF NOT EXISTS navigation (
        `id` int(11) NOT NULL auto_increment,
        target int(11) default NULL,
        PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO navigation (title,action,src,`right`,position,submenu,id,target) VALUES('blog','news','news.png',0,'top','',1,0);
 INSERT INTO navigation (title,action,src,`right`,position,submenu,id,target) VALUES('Admin','admin','admin.png',5,'5','submenuadmin',2,0);
 INSERT INTO navigation (title,action,src,`right`,position,submenu,id,target) VALUES('properties','profile','profile.png',1,'6','',3,0);
 INSERT INTO navigation (title,action,src,`right`,position,submenu,id,target) VALUES('links','links','link.png',0,'top','',5,0);
-INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES('impressum','impressum','about.png',0,'7','',6,0);
 INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES('gbook','gbook','link.png',0,'8','',7,0);
-INSERT INTO navigation (title,`action`,src,`right`,position,submenu,id,target) VALUES('help','help','link.png',0,'9','',8,0);
-CREATE TABLE IF NOT EXISTS news (
+CREATE TABLE news (
   title varchar(100) NOT NULL default '',
   body text NOT NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -174,18 +172,17 @@ CREATE TABLE IF NOT EXISTS news (
   format varchar(10) NOT NULL default 'bbcode',
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: If you dont have set it during make it is testpass','2007-04-23 19:06:42','admin',0,'0','/news','news',0,1);
-INSERT INTO news (`title`,`body`,`date`,`user`,`right`,`attach`,`cat`,`action`,`sticky`,`id`,`format`) values('0.44','      Database Overeview (ShowDatabases),Delete and Create Databases (DropDatabase CreateDatabase)\r\n      some fixes, default password','2009-05-06 16:34:43','admin','0','0','news','news','0','2','bbcode');
-CREATE TABLE IF NOT EXISTS querys (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO news (title,body,date,`user`,`right`,attach,cat,action,sticky,id) VALUES('Login as','Name: admin\r\npassword: If you dont have set it during make it is testpass','2007-04-23 19:06:42','admin',0,'0','news','news',0,1);
+CREATE TABLE querys (
   title varchar(100) NOT NULL default '',
   description text NOT NULL,
   `sql` text NOT NULL,
   `return` varchar(100) NOT NULL default 'fetch_array',
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS replies (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE replies (
   title varchar(100) NOT NULL default '',
   body text NOT NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -199,8 +196,8 @@ CREATE TABLE IF NOT EXISTS replies (
   cat varchar(25) NOT NULL default 'replies',
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS submenuadmin (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE submenuadmin (
   title varchar(100) NOT NULL default '',
   `action` varchar(100) NOT NULL default '',
   src varchar(100) NOT NULL default 'link.gif',
@@ -208,14 +205,14 @@ CREATE TABLE IF NOT EXISTS submenuadmin (
   submenu varchar(100) default NULL,
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('settings','settings','link.gif',5,NULL,1);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('database','showDatabases','link.gif',5,'',8);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('navigation','editTreeview','',5,'',9);
 INSERT INTO submenuadmin (title,`action`,src,`right`,submenu,id) VALUES('env','env','link.gif',5,NULL,10);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Edit links','linkseditTreeview','link.gif',5,'',12);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Explorer','showDir','link.gif',5,'',15);
-CREATE TABLE IF NOT EXISTS trash (
+CREATE TABLE trash (
   `table` varchar(50) NOT NULL default '',
   oldId bigint(50) NOT NULL default '0',
   title varchar(100) NOT NULL default '',
@@ -231,8 +228,8 @@ CREATE TABLE IF NOT EXISTS trash (
   format varchar(10) NOT NULL default 'bbcode',
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS users (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE users (
   pass text NOT NULL,
   `user` varchar(25) NOT NULL default '',
   `date` date NOT NULL default '0000-00-00',
@@ -246,25 +243,26 @@ CREATE TABLE IF NOT EXISTS users (
   phone varchar(50) default NULL,
   sid varchar(200) default NULL,
   ip varchar(50) default NULL,
+  cats text NULL,
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-INSERT INTO users (pass,`user`,date,email,`right`,name,firstname,street,city,postcode,phone,sid,ip,id) VALUES('guest','guest','0000-00-00','guest@guestde',0,'guest','guest','guest','guest','57072','445566','hghsdf7','dd',2);
-CREATE TABLE IF NOT EXISTS exploit (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+INSERT INTO users (pass,`user`,date,email,`right`,name,firstname,street,city,postcode,phone,sid,ip,cats,id) VALUES('guest','guest','0000-00-00','guest@guestde',0,'guest','guest','guest','guest','57072','445566','hghsdf7','dd','news',1);
+CREATE TABLE exploit (
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP,
   referer text NOT NULL,
   remote_addr text NOT NULL,
   query_string text NOT NULL,
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS flood (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE flood (
   remote_addr text NOT NULL,
   ti text NOT NULL,
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS topnavigation (
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+CREATE TABLE topnavigation (
   title varchar(100) NOT NULL default '',
   `action` varchar(100) NOT NULL default '',
   src varchar(100) NOT NULL default '',
@@ -272,10 +270,10 @@ CREATE TABLE IF NOT EXISTS topnavigation (
   `id` int(11) NOT NULL auto_increment,
   target int(11) default NULL,
   PRIMARY KEY  (id)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 INSERT INTO topnavigation (title,action,src,`right`,  id,target) VALUES('news','news','news.png',0, 1,0);
 INSERT INTO topnavigation (title,action,src,`right`, id,target) VALUES('Bookmarks','links','link.png',0, 2,0);
-CREATE TABLE IF NOT EXISTS gbook (
+CREATE TABLE gbook (
   title varchar(50) NOT NULL default '',
   `body` text NOT NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
@@ -283,4 +281,230 @@ CREATE TABLE IF NOT EXISTS gbook (
   `id` int(11) NOT NULL auto_increment,
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+create table reserved_words (reserved_word varchar(50));
+insert into reserved_words (reserved_word) values
+('ACCESSIBLE'),
+('ALTER'),
+('AS'),
+('BEFORE'),
+('BINARY'),
+('BY'),
+('CASE'),
+('CHARACTER'),
+('COLUMN'),
+('CONTINUE'),
+('CROSS'),
+('CURRENT_TIMESTAMP'),
+('DATABASE'),
+('DAY_MICROSECOND'),
+('DEC'),
+('DEFAULT'),
+('DESC'),
+('DISTINCT'),
+('DOUBLE'),
+('EACH'),
+('ENCLOSED'),
+('EXIT'),
+('FETCH'),
+('FLOAT8'),
+('FOREIGN'),
+('GRANT'),
+('HIGH_PRIORITY'),
+('HOUR_SECOND'),
+('IN'),
+('INNER'),
+('INSERT'),
+('INT2'),
+('INT8'),
+('INTO'),
+('JOIN'),
+('KILL'),
+('LEFT'),
+('LINEAR'),
+('LOCALTIME'),
+('LONG'),
+('LOOP'),
+('MATCH'),
+('MEDIUMTEXT'),
+('MINUTE_SECOND'),
+('NATURAL'),
+('NULL'),
+('OPTIMIZE'),
+('OR'),
+('OUTER'),
+('PRIMARY'),
+('RANGE'),
+('READ_WRITE'),
+('REGEXP'),
+('REPEAT'),
+('RESTRICT'),
+('RIGHT'),
+('SCHEMAS'),
+('SENSITIVE'),
+('SHOW'),
+('SPECIFIC'),
+('SQLSTATE'),
+('SQL_CALC_FOUND_ROWS'),
+('STARTING'),
+('TERMINATED'),
+('TINYINT'),
+('TRAILING'),
+('UNDO'),
+('UNLOCK'),
+('USAGE'),
+('UTC_DATE'),
+('VALUES'),
+('VARCHARACTER'),
+('WHERE'),
+('WRITE'),
+('ZEROFILL'),
+('ALL'),
+('AND'),
+('ASENSITIVE'),
+('BIGINT'),
+('BOTH'),
+('CASCADE'),
+('CHAR'),
+('COLLATE'),
+('CONSTRAINT'),
+('CREATE'),
+('CURRENT_TIME'),
+('CURSOR'),
+('DAY_HOUR'),
+('DAY_SECOND'),
+('DECLARE'),
+('DELETE'),
+('DETERMINISTIC'),
+('DIV'),
+('DUAL'),
+('ELSEIF'),
+('EXISTS'),
+('FALSE'),
+('FLOAT4'),
+('FORCE'),
+('FULLTEXT'),
+('HAVING'),
+('HOUR_MINUTE'),
+('IGNORE'),
+('INFILE'),
+('INSENSITIVE'),
+('INT1'),
+('INT4'),
+('INTERVAL'),
+('ITERATE'),
+('KEYS'),
+('LEAVE'),
+('LIMIT'),
+('LOAD'),
+('LOCK'),
+('LONGTEXT'),
+('MASTER_SSL_VERIFY_SERVER_CERT'),
+('MEDIUMINT'),
+('MINUTE_MICROSECOND'),
+('MODIFIES'),
+('NO_WRITE_TO_BINLOG'),
+('ON'),
+('OPTIONALLY'),
+('OUT'),
+('PRECISION'),
+('PURGE'),
+('READS'),
+('REFERENCES'),
+('RENAME'),
+('REQUIRE'),
+('REVOKE'),
+('SCHEMA'),
+('SELECT'),
+('SET'),
+('SPATIAL'),
+('SQLEXCEPTION'),
+('SQL_BIG_RESULT'),
+('SSL'),
+('TABLE'),
+('TINYBLOB'),
+('TO'),
+('TRUE'),
+('UNIQUE'),
+('UPDATE'),
+('USING'),
+('UTC_TIMESTAMP'),
+('VARCHAR'),
+('WHEN'),
+('WITH'),
+('YEAR_MONTH'),
+('ADD'),
+('ANALYZE'),
+('ASC'),
+('BETWEEN'),
+('BLOB'),
+('CALL'),
+('CHANGE'),
+('CHECK'),
+('CONDITION'),
+('CONVERT'),
+('CURRENT_DATE'),
+('CURRENT_USER'),
+('DATABASES'),
+('DAY_MINUTE'),
+('DECIMAL'),
+('DELAYED'),
+('DESCRIBE'),
+('DISTINCTROW'),
+('DROP'),
+('ELSE'),
+('ESCAPED'),
+('EXPLAIN'),
+('FLOAT'),
+('FOR'),
+('FROM'),
+('GROUP'),
+('HOUR_MICROSECOND'),
+('IF'),
+('INDEX'),
+('INOUT'),
+('INT'),
+('INT3'),
+('INTEGER'),
+('IS'),
+('KEY'),
+('LEADING'),
+('LIKE'),
+('LINES'),
+('LOCALTIMESTAMP'),
+('LONGBLOB'),
+('LOW_PRIORITY'),
+('MEDIUMBLOB'),
+('MIDDLEINT'),
+('MOD'),
+('NOT'),
+('NUMERIC'),
+('OPTION'),
+('ORDER'),
+('OUTFILE'),
+('PROCEDURE'),
+('READ'),
+('REAL'),
+('RELEASE'),
+('REPLACE'),
+('RETURN'),
+('RLIKE'),
+('SECOND_MICROSECOND'),
+('SEPARATOR'),
+('SMALLINT'),
+('SQL'),
+('SQLWARNING'),
+('SQL_SMALL_RESULT'),
+('STRAIGHT_JOIN'),
+('THEN'),
+('TINYTEXT'),
+('TRIGGER'),
+('UNION'),
+('UNSIGNED'),
+('USE'),
+('UTC_TIME'),
+('VARBINARY'),
+('VARYING'),
+('WHILE'),
+('XOR')
+;

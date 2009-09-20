@@ -1,80 +1,79 @@
 package MySQL::Admin;
 use strict;
 use warnings;
-no warnings "uninitialized";
+use utf8;
 use MySQL::Admin::Settings;
 use MySQL::Admin::Translate;
 use MySQL::Admin::Config;
 use MySQL::Admin::Session;
 use MySQL::Admin::Actions;
 
-use CGI
-    qw(-compile :all :html2 :html3 :html4  :cgi :cgi-lib  -private_tempfiles);
+use CGI qw(-compile :html2 :html3 :netscape :cgi :internal :html4 :cgi-lib textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape
+scrolling_list image_button start_form end_form start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART -private_tempfiles );
 
 require Exporter;
 use vars qw(
-    $m_hrParams
-    $m_qy
-    $m_hrActions
-    $ACCEPT_LANGUAGE
-    $DefaultClass
-    $m_nUplod_bytes
-    $DefaultClass
-    @EXPORT
-    @ISA
-    $m_bMod_perl
-    $m_hrSettings
-    $m_bUpload_error
-    $m_sUser
-    $m_hrLng
-    @EXPORT_OK
-    %EXPORT_TAGS
-    $defaultconfig
+  $m_hrParams
+  $m_qy
+  $m_hrActions
+  $ACCEPT_LANGUAGE
+  $DefaultClass
+  $m_nUplod_bytes
+  $DefaultClass
+  @EXPORT
+  @ISA
+  $m_bMod_perl
+  $m_hrSettings
+  $m_bUpload_error
+  $m_sUser
+  $m_hrLng
+  @EXPORT_OK
+  %EXPORT_TAGS
+  $defaultconfig
 );
 
-$CGI::DefaultClass  = 'CGI';
-$DefaultClass       = 'MySQL::Admin' unless defined $MySQL::Admin::DefaultClass;
-$defaultconfig      = '/srv/www/cgi-bin/config/settings.pl';
-$CGI::AutoloadClass = 'CGI';
-$MySQL::Admin::VERSION  = '0.44';
-$m_bMod_perl           = ( $ENV{MOD_PERL} ) ? 1 : 0;
+$CGI::DefaultClass     = 'CGI';
+$DefaultClass          = 'MySQL::Admin' unless defined $MySQL::Admin::DefaultClass;
+$defaultconfig         = '/srv/www/cgi-bin/config/settings.pl';
+$CGI::AutoloadClass    = 'CGI';
+$MySQL::Admin::VERSION = '0.47';
+$m_bMod_perl           = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI);
-@MySQL::Admin::EXPORT_OK
-    = qw($m_hrLng start_table end_table include h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form startform endform start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars https $ACCEPT_LANGUAGE  translate init session createSession $m_hrParams clearSession $m_qy sessionValidity includeAction);
+@MySQL::Admin::EXPORT_OK =  qw($m_hrLng start_table end_table include h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars https $ACCEPT_LANGUAGE  translate init session createSession $m_hrParams clearSession $m_qy sessionValidity includeAction);
 
 %EXPORT_TAGS = (
     'html2' => [
         'h1' .. 'h6', qw/p br hr ol ul li dl dt dd menu code var strong em
-            tt u i b blockquote pre img a address cite samp dfn html head
-            base body Link nextid title meta kbd start_html end_html
-            input Select option comment charset escapeHTML/
+          tt u i b blockquote pre img a address cite samp dfn html head
+          base body Link nextid title meta kbd start_html end_html
+          input Select option comment charset escapeHTML/
     ],
     'html3' => [
         qw/div table caption th td TR Tr sup Sub strike applet Param
-            embed basefont style span layer ilayer font frameset frame script small big Area Map/
+          embed basefont style span layer ilayer font frameset frame script small big Area Map/
     ],
     'html4' => [
         qw/abbr acronym bdo col colgroup del fieldset iframe
-            ins label legend noframes noscript object optgroup Q
-            thead tbody tfoot/
+          ins label legend noframes noscript object optgroup Q
+          thead tbody tfoot/
     ],
     'netscape' => [qw/blink fontsize center/],
     'form'     => [
         qw/textfield textarea filefield password_field hidden checkbox checkbox_group
-            submit reset defaults radio_group popup_menu button autoEscape
-            scrolling_list image_button start_form end_form startform endform
-            start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART/
+          submit reset defaults radio_group popup_menu button autoEscape
+          scrolling_list image_button end_form start_form
+          start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART/
     ],
     'cgi' => [
         qw/param upload path_info path_translated request_uri url self_url script_name
-            cookie Dump
-            raw_cookie request_method query_string Accept user_agent remote_host content_type
-            remote_addr referer server_name server_software server_port server_protocol virtual_port
-            virtual_host remote_ident auth_type http append
-            save_parameters restore_parameters param_fetch
-            remote_user user_name header redirect import_names put
-            Delete Delete_all url_param cgi_error/
+          cookie Dump
+          raw_cookie request_method query_string Accept user_agent remote_host content_type
+          remote_addr referer server_name server_software server_port server_protocol virtual_port
+          virtual_host remote_ident auth_type http append
+          save_parameters restore_parameters param_fetch
+          remote_user user_name header redirect import_names put
+          Delete Delete_all url_param cgi_error/
     ],
     'ssl'     => [qw/https/],
     'cgi-lib' => [qw/ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars/],
@@ -83,25 +82,23 @@ our $hold = 120;    #session ist 120 sekunden gültig.
     ],
     'standard' => [
         qw/h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot textfield textarea filefield password_field hidden checkbox checkbox_group
-            submit reset defaults radio_group popup_menu button autoEscape
-            scrolling_list image_button start_form end_form startform endform
-            start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name
-            cookie Dump
-            raw_cookie request_method query_string Accept user_agent remote_host content_type
-            remote_addr referer server_name server_software server_port server_protocol virtual_port
-            virtual_host remote_ident auth_type http append
-            save_parameters restore_parameters param_fetch
-            remote_user user_name header redirect import_names put
-            Delete Delete_all url_param cgi_error/
+          submit reset defaults radio_group popup_menu button autoEscape
+          scrolling_list image_button start_form end_form
+          start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name
+          cookie Dump
+          raw_cookie request_method query_string Accept user_agent remote_host content_type
+          remote_addr referer server_name server_software server_port server_protocol virtual_port
+          virtual_host remote_ident auth_type http append
+          save_parameters restore_parameters param_fetch
+          remote_user user_name header redirect import_names put
+          Delete Delete_all url_param cgi_error/
     ],
-    'push' =>
-        [qw/multipart_init multipart_start multipart_end multipart_final/],
-    'all' => [
-        qw/$m_hrLng h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form startform endform start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars  $ACCEPT_LANGUAGE  translate init session createSession $m_hrParams clearSession $m_qy sessionValidity includeAction include/
+    'push' => [qw/multipart_init multipart_start multipart_end multipart_final/],
+    'all'  => [
+        qw/$m_hrLng h1 h2 h3 h4 h5 h6 p br hr ol ul li dl dt dd menu code var strong em tt u i b blockquote pre img a address cite samp dfn html head base body Link nextid title meta kbd start_html end_html input Select option comment charset escapeHTML div table caption th td TR Tr sup Sub strike applet Param embed basefont style span layer ilayer font frameset frame script small big Area Map abbr acronym bdo col colgroup del fieldset iframe ins label legend noframes noscript object optgroup Q thead tbody tfoot blink fontsize center textfield textarea filefield password_field hidden checkbox checkbox_group submit reset defaults radio_group popup_menu button autoEscape scrolling_list image_button start_form end_form start_multipart_form end_multipart_form isindex tmpFileName uploadInfo URL_ENCODED MULTIPART param upload path_info path_translated request_uri url self_url script_name cookie Dump raw_cookie request_method query_string Accept user_agent remote_host content_type remote_addr referer server_name server_software server_port server_protocol virtual_port virtual_host remote_ident auth_type http append save_parameters restore_parameters param_fetch remote_user user_name header redirect import_names put Delete Delete_all url_param cgi_error ReadParse PrintHeader HtmlTop HtmlBot SplitParam Vars  $ACCEPT_LANGUAGE  translate init session createSession $m_hrParams clearSession $m_qy sessionValidity includeAction include/
     ],
-    'lze' => [
-        qw/ $m_hrLng $ACCEPT_LANGUAGE translate init session createSession $m_hrParams clearSession $m_qy include sessionValidity includeAction/
-    ],
+    'lze' =>
+      [qw/ $m_hrLng $ACCEPT_LANGUAGE translate init session createSession $m_hrParams clearSession $m_qy include sessionValidity includeAction/],
 
 );
 
@@ -142,8 +139,9 @@ and all export tags from L<CGI.pm>
 
 =cut
 
-sub new {
-    my ( $class, @initializer ) = @_;
+sub new
+{
+    my ($class, @initializer) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -157,16 +155,17 @@ sub new {
 
 =cut
 
-sub init {
-    my ( $self, @p ) = getSelf(@_);
+sub init
+{
+    my ($self, @p) = getSelf(@_);
     my $settingfile = $p[0] ? $p[0] : $defaultconfig;
     loadSettings($settingfile);
     *m_hrSettings = \$MySQL::Admin::Settings::m_hrSettings;
-    loadTranslate( $m_hrSettings->{translate} );
+    loadTranslate($m_hrSettings->{translate});
     *m_hrLng = \$MySQL::Admin::Translate::lang;
-    loadSession( $m_hrSettings->{session} );
+    loadSession($m_hrSettings->{session});
     *m_qy = \$MySQL::Admin::Session::session;
-    loadActions( $m_hrSettings->{actions} );
+    loadActions($m_hrSettings->{actions});
     *m_hrAction = \$MySQL::Admin::Actions::m_hrAction;
 }
 
@@ -180,23 +179,22 @@ sub init {
 
 =cut
 
-sub include {
-    my ( $self, @p ) = getSelf(@_);
+sub include
+{
+    my ($self, @p) = getSelf(@_);
     my $qstring = $p[0] ? $p[0] : param('include') ? param('include') : 0;
-    CGI::upload_hook( \&hook );
-    if( defined $qstring ) {
+    CGI::upload_hook(\&hook);
+    if (defined $qstring) {
         session($qstring);
-        if( defined $m_hrParams->{file} && defined $m_hrParams->{sub} ) {
-            if( -e $m_hrParams->{file} ) {
+        if (defined $m_hrParams->{file} && defined $m_hrParams->{sub}) {
+            if (-e $m_hrParams->{file}) {
                 do("$m_hrParams->{file}");
-                eval( $m_hrParams->{sub} ) if $m_hrParams->{sub} ne 'main';
-                warn $@ if($@);
+                eval($m_hrParams->{sub}) if $m_hrParams->{sub} ne 'main';
+                warn $@ if ($@);
             } else {
                 do("$m_hrActions->{$m_hrSettings->{defaultAction}}{file}");
-                eval( $m_hrActions->{ $m_hrSettings->{defaultAction} }{sub} )
-                    if $m_hrActions->{ $m_hrSettings->{defaultAction} }{sub} ne
-                        'main';
-                warn $@ if($@);
+                eval($m_hrActions->{$m_hrSettings->{defaultAction}}{sub}) if $m_hrActions->{$m_hrSettings->{defaultAction}}{sub} ne 'main';
+                warn $@ if ($@);
             }
         }
     }
@@ -210,26 +208,21 @@ see L<MySQL::Admin::Actions>
 
 =cut
 
-sub includeAction {
-    my ( $self, @p ) = getSelf(@_);
+sub includeAction
+{
+    my ($self, @p) = getSelf(@_);
     my $m_hrAction = param('action') ? param('action') : $p[0] ? $p[0] : 0;
-    CGI::upload_hook( \&hook );
-    if( defined $m_hrActions->{$m_hrAction} ) {
-        if(    defined $m_hrActions->{$m_hrAction}{file}
-            && defined $m_hrActions->{$m_hrAction}{sub} )
-        {
-            if( -e $m_hrParams->{file} ) {
+    CGI::upload_hook(\&hook);
+    if (defined $m_hrActions->{$m_hrAction}) {
+        if (defined $m_hrActions->{$m_hrAction}{file} && defined $m_hrActions->{$m_hrAction}{sub}) {
+            if (-e $m_hrParams->{file}) {
                 do("$m_hrSettings->{cgi}{bin}/Content/$m_hrActions->{$m_hrAction}{file}");
-                eval( $m_hrActions->{$m_hrAction}{sub} )
-                    if $m_hrActions->{$m_hrAction}{sub} ne 'main';
-                warn $@ if($@);
+                eval($m_hrActions->{$m_hrAction}{sub}) if $m_hrActions->{$m_hrAction}{sub} ne 'main';
+                warn $@ if ($@);
             } else {
-                do( "$m_hrSettings->{cgi}{bin}/Content/$m_hrActions->{$m_hrSettings->{defaultAction}}{file}"
-                );
-                eval( $m_hrActions->{ $m_hrSettings->{defaultAction} }{sub} )
-                    if $m_hrActions->{ $m_hrSettings->{defaultAction} }{sub} ne
-                        'main';
-                warn $@ if($@);
+                do("$m_hrSettings->{cgi}{bin}/Content/$m_hrActions->{$m_hrSettings->{defaultAction}}{file}");
+                eval($m_hrActions->{$m_hrSettings->{defaultAction}}{sub}) if $m_hrActions->{$m_hrSettings->{defaultAction}}{sub} ne 'main';
+                warn $@ if ($@);
             }
         }
     }
@@ -251,13 +244,14 @@ sub includeAction {
 
 =cut
 
-sub createSession {
-    my ( $self, @p ) = getSelf(@_);
+sub createSession
+{
+    my ($self, @p) = getSelf(@_);
     my $par = shift @p;
     $m_sUser = $par->{user} ? $par->{user} : 'guest';
     my $ip   = $self->remote_addr();
     my $time = time();
-    my $id = $par->{action} ? $par->{action} : rand 100;
+    my $id   = $par->{action} ? $par->{action} : rand 100;
     use MD5;
     my $md5 = new MD5;
     $md5->add($m_sUser);
@@ -266,13 +260,12 @@ sub createSession {
     $md5->add($id);
     my $fingerprint = $md5->hexdigest();
 
-    foreach my $key ( sort( keys %{$par} ) ) {
+    foreach my $key (sort(keys %{$par})) {
         $m_qy->{$m_sUser}{$fingerprint}{$key} = $par->{$key};
         $m_hrParams->{$key} = $par->{$key};
     }
-    $m_qy->{$m_sUser}{$fingerprint}{timestamp}
-        = defined $par->{validity} ? $par->{validity} : time();
-    saveSession( $m_hrSettings->{session} );
+    $m_qy->{$m_sUser}{$fingerprint}{timestamp} = defined $par->{validity} ? $par->{validity} : time();
+    saveSession($m_hrSettings->{session});
     return $fingerprint;
 }
 
@@ -291,15 +284,16 @@ sub createSession {
 # Als parameter erwartet Sie den wert den createSession zurückgegeben hat:                                    #
 # Im Void Kontext wird param('include') benutzt.                                                              # ###############################################################################################################
 
-sub session {
-    my ( $self, @p ) = getSelf(@_);
-    if( ref( $p[0] ) eq 'HASH' ) {
+sub session
+{
+    my ($self, @p) = getSelf(@_);
+    if (ref($p[0]) eq 'HASH') {
         $self->createSession(@p);
     } else {
         my $param = param('include') ? param('include') : shift @p;
         $m_sUser = $p[0] ? $p[0] : 'guest';
 
-        foreach my $key ( sort( keys %{ $m_qy->{$m_sUser}{$param} } ) ) {
+        foreach my $key (sort(keys %{$m_qy->{$m_sUser}{$param}})) {
             $m_hrParams->{$key} = $m_qy->{$m_sUser}{$param}{$key};
         }
         $m_hrParams->{session_id} = $param;
@@ -315,21 +309,22 @@ delete old sessions. Delete all session older then 120 sec.
 
 =cut
 
-sub clearSession {
-    foreach my $ua ( keys %{$m_qy} ) {
-        foreach my $entry ( keys %{ $m_qy->{$ua} } ) {
-            my $t
-                = $m_qy->{$ua}{$entry}{timestamp}
-                ? time()- $m_qy->{$ua}{$entry}{timestamp}
-                : time();
-            $hold
-                = defined $m_qy->{$ua}{$entry}{validity}
-                ? defined $m_qy->{$ua}{$entry}{validity}
-                : $hold;
-            delete $m_qy->{$ua}{$entry} if( $t > $hold );
+sub clearSession
+{
+    foreach my $ua (keys %{$m_qy}) {
+        foreach my $entry (keys %{$m_qy->{$ua}}) {
+            my $t =
+              $m_qy->{$ua}{$entry}{timestamp}
+              ? time() - $m_qy->{$ua}{$entry}{timestamp}
+              : time();
+            $hold =
+                defined $m_qy->{$ua}{$entry}{validity}
+              ? defined $m_qy->{$ua}{$entry}{validity}
+              : $hold;
+            delete $m_qy->{$ua}{$entry} if ($t > $hold);
         }
     }
-    saveSession( $m_hrSettings->{session} );
+    saveSession($m_hrSettings->{session});
 }
 
 =head2 sessionValidity()
@@ -344,9 +339,10 @@ or get it in void context:
 
 =cut
 
-sub sessionValidity {
-    my ( $self, @p ) = getSelf(@_);
-    if( defined $p[0] and $p[0] =~ /(\d+)/ ) {
+sub sessionValidity
+{
+    my ($self, @p) = getSelf(@_);
+    if (defined $p[0] and $p[0] =~ /(\d+)/) {
         $hold = $1;
     } else {
         return $hold;
@@ -361,30 +357,31 @@ see L<MySQL::Admin::Translate>
 
 =cut
 
-sub translate {
-    my ( $self, @p ) = getSelf(@_);
+sub translate
+{
+    my ($self, @p) = getSelf(@_);
     my $key = lc $p[0];
-    my @a   = split( /,/,
-        defined $ENV{HTTP_ACCEPT_LANGUAGE}
-        ? $ENV{HTTP_ACCEPT_LANGUAGE}
-        : 'de,en' );
+    my @a = split(
+                  /,/, defined $ENV{HTTP_ACCEPT_LANGUAGE}
+                  ? $ENV{HTTP_ACCEPT_LANGUAGE}
+                  : 'de,en'
+    );
 
-     unless( param('action') eq 'translate'){
-     loadTranslate( $m_hrSettings->{translate} );
-     *m_hrLng = \$MySQL::Admin::Translate::lang ;
-     }
+   loadTranslate($m_hrSettings->{translate});
+   *m_hrLng = \$MySQL::Admin::Translate::lang;
+
     my $i = 0;
-    while( $i <= $#a ) {
-        my  $lng = $a[$i]  =~ s/(\w\w).*/$1/ ? $1  : $m_hrSettings->{language};
-        if( defined $m_hrLng->{ $lng }{$key} ) {
+    while ($i <= $#a) {
+        my $lng = $a[$i] =~ s/(\w\w).*/$1/ ? $1 : $m_hrSettings->{language};
+        if (defined $m_hrLng->{$lng}{$key}) {
             $ACCEPT_LANGUAGE = $lng;
-            return $m_hrLng->{ $lng }{$key};
+            return $m_hrLng->{$lng}{$key};
         }
         $i++;
     }
     $m_hrLng->{en}{$key} = $key unless defined $m_hrLng->{en}{$key};
     $m_hrLng->{de}{$key} = $key unless defined $m_hrLng->{de}{$key};
-    saveTranslate( $m_hrSettings->{translate} ) unless param('action') eq 'translate';
+    saveTranslate($m_hrSettings->{translate}) unless param('action') eq 'translate';
     return $p[0];
 }
 
@@ -398,12 +395,13 @@ used by include and includeAction.
 
 $m_nUplod_bytes = 0;
 
-sub hook {
-    my ( $self, @p ) = getSelf(@_);
-    my ( $m_sFilename, $buffer, $bytes_read, $data ) = @p;
+sub hook
+{
+    my ($self, @p) = getSelf(@_);
+    my ($m_sFilename, $buffer, $bytes_read, $data) = @p;
     use Symbol;
     my $fh = gensym();
-    if( $m_nUplod_bytes <= $m_hrSettings->{uploads}{maxlength} ) {
+    if ($m_nUplod_bytes <= $m_hrSettings->{uploads}{maxlength}) {
         require bytes;
         $m_nUplod_bytes += bytes::length($buffer);
     } else {
@@ -416,14 +414,10 @@ sub hook {
 
 =cut
 
-sub getSelf {
-    return @_
-        if defined( $_[0] ) && ( !ref( $_[0] ) ) && ( $_[0] eq 'MySQL::Admin' );
-    return (
-        defined( $_[0] )
-            && ( ref( $_[0] ) eq 'MySQL::Admin'
-            || UNIVERSAL::isa( $_[0], 'MySQL::Admin' ) )
-    ) ? @_ : ( $MySQL::Admin::DefaultClass->new, @_ );
+sub getSelf
+{
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'MySQL::Admin');
+    return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin' || UNIVERSAL::isa($_[0], 'MySQL::Admin'))) ? @_ : ($MySQL::Admin::DefaultClass->new, @_);
 }
 
 =head1 LICENSE

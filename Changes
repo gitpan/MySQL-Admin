@@ -1,4 +1,21 @@
-Revision history for Perl MySQL::Admin 0.44
+Revision history for Perl MySQL::Admin 0.47
+0.47
+     This Version is not Backward Compatible !
+     charset changed to utf8
+     news:
+     multiple cats selectable in profile
+     xml-rpc support (beta testet with scribefire)
+     Share on Facebook,Myspace link(settings)
+     Search:
+     regexp search
+     Bookmarks:
+     Add to bookmarks link.
+     Import Firefox bookmarks
+     Database:
+     Als neuer Ordner einfuegen(anhaengen)
+0.45 
+      attachment wird gelöscht(aus der Datenbank) beim bearbeiten.
+      links_pro_page für suche einbauen.
 0.44
       Database Overeview (ShowDatabases),Delete and Create Databases (DropDatabase CreateDatabase)
       some fixes, default password

@@ -1,30 +1,27 @@
 package HTML::Menu::Pages;
 use Template::Quick;
 use strict;
+use utf8;
 use warnings;
 require Exporter;
 use vars qw(
-    $DefaultClass
-    @EXPORT
-    @ISA
-    $m_hrAction
-    $length
-    $m_nStart
-    $m_sStyle
-    $mod_rewrite
-    $append
-    $pages
-    $path
-    $per_page
+  $DefaultClass
+  @EXPORT
+  @ISA
+  $m_hrAction
+  $length
+  $m_nStart
+  $m_sStyle
+  $mod_rewrite
+  $append
+  $pages
+  $path
+  $per_page
 );
-
-@HTML::Menu::Pages::EXPORT = qw(makePages);
-@ISA                       = qw(Exporter);
-
-$HTML::Menu::Pages::VERSION = '0.44';
-
-$DefaultClass = 'HTML::Menu::Pages'
-    unless defined $HTML::Menu::Pages::DefaultClass;
+@HTML::Menu::Pages::EXPORT  = qw(makePages);
+@ISA                        = qw(Exporter);
+$HTML::Menu::Pages::VERSION = '0.47';
+$DefaultClass               = 'HTML::Menu::Pages' unless defined $HTML::Menu::Pages::DefaultClass;
 
 =head1 NAME
 
@@ -101,8 +98,9 @@ makePages
 
 =cut
 
-sub new {
-    my ( $class, @initializer ) = @_;
+sub new
+{
+    my ($class, @initializer) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -114,8 +112,9 @@ see SYNOPSIS
 
 =cut
 
-sub makePages {
-    my ( $self, @p ) = getSelf(@_);
+sub makePages
+{
+    my ($self, @p) = getSelf(@_);
     my $hashref = $p[0];
     $m_hrAction  = $hashref->{action};
     $m_nStart    = $hashref->{start} > 0 ? $hashref->{start} : 0;
@@ -125,8 +124,8 @@ sub makePages {
     $length      = $hashref->{length} ? $hashref->{length} : 0;
     $pages       = $hashref->{title} ? $hashref->{title} : "Start: ";
     $path        = $hashref->{path} ? $hashref->{path} : 'cgi-bin/';
-    $per_page = $hashref->{links_pro_page} ? $hashref->{links_pro_page} : 10;
-    $self->ebis() if ( $length > $per_page );
+    $per_page    = $hashref->{links_pro_page} ? $hashref->{links_pro_page} : 10;
+    $self->ebis() if ($length > $per_page);
 }
 
 =head2 ebis()
@@ -135,91 +134,82 @@ private
 
 =cut
 
-sub ebis {
-    my ( $self, @p ) = getSelf(@_);
-    my $previousPage =
-        ( ( $m_nStart- $per_page ) > 0 ) ? $m_nStart- $per_page : 0;
+sub ebis
+{
+    my ($self, @p) = getSelf(@_);
+    my $previousPage = (($m_nStart - $per_page) > 0) ? $m_nStart - $per_page : 0;
     my $nextPage = $m_nStart;
-    $nextPage = $per_page if ( $previousPage <= 0 );
-    my %template = ( path     => "$path/templates",
-                     style    => $m_sStyle,
-                     template => "pages.htm",
-                     name     => 'pages'
+    $nextPage = $per_page if ($previousPage <= 0);
+    my %template = (
+                    path     => "$path/templates",
+                    style    => $m_sStyle,
+                    template => "pages.htm",
+                    name     => 'pages'
     );
-    my @data = ( { name  => 'header',
-                   pages => '<a class ="menuLink3" href="'
-                       . ($mod_rewrite
-                          ? "/$m_hrAction.html&amp;$append"
-                          : "$ENV{SCRIPT_NAME}?action=$m_hrAction&amp;$append"
-                       )
-                       . '">'
-                       . $pages . '</a>',
-                 },
+    my @data = (
+                {
+                 name  => 'header',
+                 pages => '<a class ="menuLink3" href="'
+                   . ($mod_rewrite ? "/$m_hrAction.html&amp;$append" : "$ENV{SCRIPT_NAME}?action=$m_hrAction&amp;$append") . '">'
+                   . $pages . '</a>',
+                },
     );
-
     push @data,
-        {
+      {
         name => "previous",
         href => $mod_rewrite
         ? "/$previousPage/$nextPage/$m_hrAction.html&amp;$append"
         : "$ENV{SCRIPT_NAME}?von=$previousPage&amp;bis=$nextPage&amp;action=$m_hrAction&amp;$append",
-        }
-        if ( $m_nStart- $per_page >= 0 );
-
+      }
+      if ($m_nStart - $per_page >= 0);
     my $sites = 1;
-    if ( $length > 1 ) {
-        if ( $length % $per_page== 0 ) {
-            $sites = ( int( $length/ $per_page ) )* 10;
-        } else {
-            $sites = ( int( $length/ $per_page )+ 1 )* 10;
-        }
+
+    if ($length > 1) {
+        if   ($length % $per_page == 0) {$sites = (int($length / $per_page)) * 10;}
+        else                            {$sites = (int($length / $per_page) + 1) * 10;}
     }
-    my $beginn = $m_nStart/ $per_page;
-    $beginn = ( int( $m_nStart/ $per_page )+ 1 )* 10
-        unless ( $m_nStart % $per_page== 0 );
-    $beginn = 0 if ( $beginn < 0 );
-    my $b = ( $sites >= 10 ) ? $beginn : 0;
-    $b = ( $beginn- $per_page >= 0 ) ? $beginn- $per_page : 0;
-    my $h1 = ( ( $m_nStart- ( $per_page* 5 ) )/ $per_page );
-    $b = $h1 if ( $h1 > 0 );
-    my $m_nEnd = ( $sites >= 10 ) ? $b+ $per_page : $sites;
+    my $beginn = $m_nStart / $per_page;
+    $beginn = (int($m_nStart / $per_page) + 1) * 10 unless ($m_nStart % $per_page == 0);
+    $beginn = 0 if ($beginn < 0);
+    my $b = ($sites >= 10) ? $beginn : 0;
+    $b = ($beginn - $per_page >= 0) ? $beginn - $per_page : 0;
+    my $h1 = (($m_nStart - ($per_page * 5)) / $per_page);
+    $b = $h1 if ($h1 > 0);
+    my $m_nEnd = ($sites >= 10) ? $b + $per_page : $sites;
     $b      = int($b);
     $m_nEnd = int($m_nEnd);
 
-    while ( $b <= $m_nEnd ) {    # append links
-        my $c = $b* $per_page;
-        my $d = $c+ $per_page;
-        $d = $length if ( $d > $length );
-        my $svbis =
-            ($mod_rewrite)
-            ? "/$c/$d/$m_hrAction.html&amp;$append"
-            : "$ENV{SCRIPT_NAME}?von=$c&amp;bis=$d&amp;action=$m_hrAction&amp;$append";
-        push @data, ( $b* $per_page eq $m_nStart )
-            ? { name  => 'currentLinks',
-                href  => $svbis,
-                title => $b+ 1
-            }
-            : { name  => 'links',
-                href  => $svbis,
-                title => $b+ 1
-            };
-        last if ( $d eq $length );
+    while ($b <= $m_nEnd) {    # append links
+        my $c = $b * $per_page;
+        my $d = $c + $per_page;
+        $d = $length if ($d > $length);
+        my $svbis = ($mod_rewrite) ? "/$c/$d/$m_hrAction.html&amp;$append" : "$ENV{SCRIPT_NAME}?von=$c&amp;bis=$d&amp;action=$m_hrAction&amp;$append";
+        push @data, ($b * $per_page eq $m_nStart)
+          ? {
+             name  => 'currentLinks',
+             href  => $svbis,
+             title => $b + 1
+          }
+          : {
+             name  => 'links',
+             href  => $svbis,
+             title => $b + 1
+          };
+        last if ($d eq $length);
         $b++;
     }
-    my $v    = $m_nStart+ $per_page;
-    my $next = $v+ $per_page;
-    $next = $length if ( $next > $length );
+    my $v    = $m_nStart + $per_page;
+    my $next = $v + $per_page;
+    $next = $length if ($next > $length);
     my $esvbis =
-        ($mod_rewrite)
-        ? "/$v/$next/$m_hrAction.html&amp;$append"
-        : "$ENV{SCRIPT_NAME}?von=$v&amp;bis=$next&amp;action=$m_hrAction&amp;$append";
+      ($mod_rewrite) ? "/$v/$next/$m_hrAction.html&amp;$append" : "$ENV{SCRIPT_NAME}?von=$v&amp;bis=$next&amp;action=$m_hrAction&amp;$append";
     push @data,
-        { name => "next",
-          href => $esvbis
-        }
-        if ( $v < $length );    # apend the Next "button"
-    push @data, { name => 'footer' };    # apend the footer
-    return initTemplate( \%template, \@data );
+      {
+        name => "next",
+        href => $esvbis
+      } if ($v < $length);    # apend the Next "button"
+    push @data, {name => 'footer'};    # apend the footer
+    return initTemplate(\%template, \@data);
 }
 
 =head2  getSelf()
@@ -228,15 +218,12 @@ privat see L<HTML::Menu::TreeView>
 
 =cut
 
-sub getSelf {
-    return @_
-        if defined( $_[0] )
-            && ( !ref( $_[0] ) )
-            && ( $_[0] eq 'HTML::Menu::Pages' );
-    return ( defined( $_[0] )
-                 && ( ref( $_[0] ) eq 'HTML::Menu::Pages'
-                      || UNIVERSAL::isa( $_[0], 'HTML::Menu::Pages' ) )
-    ) ? @_ : ( $HTML::Menu::Pages::DefaultClass->new, @_ );
+sub getSelf
+{
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'HTML::Menu::Pages');
+    return (defined($_[0]) && (ref($_[0]) eq 'HTML::Menu::Pages' || UNIVERSAL::isa($_[0], 'HTML::Menu::Pages')))
+      ? @_
+      : ($HTML::Menu::Pages::DefaultClass->new, @_);
 }
 
 =head1 AUTHOR

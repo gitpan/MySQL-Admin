@@ -1,6 +1,7 @@
 package DBI::Library;
 use strict;
 use warnings;
+use utf8;
 use vars
     qw( $m_dbh $dsn $DefaultClass $m_hrSettings  @EXPORT_OK @ISA %functions $m_sStyle $m_nRight $tbl $driver $m_oDatabase $host $pass $m_sUser);
 $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
@@ -17,7 +18,7 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.44';
+$DBI::Library::VERSION = '0.47';
 $tbl                   = 'querys';
 $driver                = 'mysql';
 require Exporter;
@@ -163,8 +164,9 @@ sub initDB {
             PrintError => 0,
             AutoCommit => 1,
         }
-    ) or print "$DBI::Library::errs";
-
+        ) or print "$DBI::Library::errs";
+        $self->void("SET NAMES 'utf8_general_ci'");
+    
     if( !$install && $m_oDatabase eq 'LZE' ) {
         my @q = $self->fetch_array("select title from querys");
         $functions{$_} = $_ foreach (@q);

@@ -71,6 +71,10 @@ height:22px;
 vertical-align:top;
 padding-left:2px;
 }
+table.treeview16 {
+color:#000;
+white-space:nowrap;
+}
 td.columnsLastNodeBorder16 {
 border-left:1px;
 border-left-style:dashed;

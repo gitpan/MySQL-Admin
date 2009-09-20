@@ -93,7 +93,7 @@ function param(name){
        var suche = name+"="
        while (i< lo.length){
           if (lo.substring(i, i+suche.length)==suche){
-               var ende = lo.indexOf(";", i+suche.length);
+               var ende = lo.indexOf("&", i+suche.length);
                ende = (ende>-1) ? ende : lo.length;
                var cook = lo.substring(i+suche.length, ende);
                return unescape(cook);
