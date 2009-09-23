@@ -22,7 +22,6 @@ $VAR1 = {
           'floodtime' => 10,
           'session' => '/srv/www/cgi-bin/config/session.pl',
           'scriptAlias' => 'cgi-bin',
-          'sign' => 1,
           'admin' => {
                        'country' => 'Deutschland',
                        'firstname' => 'Dirk',
@@ -43,11 +42,11 @@ $VAR1 = {
                        'jabber' => ''
                      },
           'language' => 'en',
-          'version' => '0.5',
+          'version' => '0.51',
           'cgi' => {
                      'bin' => '/srv/www/cgi-bin',
                      'style' => 'lze',
-                     'serverName' => 'localhost',
+                     'serverName' => 'http://localhost',
                      'cookiePath' => '/',
                      'title' => 'MySQL::Admin',
                      'mod_rewrite' => '1',
@@ -74,7 +73,8 @@ $VAR1 = {
           'news' => {
                       'maxlength' => 5000,
                       'right' => 5,
-                      'messages' => 10
+                      'messages' => 10,
+                      'captcha' => 5
                     }
         };
 $m_hrSettings =$VAR1;

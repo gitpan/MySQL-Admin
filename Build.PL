@@ -271,7 +271,7 @@ unless ($@) {
 
 $inctance->{properties}{htd}         = $m_hrSettings->{cgi}{DocumentRoot}  ? $m_hrSettings->{cgi}{DocumentRoot}  : '/srv/www//htdocs';
 $inctance->{properties}{cgi}         = $m_hrSettings->{cgi}{bin}           ? $m_hrSettings->{cgi}{bin}           : '/srv/www/cgi-bin';
-$inctance->{properties}{server}      = $m_hrSettings->{cgi}{serverName}    ? $m_hrSettings->{cgi}{serverName}    : 'localhost';
+$inctance->{properties}{server}      = $m_hrSettings->{cgi}{serverName}    ? $m_hrSettings->{cgi}{serverName}    : 'http://localhost';
 $inctance->{properties}{alias}       = $m_hrSettings->{cgi}{alias}         ? $m_hrSettings->{cgi}{alias}         : 'cgi-bin';
 $inctance->{properties}{mod_rewrite} = $m_hrSettings->{cgi}{mod_rewrite}   ? $m_hrSettings->{cgi}{mod_rewrite}   : 0;
 $inctance->{properties}{dbname}      = $m_hrSettings->{database}{name}     ? $m_hrSettings->{database}{name}     : 'LZE';
@@ -385,7 +385,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.5',
+    version   => '0.51',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",
@@ -406,7 +406,8 @@ $m_hrSettings = {
     news => {
         maxlength => 5000,
         messages  => 10,
-        right     => 5
+        right     => 5,
+        captcha     => 5
     },
     size      => 16,
     htmlright => 2,
@@ -415,7 +416,6 @@ $m_hrSettings = {
         owner => $inctance->{properties}{owner},
         chmod => $inctance->{properties}{chmod}
     },
-    sign => 1,
     floodtime => 10,
 };
 saveSettings("$cwd/cgi-bin/config/settings.pl");

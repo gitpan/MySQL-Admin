@@ -66,7 +66,6 @@ htdocs/images/minus.png
 htdocs/images/plus.png
 htdocs/javascript/content.js
 htdocs/javascript/editor.js
-htdocs/javascript/search.js
 htdocs/javascript/tabwidget.js
 htdocs/javascript/window.js
 htdocs/robots.txt
@@ -106,7 +105,6 @@ htdocs/style/lze/16/mimetypes/html.png
 htdocs/style/lze/16/mimetypes/image.png
 htdocs/style/lze/16/mimetypes/info.png
 htdocs/style/lze/16/mimetypes/java.png
-htdocs/style/lze/16/mimetypes/link.gif
 htdocs/style/lze/16/mimetypes/link_overlay.png
 htdocs/style/lze/16/mimetypes/log.png
 htdocs/style/lze/16/mimetypes/man.png
@@ -351,7 +349,6 @@ htdocs/style/lze/window/str.jpg
 htdocs/style/lze/window/undockwin.png
 htdocs/style/lze/window/undockwino.png
 lib/CGI/QuickFormR.pm
-lib/CGI/QuickFormR.pm.ERR
 lib/DBI/Library.pm
 lib/DBI/Library/Database.pm
 lib/HTML/Editor.pm
@@ -388,5 +385,6 @@ t/13-Window-fo.t
 t/14-tabwidget.t
 t/15-lze.t
 t/content.pl
+t/session.pl
 t/settings.pl
 todo

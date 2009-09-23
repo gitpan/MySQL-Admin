@@ -8,9 +8,9 @@ use CGI qw( :standard :html3 );
 
 #use CGI::Carp qw( fatalsToBrowser ) ;
 use vars qw(
-  $VERSION @ISA @EXPORT @EXPORT_OK
-  %Translate
-  $output
+    $VERSION @ISA @EXPORT @EXPORT_OK
+    %Translate
+    $output
 );
 $VERSION = '1.93';
 use Exporter();
@@ -21,33 +21,33 @@ use Exporter();
 @EXPORT_OK = qw( colour color );
 *color     = \&colour;
 sub colour  {qq{<span style="color:$_[0]">$_[1]</span>}}
-sub GetHtml {return $output}
+sub GetHtml { return $output }
 
-sub show_form
-{
+sub show_form {
     my %form = (
-        -LANGUAGE         => 'en',                                                   # Language to use for default messages
-        -USER_REQUIRED    => undef,
-        -USER_INVALID     => undef,
-        -REQUIRED_HTML    => '<span style="font-weight:bold;color:BLUE">+</span>',
-        -INVALID_HTML     => '<span style="font-weight:bold;color:RED">*</span>',
-        -TITLE            => 'Quick Form',                                           # Default page title and heading
-        -INTRO            => undef,
-        -HEADER           => undef,
-        -FOOTER           => undef,
-        -NAME             => '',
-        -JSCRIPT          => {},
-        -ONSUBMIT         => '',
-        -ACCEPT           => \&_on_valid_form,
-        -VALIDATE         => undef,                                                  # Call this to validate entire form
-        -SIZE             => undef,
-        -MAXLENGTH        => undef,
-        -ROWS             => undef,
-        -COLUMNS          => undef,
-        -BORDER           => 0,
-        -CHECK            => 1,
-        -SPACE            => 0,
-        -MULTI_COLUMN     => 0,
+        -LANGUAGE      => 'en',    # Language to use for default messages
+        -USER_REQUIRED => undef,
+        -USER_INVALID  => undef,
+        -REQUIRED_HTML =>
+            '<span style="font-weight:bold;color:BLUE">+</span>',
+        -INVALID_HTML => '<span style="font-weight:bold;color:RED">*</span>',
+        -TITLE        => 'Quick Form',     # Default page title and heading
+        -INTRO        => undef,
+        -HEADER       => undef,
+        -FOOTER       => undef,
+        -NAME         => '',
+        -JSCRIPT      => {},
+        -ONSUBMIT     => '',
+        -ACCEPT       => \&_on_valid_form,
+        -VALIDATE     => undef,            # Call this to validate entire form
+        -SIZE         => undef,
+        -MAXLENGTH    => undef,
+        -ROWS         => undef,
+        -COLUMNS      => undef,
+        -BORDER       => 0,
+        -CHECK        => 1,
+        -SPACE        => 0,
+        -MULTI_COLUMN => 0,
         -STYLE_FIELDNAME  => '',
         -STYLE_FIELDVALUE => '',
         -STYLE_BUTTONS    => '',
@@ -55,135 +55,170 @@ sub show_form
         -STYLE_DESC       => '',
         -STYLE_WHY        => '',
         -TABLE_OPTIONS    => '',
-        -FIELDS           => [{-LABEL => 'No Fields Specified'}],
-        -BUTTONS          => [{-name => 'Submit'}],                                  # Default button
+        -FIELDS           => [ { -LABEL => 'No Fields Specified' } ],
+        -BUTTONS => [ { -name => 'Submit' } ],    # Default button
         @_,
     );
 
     # Backward compatibility.
     $form{-LANGUAGE} = 'en' if $form{-LANGUAGE} eq 'english';
     $form{-BUTTONS}[0]{-name} = $form{-BUTTONLABEL} if $form{-BUTTONLABEL};
-    if ($form{-LANGUAGE} eq 'user') {
-        $Translate{'user'}{-REQUIRED} = $form{-USER_REQUIRED} || $Translate{'en'}{-REQUIRED};
-        $Translate{'user'}{-INVALID}  = $form{-USER_INVALID}  || $Translate{'en'}{-INVALID};
+    if ( $form{-LANGUAGE} eq 'user' ) {
+        $Translate{'user'}{-REQUIRED} = $form{-USER_REQUIRED}
+            || $Translate{'en'}{-REQUIRED};
+        $Translate{'user'}{-INVALID} = $form{-USER_INVALID}
+            || $Translate{'en'}{-INVALID};
     }
-    $Translate{$form{-LANGUAGE}}{-REQUIRED} =~ s/~R~/$form{-REQUIRED_HTML}/go;
-    $Translate{$form{-LANGUAGE}}{-INVALID}  =~ s/~I~/$form{-INVALID_HTML}/go;
+    $Translate{ $form{-LANGUAGE} }{-REQUIRED} =~
+        s/~R~/$form{-REQUIRED_HTML}/go;
+    $Translate{ $form{-LANGUAGE} }{-INVALID} =~ s/~I~/$form{-INVALID_HTML}/go;
     $form{-REQUIRED} = 0;    # Assume no fields are required.
     foreach my $m_sStyle (qw( FIELDNAME FIELDVALUE BUTTONS DESC WHY )) {
-        $form{"-STYLE_$m_sStyle"} = qq{ $form{"-STYLE_$m_sStyle"}} if $form{"-STYLE_$m_sStyle"};
+        $form{"-STYLE_$m_sStyle"} = qq{ $form{"-STYLE_$m_sStyle"}}
+            if $form{"-STYLE_$m_sStyle"};
     }
-    $form{"-STYLE_BUTTONS"} = 'center' if $form{"-STYLE_BUTTONS"} =~ /^ CENT(?:ER|RE)$/oi;
+    $form{"-STYLE_BUTTONS"} = 'center'
+        if $form{"-STYLE_BUTTONS"} =~ /^ CENT(?:ER|RE)$/oi;
     $form{-TABLE_OPTIONS} = " $form{-TABLE_OPTIONS}" if $form{-TABLE_OPTIONS};
     $form{-MULTIPART} = 0;    # Assume single part forms
     my $i = 0;
 
-    foreach my $fieldref (@{$form{-FIELDS}}) {
+    foreach my $fieldref ( @{ $form{-FIELDS} } ) {
 
         # We have to write back to the original data, $fieldref only points to
         # a copy.
         foreach my $m_sStyle (qw( ROW FIELDNAME FIELDVALUE DESC )) {
-            my $value = $form{-FIELDS}[$i]{"-STYLE_$m_sStyle"} || $form{"-STYLE_$m_sStyle"};
+            my $value = $form{-FIELDS}[$i]{"-STYLE_$m_sStyle"}
+                || $form{"-STYLE_$m_sStyle"};
             $form{-FIELDS}[$i]{"-STYLE_$m_sStyle"} = $value ? " $value" : '';
         }
-        $form{-FIELDS}[$i]{-STYLE_FIELDVALUE} .= qq{ colspan="$form{-FIELDS}[$i]{-COLSPAN}"}
-          if $form{-FIELDS}[$i]{-COLSPAN} and $form{-MULTI_COLUMN};    #"
-        $form{-FIELDS}[$i]{-LABEL} = $fieldref->{-name}  unless $fieldref->{-LABEL};
-        $form{-FIELDS}[$i]{-name}  = $fieldref->{-LABEL} unless $fieldref->{-name};
-        $form{-FIELDS}[$i]{-TYPE}  = 'textfield'         unless $fieldref->{-TYPE};
+        $form{-FIELDS}[$i]{-STYLE_FIELDVALUE} .=
+            qq{ colspan="$form{-FIELDS}[$i]{-COLSPAN}"}
+            if $form{-FIELDS}[$i]{-COLSPAN} and $form{-MULTI_COLUMN};    #"
+        $form{-FIELDS}[$i]{-LABEL} = $fieldref->{-name}
+            unless $fieldref->{-LABEL};
+        $form{-FIELDS}[$i]{-name} = $fieldref->{-LABEL}
+            unless $fieldref->{-name};
+        $form{-FIELDS}[$i]{-TYPE} = 'textfield' unless $fieldref->{-TYPE};
         $form{-MULTIPART} = 1 if $form{-FIELDS}[$i]{-TYPE} eq 'filefield';
-        $form{-FIELDS}[$i]{-START_ROW} = 1 if $i == 0                  or $form{-FIELDS}[$i - 1]{-END_ROW} or not $form{-MULTI_COLUMN};
-        $form{-FIELDS}[$i]{-END_ROW}   = 1 if $i == $#{$form{-FIELDS}} or not $form{-MULTI_COLUMN};
-        $form{-REQUIRED}               = 1 if $fieldref->{-REQUIRED};
+        $form{-FIELDS}[$i]{-START_ROW} = 1
+            if $i== 0
+                or $form{-FIELDS}[ $i- 1 ]{-END_ROW}
+                or not $form{-MULTI_COLUMN};
+        $form{-FIELDS}[$i]{-END_ROW} = 1
+            if $i== $#{ $form{-FIELDS} }
+                or not $form{-MULTI_COLUMN};
+        $form{-REQUIRED} = 1 if $fieldref->{-REQUIRED};
 
-        if ($form{-FIELDS}[$i]{-TYPE} eq 'textfield') {
-            if ($form{-SIZE}      and not $fieldref->{-size})      {$form{-FIELDS}[$i]{-size}      = $form{-SIZE};}
-            if ($form{-MAXLENGTH} and not $fieldref->{-maxlength}) {$form{-FIELDS}[$i]{-maxlength} = $form{-MAXLENGTH};}
-        } elsif ($form{-FIELDS}[$i]{-TYPE} eq 'textarea') {
-            if ($form{-ROWS}    and not $fieldref->{-rows})    {$form{-FIELDS}[$i]{-rows}    = $form{-ROWS};}
-            if ($form{-COLUMNS} and not $fieldref->{-columns}) {$form{-FIELDS}[$i]{-columns} = $form{-COLUMNS};}
+        if ( $form{-FIELDS}[$i]{-TYPE} eq 'textfield' ) {
+            if ( $form{-SIZE} and not $fieldref->{-size} ) {
+                $form{-FIELDS}[$i]{-size} = $form{-SIZE};
+            }
+            if ( $form{-MAXLENGTH} and not $fieldref->{-maxlength} ) {
+                $form{-FIELDS}[$i]{-maxlength} = $form{-MAXLENGTH};
+            }
+        } elsif ( $form{-FIELDS}[$i]{-TYPE} eq 'textarea' ) {
+            if ( $form{-ROWS} and not $fieldref->{-rows} ) {
+                $form{-FIELDS}[$i]{-rows} = $form{-ROWS};
+            }
+            if ( $form{-COLUMNS} and not $fieldref->{-columns} ) {
+                $form{-FIELDS}[$i]{-columns} = $form{-COLUMNS};
+            }
         }
         $i++;
     }
-    if   ($form{-CHECK} and param()) {&_check_form(\%form);}
-    else                             {&_show_form(\%form);}
+    if   ( $form{-CHECK} and param() ) { &_check_form( \%form ); }
+    else                               { &_show_form( \%form ); }
 }
 
-sub _check_form
-{
+sub _check_form {
     my $formref = shift;
     $formref->{-INVALID} = 0;
     my %field;
     my $i = 0;
-    foreach my $fieldref (@{$formref->{-FIELDS}}) {
+    foreach my $fieldref ( @{ $formref->{-FIELDS} } ) {
 
         # We have to write back to the original data, $fieldref only points to
         # a copy.
-        my ($valid, $why) = defined $fieldref->{-VALIDATE} ? &{$fieldref->{-VALIDATE}}(param($fieldref->{-name})) : (1, '');
-        $formref->{-FIELDS}[$i]{-INVALID} = 1, $formref->{-FIELDS}[$i]{-WHY} = $valid ? undef : "<span$formref->{-STYLE_WHY}>$why</span>",
-          $formref->{-INVALID}++
-          if ($fieldref->{-REQUIRED} and not param($fieldref->{-name}))
-          or not $valid;
-        $field{$fieldref->{-name}} = param($fieldref->{-name});
+        my ( $valid, $why ) =
+            defined $fieldref->{-VALIDATE}
+            ? &{ $fieldref->{-VALIDATE} }( param( $fieldref->{-name} ) )
+            : ( 1, '' );
+        $formref->{-FIELDS}[$i]{-INVALID} = 1,
+            $formref->{-FIELDS}[$i]{-WHY} =
+            $valid ? undef : "<span$formref->{-STYLE_WHY}>$why</span>",
+            $formref->{-INVALID}++
+            if ( $fieldref->{-REQUIRED} and not param( $fieldref->{-name} ) )
+            or not $valid;
+        $field{ $fieldref->{-name} } = param( $fieldref->{-name} );
         $i++;
     }
-    if (not $formref->{-INVALID} and defined $formref->{-VALIDATE}) {
+    if ( not $formref->{-INVALID} and defined $formref->{-VALIDATE} ) {
 
         # If all the individual parts are valid, check that the record as a
         # whole is valid. The parameters are presented in a name=>value hash.
-        my ($valid, $why) = &{$formref->{-VALIDATE}}(%field);
+        my ( $valid, $why ) = &{ $formref->{-VALIDATE} }(%field);
         $formref->{-INVALID} = not $valid;
         $formref->{-WHY}     = $why;
     }
-    if ($formref->{-INVALID}) {&_show_form($formref);}
+    if ( $formref->{-INVALID} ) { &_show_form($formref); }
     else {
 
         # Clean any fields that have a clean routine specified.
-        foreach my $fieldref (@{$formref->{-FIELDS}}) {
-            param($fieldref->{-name}, &{$fieldref->{-CLEAN}}(param($fieldref->{-name}))) if defined $fieldref->{-CLEAN};
+        foreach my $fieldref ( @{ $formref->{-FIELDS} } ) {
+            param( $fieldref->{-name},
+                   &{ $fieldref->{-CLEAN} }( param( $fieldref->{-name} ) ) )
+                if defined $fieldref->{-CLEAN};
         }
-        &{$formref->{-ACCEPT}};
+        &{ $formref->{-ACCEPT} };
     }
 }
 
-sub _show_form
-{
+sub _show_form {
     my $formref = shift;
     my $invalid = delete $formref->{-INVALID};
     my $why     = delete $formref->{-WHY};
     my $n       = delete $formref->{-SPACE} ? "\n" : '';
-    if ($formref->{-HEADER}) {
-        if   (ref $formref->{-HEADER} eq 'CODE') {&{$formref->{-HEADER}};}
-        else                                     {$output .= "$formref->{-HEADER}$n";}
+    if ( $formref->{-HEADER} ) {
+        if ( ref $formref->{-HEADER} eq 'CODE' ) { &{ $formref->{-HEADER} }; }
+        else { $output .= "$formref->{-HEADER}$n"; }
     } else {
         $output .= header()
-          . start_html(-title  => $formref->{-TITLE},
-                       -script => $formref->{-JSCRIPT})
-          . $n
-          . h3($formref->{-TITLE})
-          . $n
-          . p($formref->{-INTRO} || $Translate{$formref->{-LANGUAGE}}{-INTRO})
-          . $n;
+            . start_html( -title  => $formref->{-TITLE},
+                          -script => $formref->{-JSCRIPT} )
+            . $n
+            . h3( $formref->{-TITLE} )
+            . $n
+            . p(    $formref->{-INTRO}
+                 || $Translate{ $formref->{-LANGUAGE} }{-INTRO} )
+            . $n;
     }
-    $output .= "<span$formref->{-STYLE_WHY}>$why</span><br />$n" if $invalid and defined $why;
-    $output .= "$Translate{$formref->{-LANGUAGE}}{-REQUIRED}$n"  if $formref->{-REQUIRED};
-    $output .= " $Translate{$formref->{-LANGUAGE}}{-INVALID}$n"  if $invalid and not defined $why;
-    my $m_nStart_form = $formref->{-MULTIPART} ? \&CGI::start_multipart_form : \&CGI::start_form;
-    if (defined($ENV{'GATEWAY_INTERFACE'}) and ($ENV{'GATEWAY_INTERFACE'} =~ /^CGI-Perl/)) {
+    $output .= "<span$formref->{-STYLE_WHY}>$why</span><br />$n"
+        if $invalid and defined $why;
+    $output .= "$Translate{$formref->{-LANGUAGE}}{-REQUIRED}$n"
+        if $formref->{-REQUIRED};
+    $output .= " $Translate{$formref->{-LANGUAGE}}{-INVALID}$n"
+        if $invalid and not defined $why;
+    my $m_nStart_form =
+        $formref->{-MULTIPART}
+        ? \&CGI::start_multipart_form
+        : \&CGI::start_form;
+    if ( defined( $ENV{'GATEWAY_INTERFACE'} )
+         and ( $ENV{'GATEWAY_INTERFACE'} =~ /^CGI-Perl/ ) )
+    {
         $output .= &$m_nStart_form(
-                                   -name     => $formref->{-NAME},
-                                   -onSubmit => $formref->{-ONSUBMIT},
-                                   -action   => (script_name() || '') . (path_info() || '')
+                    -name     => $formref->{-NAME},
+                    -onSubmit => $formref->{-ONSUBMIT},
+                    -action => ( script_name() || '' ) . ( path_info() || '' )
         ) . $n;
     } else {
-        $output .= &$m_nStart_form(
-                                   -name     => $formref->{-NAME},
-                                   -onSubmit => $formref->{-ONSUBMIT}
+        $output .= &$m_nStart_form( -name     => $formref->{-NAME},
+                                    -onSubmit => $formref->{-ONSUBMIT}
         ) . $n;
     }
     $output .= qq{$n<table border="0">$n};    #"
     my @hidden;
-    foreach my $fieldref (@{$formref->{-FIELDS}}) {
+    foreach my $fieldref ( @{ $formref->{-FIELDS} } ) {
         my %field = %$fieldref;
         my $type  = delete $field{-TYPE};
         push @hidden, $fieldref if $type eq 'hidden';
@@ -199,16 +234,19 @@ sub _show_form
         my $descstyle  = delete $field{-STYLE_DESC};
         my $m_nEndrow  = delete $field{-END_ROW};
 
-        if ($field{-HEADLINE}) {
+        if ( $field{-HEADLINE} ) {
             $field{-COLSPAN} ||= 2;
             $namestyle .= qq{ colspan="$field{-COLSPAN}"};
         }
         $output .= qq{<tr$rowstyle>$n} if delete $field{-START_ROW};
         $output .= qq{<td$namestyle>$field{-LABEL}$required$invalid</td>$n};
-        unless ($field{-HEADLINE}) {
+        unless ( $field{-HEADLINE} ) {
             $output .= qq{<td$valuestyle>};
-            $output .= "<span$descstyle>$field{-DESC}</span><br />" if $field{-DESC};
-            delete @field{-LABEL, -VALIDATE, -CLEAN, -SIZE, -MAXLENGTH, -ROWS, -COLUMNS, -COLSPAN};
+            $output .= "<span$descstyle>$field{-DESC}</span><br />"
+                if $field{-DESC};
+            delete @field{
+                -LABEL,     -VALIDATE, -CLEAN,   -SIZE,
+                -MAXLENGTH, -ROWS,     -COLUMNS, -COLSPAN };
             no strict "refs";
             local $^W = 0;    # Switch off moans about undefined values.
             $output .= &{$type}(%field);
@@ -220,33 +258,46 @@ sub _show_form
         }
         $output .= "</tr>$n" if $m_nEndrow;
     }
-    $output .= "<tr><td colspan=\"2\">$n" . (($formref->{-STYLE_BUTTONS} eq 'center') ? '<center>' : "<div$formref->{-STYLE_BUTTONS}>");
-    foreach my $fieldref (@{$formref->{-BUTTONS}}) {
-        if ($fieldref->{-DEFAULTS}) {$output .= defaults($fieldref->{-name} || 'Clear') . " ";}
-        else                        {$output .= $n . submit(%$fieldref) . " ";}
+    $output .=
+        "<tr><td colspan=\"2\">$n"
+        . ( ( $formref->{-STYLE_BUTTONS} eq 'center' )
+            ? '<center>'
+            : "<div$formref->{-STYLE_BUTTONS}>" );
+    foreach my $fieldref ( @{ $formref->{-BUTTONS} } ) {
+        if ( $fieldref->{-DEFAULTS} ) {
+            $output .= defaults( $fieldref->{-name} || 'Clear' ) . " ";
+        } else {
+            $output .= $n . submit(%$fieldref) . " ";
+        }
     }
-    $output .= (($formref->{-STYLE_BUTTONS} eq 'center') ? '</center></td></tr></table>' : '</div></td></tr></table>');
+    $output .=
+        ( ( $formref->{-STYLE_BUTTONS} eq 'center' )
+          ? '</center></td></tr></table>'
+          : '</div></td></tr></table>' );
     foreach my $fieldref (@hidden) {
         my %field = %$fieldref;
-        delete @field{-LABEL, -VALIDATE, -CLEAN, -SIZE, -MAXLENGTH, -ROWS, -COLUMNS, -TYPE, -REQUIRED, -INVALID, -WHY};
+        delete @field{
+            -LABEL,     -VALIDATE, -CLEAN,   -SIZE,
+            -MAXLENGTH, -ROWS,     -COLUMNS, -TYPE,
+            -REQUIRED,  -INVALID,  -WHY };
         $output .= $n . hidden(%field);
     }
     $output .= $n . &end_form() . $n;
-    if ($formref->{-FOOTER}) {
-        if   (ref $formref->{-FOOTER} eq 'CODE') {&{$formref->{-FOOTER}};}
-        else                                     {$output .= "$formref->{-FOOTER}$n";}
+    if ( $formref->{-FOOTER} ) {
+        if ( ref $formref->{-FOOTER} eq 'CODE' ) { &{ $formref->{-FOOTER} }; }
+        else { $output .= "$formref->{-FOOTER}$n"; }
     } else {
         $output .= hr . end_html;
     }
 }
 
-sub _on_valid_form
-{
+sub _on_valid_form {
 
     # This is included for completeness - if you don't supply your own your
     # form will simply throw away the user's data!
     return header, start_html('Quick Form'), h3('Quick Form'),
-      p("You must define your own &amp;on_valid_form subroutine, otherwise " . "the data will simply be thrown away."), end_html,;
+        p("You must define your own &amp;on_valid_form subroutine, otherwise "
+              . "the data will simply be thrown away." ), end_html,;
 
     # If using pure mod_perl you should add:
     #   Apache::Constants::OK ;
@@ -257,36 +308,45 @@ sub _on_valid_form
 
 BEGIN {
     %Translate = (
-                  'cy' => {
-                           -INTRO    => "Cofnodwch y wybodaeth.",
-                           -REQUIRED => "Mae angen llenwi'r adrannau sydd wedi eu clustnodi " . "gyda ~R~.",
-                           -INVALID  => "Mae'r adrannau sydd wedi eu clustnodi gyda ~I~ " . "yn cynnwys camgymeriadau neu yn wag.",
-                  },
-                  'de' => {
-                           -INTRO    => "Tragen Sie bitte die Informationen ein.",
-                           -REQUIRED => "Bitte mindestens die mit ~R~ " . "gekennzeichneten Felder ausf&uuml;llen.",
-                           -INVALID  => "Die mit ~I~ gekennzeichneten Felder " . "enthalten Fehler oder sind leer.",
-                  },
-                  'en' => {
-                           -INTRO    => "Please enter the information.",
-                           -REQUIRED => "Data entry fields marked with ~R~ are required.",
-                           -INVALID  => "Data entry fields marked with ~I~ contain errors " . "or are empty.",
-                  },
-                  'es' => {
-                           -INTRO    => "Favor de introducir la informaci&oacute;n.",
-                           -REQUIRED => "Los campos marcados con ~R~ son requeridos.",
-                           -INVALID  => "Los campos marcados con ~I~ contienen " . "errores o est&aacute;n en blanco.",
-                  },
-                  'fr' => {
-                         -INTRO    => "Veuillez &eacute;crire l'information.",
-                         -REQUIRED => "Des zones de saisie de donn&eacute;es " . "identifi&eacute;es par " . "~R~ sont exig&eacute;es.",
-                         -INVALID => "Des zones de saisie de donn&eacute;es " . "identifi&eacute;es par ~I~ contenez les " . "erreurs ou soyez vide.",
-                  },
-                  'he' => {
-                           -INTRO    => "�� ��� ������",
-                           -REQUIRED => " ���� ���� ������� � ~R~ ",
-                           -INVALID  => " ���� ������ �� ����� ������� � ~I~",
-                  },
+        'cy' => {
+            -INTRO    => "Cofnodwch y wybodaeth.",
+            -REQUIRED => "Mae angen llenwi'r adrannau sydd wedi eu clustnodi "
+                . "gyda ~R~.",
+            -INVALID => "Mae'r adrannau sydd wedi eu clustnodi gyda ~I~ "
+                . "yn cynnwys camgymeriadau neu yn wag.",
+        },
+        'de' => { -INTRO    => "Tragen Sie bitte die Informationen ein.",
+                  -REQUIRED => "Bitte mindestens die mit ~R~ "
+                      . "gekennzeichneten Felder ausf&uuml;llen.",
+                  -INVALID => "Die mit ~I~ gekennzeichneten Felder "
+                      . "enthalten Fehler oder sind leer.",
+        },
+        'en' => {
+               -INTRO    => "Please enter the information.",
+               -REQUIRED => "Data entry fields marked with ~R~ are required.",
+               -INVALID => "Data entry fields marked with ~I~ contain errors "
+                   . "or are empty.",
+        },
+        'es' => { -INTRO    => "Favor de introducir la informaci&oacute;n.",
+                  -REQUIRED => "Los campos marcados con ~R~ son requeridos.",
+                  -INVALID  => "Los campos marcados con ~I~ contienen "
+                      . "errores o est&aacute;n en blanco.",
+        },
+        'fr' => { -INTRO    => "Veuillez &eacute;crire l'information.",
+                  -REQUIRED => "Des zones de saisie de donn&eacute;es "
+                      . "identifi&eacute;es par "
+                      . "~R~ sont exig&eacute;es.",
+                  -INVALID => "Des zones de saisie de donn&eacute;es "
+                      . "identifi&eacute;es par ~I~ contenez les "
+                      . "erreurs ou soyez vide.",
+        },
+        'he' => {
+            -INTRO => "�� ��� ������",
+            -REQUIRED =>
+                " ���� ���� ������� � ~R~ ",
+            -INVALID =>
+                " ���� ������ �� ����� ������� � ~I~",
+        },
     );
 }
 1;

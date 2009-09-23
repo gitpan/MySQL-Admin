@@ -1,4 +1,12 @@
-Revision history for Perl MySQL::Admin 0.49
+Revision history for Perl MySQL::Admin 0.51
+0.51
+     a few fixes.
+     %ALIAS% htaccess
+     saveedit news.pl
+     exec sql form.
+     referer verif.pl
+     $ACCEPT_LANGUAGE editTree.pl
+     search.js droped
 0.49
      clean html (pages.html fixed)
 0.48

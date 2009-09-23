@@ -3,16 +3,18 @@ use Template::Quick;
 use strict;
 use warnings;
 require Exporter;
-use vars qw($DefaultClass @EXPORT  @ISA  $login $m_nRight $htmlright $template $zoom);
+use vars
+    qw($DefaultClass @EXPORT  @ISA  $login $m_nRight $htmlright $template $zoom $query);
 our $m_sStyle = 'lze';
 our $m_sTitle = '';
 our $m_nSize  = 16;
 our $server;
 @MySQL::Admin::Main::EXPORT_OK   = qw(all initMain Header Footer);
-%MySQL::Admin::Main::EXPORT_TAGS = ('all' => [qw(initMain Header Footer)]);
+%MySQL::Admin::Main::EXPORT_TAGS = ( 'all' => [qw(initMain Header Footer)] );
 @MySQL::Admin::Main::ISA         = qw( Exporter Template::Quick);
-$MySQL::Admin::Main::VERSION     = '0.5';
-$DefaultClass                    = 'MySQL::Admin::Main' unless defined $MySQL::Admin::Main::DefaultClass;
+$MySQL::Admin::Main::VERSION     = '0.51';
+$DefaultClass                    = 'MySQL::Admin::Main'
+    unless defined $MySQL::Admin::Main::DefaultClass;
 
 =head1 NAME
 
@@ -38,9 +40,8 @@ L<MySQL::Admin::GUI> L<Template::Quick>
 
 =cut
 
-sub new
-{
-    my ($class, @initializer) = @_;
+sub new {
+    my ( $class, @initializer ) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     $self->initMain(@initializer) if (@initializer);
@@ -69,61 +70,57 @@ sub new
 
 =cut
 
-sub initMain
-{
-    my ($self, @p) = getSelf(@_);
+sub initMain {
+    my ( $self, @p ) = getSelf(@_);
     my $hash = $p[0];
     $server    = $hash->{server};
     $m_sStyle  = defined $hash->{style} ? $hash->{style} : 'lze';
     $m_nSize   = defined $hash->{size} ? $hash->{size} : 16;
     $m_sTitle  = defined $hash->{title} ? $hash->{title} : '';
     $zoom      = defined $hash->{zoom} ? $hash->{zoom} : '';
+    $query     = defined $hash->{query} ? $hash->{query} : '';
     $login     = defined $hash->{login} ? $hash->{login} : '';
     $m_nRight  = defined $hash->{right} ? $hash->{right} : 0;
     $htmlright = defined $hash->{htmlright} ? $hash->{htmlright} : 2;
     $template  = defined $hash->{template} ? $hash->{template} : "index.htm";
-    my %template = (
-                    path     => $hash->{path},
-                    style    => $m_sStyle,
-                    template => $template,
+    my %template = ( path     => $hash->{path},
+                     style    => $m_sStyle,
+                     template => $template,
     );
-    $self->SUPER::initTemplate(\%template);
+    $self->SUPER::initTemplate( \%template );
 }
 
 =head2 Header()
 
 =cut
 
-sub Header
-{
-    my ($self, @p) = getSelf(@_);
-    my %header = (
-                  name      => 'bodyHeader',
-                  size      => $m_nSize,
-                  server    => $server,
-                  style     => $m_sStyle,
-                  title     => $m_sTitle,
-                  login     => $login,
-                  right     => $m_nRight,
-                  htmlright => $htmlright,
-                  zoom      => $zoom
+sub Header {
+    my ( $self, @p ) = getSelf(@_);
+    my %header = ( name      => 'bodyHeader',
+                   size      => $m_nSize,
+                   server    => $server,
+                   style     => $m_sStyle,
+                   title     => $m_sTitle,
+                   login     => $login,
+                   right     => $m_nRight,
+                   htmlright => $htmlright,
+                   zoom      => $zoom,
+                   query     => $query,
     );
-    $self->SUPER::appendHash(\%header);
+    $self->SUPER::appendHash( \%header );
 }
 
 =head2 Footer()
 
 =cut
 
-sub Footer
-{
-    my ($self, @p) = getSelf(@_);
-    my %footer = (
-                  name  => 'bodyFooter',
-                  style => $m_sStyle,
-                  zoom  => $zoom
+sub Footer {
+    my ( $self, @p ) = getSelf(@_);
+    my %footer = ( name  => 'bodyFooter',
+                   style => $m_sStyle,
+                   zoom  => $zoom
     );
-    $self->SUPER::appendHash(\%footer);
+    $self->SUPER::appendHash( \%footer );
 }
 
 =head1 PRIVAT
@@ -134,12 +131,17 @@ see L<HTML::Menu::TreeView>
 
 =cut
 
-sub getSelf
-{
-    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'MySQL::Admin::Main');
-    return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin::Main' || UNIVERSAL::isa($_[0], 'MySQL::Admin::Main')))
-      ? @_
-      : ($MySQL::Admin::Main::DefaultClass->new, @_);
+sub getSelf {
+    return @_
+        if defined( $_[0] )
+            && ( !ref( $_[0] ) )
+            && ( $_[0] eq 'MySQL::Admin::Main' );
+    return ( defined( $_[0] )
+                 && ( ref( $_[0] ) eq 'MySQL::Admin::Main'
+                      || UNIVERSAL::isa( $_[0], 'MySQL::Admin::Main' ) )
+        )
+        ? @_
+        : ( $MySQL::Admin::Main::DefaultClass->new, @_ );
 }
 
 =head1 AUTHOR
