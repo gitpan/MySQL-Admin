@@ -6,7 +6,7 @@ use vars qw( $session $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Session::EXPORT = qw(loadSession saveSession $session);
 use MySQL::Admin::Config;
 @MySQL::Admin::Session::ISA     = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Session::VERSION = '0.51';
+$MySQL::Admin::Session::VERSION = '0.52';
 $DefaultClass                   = 'MySQL::Admin::Session'
     unless defined $MySQL::Admin::Session::DefaultClass;
 $defaultconfig = '%CONFIG%';
@@ -78,4 +78,22 @@ sub getSelf {
         ? @_
         : ( $MySQL::Admin::Session::DefaultClass->new, @_ );
 }
+
+=head1 AUTHOR
+
+Dirk Lindner <lze@cpan.org>
+
+=head1 LICENSE
+
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
+
+This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU Lesser General Public License
+as published by the Free Software Foundation;
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Lesser General Public License for more details.
+
+=cut
 1;

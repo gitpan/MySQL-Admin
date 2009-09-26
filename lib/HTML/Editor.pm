@@ -31,7 +31,7 @@ use Template::Quick;
 @HTML::Editor::EXPORT_OK   = qw(initEditor show );
 %HTML::Editor::EXPORT_TAGS = ( 'all' => [qw(initEditor show )] );
 
-$HTML::Editor::VERSION = '0.51';
+$HTML::Editor::VERSION = '0.52';
 
 $DefaultClass = 'HTML::Editor' unless defined $HTML::Editor::DefaultClass;
 
@@ -204,7 +204,7 @@ L<CGI> L<HTML::Editor::BBCODE> L<MySQL::Admin::GUI>
 
 =head1 LICENSE
 
-Copyright (C) 2006 - 2008 by Hr. Dirk Lindner
+Copyright (C) 2005 - 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

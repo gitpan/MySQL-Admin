@@ -28,7 +28,7 @@ use DBI::Library qw(:all $m_dbh $dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.51';
+$DBI::Library::Database::VERSION = '0.52';
 $mod_rewrite                     = 0;
 $min_secs                        = 10;
 
@@ -1359,7 +1359,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2006-2009 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

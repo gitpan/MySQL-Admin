@@ -65,7 +65,7 @@ use vars qw(
 @MySQL::Admin::GUI::EXPORT =
     qw(action ContentHeader Body maxlength openFile ChangeDb action Unique);
 @ISA                        = qw(Exporter MySQL::Admin);
-$MySQL::Admin::GUI::VERSION = '0.51';
+$MySQL::Admin::GUI::VERSION = '0.52';
 $m_bMod_perl                = ( $ENV{MOD_PERL} ) ? 1 : 0;
 local $^W = 0;
 
@@ -283,7 +283,7 @@ sub Body {
         my $lgo = translate('logout');
         $logIn = qq(
 <table align="left" border="0" cellpadding="2" cellspacing="0" summary="contentHeader" class="contentHeader" width="*"><tr>
-<td>$wlc,</td><td valign="top">$m_sUser</td></td><td><a class="menuLink" href="$lg">logout</a></td></tr></table>
+<td>$wlc,</td><td valign="top">$m_sUser</td><td><a class="menuLink" href="$lg">logout</a></td></tr></table>
 );
     }
     my $z       = $m_nSize== 16 ? 'plus.png' : 'minus.png';
@@ -511,6 +511,12 @@ sub maxlength {
                 $maxLength = $maxWidth;
                 do { $i++ }
                     while ( substr( $$txt, $i, 1 ) ne ">"
+                            and $i < length($$txt) );
+            }
+            if ( substr( $$txt, $i, 1 ) eq "&" ) {
+                $maxLength = $maxWidth;
+                do { $i++ }
+                    while ( substr( $$txt, $i, 1 ) ne ";"
                             and $i < length($$txt) );
             }
             $maxLength =

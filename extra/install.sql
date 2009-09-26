@@ -282,229 +282,231 @@ CREATE TABLE gbook (
   PRIMARY KEY  (id),
   FULLTEXT KEY title (title,body)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
-create table reserved_words (reserved_word varchar(50));
-insert into reserved_words (reserved_word) values
-('ACCESSIBLE'),
-('ALTER'),
-('AS'),
-('BEFORE'),
-('BINARY'),
-('BY'),
-('CASE'),
-('CHARACTER'),
-('COLUMN'),
-('CONTINUE'),
-('CROSS'),
-('CURRENT_TIMESTAMP'),
-('DATABASE'),
-('DAY_MICROSECOND'),
-('DEC'),
-('DEFAULT'),
-('DESC'),
-('DISTINCT'),
-('DOUBLE'),
-('EACH'),
-('ENCLOSED'),
-('EXIT'),
-('FETCH'),
-('FLOAT8'),
-('FOREIGN'),
-('GRANT'),
-('HIGH_PRIORITY'),
-('HOUR_SECOND'),
-('IN'),
-('INNER'),
-('INSERT'),
-('INT2'),
-('INT8'),
-('INTO'),
-('JOIN'),
-('KILL'),
-('LEFT'),
-('LINEAR'),
-('LOCALTIME'),
-('LONG'),
-('LOOP'),
-('MATCH'),
-('MEDIUMTEXT'),
-('MINUTE_SECOND'),
-('NATURAL'),
-('NULL'),
-('OPTIMIZE'),
-('OR'),
-('OUTER'),
-('PRIMARY'),
-('RANGE'),
-('READ_WRITE'),
-('REGEXP'),
-('REPEAT'),
-('RESTRICT'),
-('RIGHT'),
-('SCHEMAS'),
-('SENSITIVE'),
-('SHOW'),
-('SPECIFIC'),
-('SQLSTATE'),
-('SQL_CALC_FOUND_ROWS'),
-('STARTING'),
-('TERMINATED'),
-('TINYINT'),
-('TRAILING'),
-('UNDO'),
-('UNLOCK'),
-('USAGE'),
-('UTC_DATE'),
-('VALUES'),
-('VARCHARACTER'),
-('WHERE'),
-('WRITE'),
-('ZEROFILL'),
-('ALL'),
-('AND'),
-('ASENSITIVE'),
-('BIGINT'),
-('BOTH'),
-('CASCADE'),
-('CHAR'),
-('COLLATE'),
-('CONSTRAINT'),
-('CREATE'),
-('CURRENT_TIME'),
-('CURSOR'),
-('DAY_HOUR'),
-('DAY_SECOND'),
-('DECLARE'),
-('DELETE'),
-('DETERMINISTIC'),
-('DIV'),
-('DUAL'),
-('ELSEIF'),
-('EXISTS'),
-('FALSE'),
-('FLOAT4'),
-('FORCE'),
-('FULLTEXT'),
-('HAVING'),
-('HOUR_MINUTE'),
-('IGNORE'),
-('INFILE'),
-('INSENSITIVE'),
-('INT1'),
-('INT4'),
-('INTERVAL'),
-('ITERATE'),
-('KEYS'),
-('LEAVE'),
-('LIMIT'),
-('LOAD'),
-('LOCK'),
-('LONGTEXT'),
-('MASTER_SSL_VERIFY_SERVER_CERT'),
-('MEDIUMINT'),
-('MINUTE_MICROSECOND'),
-('MODIFIES'),
-('NO_WRITE_TO_BINLOG'),
-('ON'),
-('OPTIONALLY'),
-('OUT'),
-('PRECISION'),
-('PURGE'),
-('READS'),
-('REFERENCES'),
-('RENAME'),
-('REQUIRE'),
-('REVOKE'),
-('SCHEMA'),
-('SELECT'),
-('SET'),
-('SPATIAL'),
-('SQLEXCEPTION'),
-('SQL_BIG_RESULT'),
-('SSL'),
-('TABLE'),
-('TINYBLOB'),
-('TO'),
-('TRUE'),
-('UNIQUE'),
-('UPDATE'),
-('USING'),
-('UTC_TIMESTAMP'),
-('VARCHAR'),
-('WHEN'),
-('WITH'),
-('YEAR_MONTH'),
-('ADD'),
-('ANALYZE'),
-('ASC'),
-('BETWEEN'),
-('BLOB'),
-('CALL'),
-('CHANGE'),
-('CHECK'),
-('CONDITION'),
-('CONVERT'),
-('CURRENT_DATE'),
-('CURRENT_USER'),
-('DATABASES'),
-('DAY_MINUTE'),
-('DECIMAL'),
-('DELAYED'),
-('DESCRIBE'),
-('DISTINCTROW'),
-('DROP'),
-('ELSE'),
-('ESCAPED'),
-('EXPLAIN'),
-('FLOAT'),
-('FOR'),
-('FROM'),
-('GROUP'),
-('HOUR_MICROSECOND'),
-('IF'),
-('INDEX'),
-('INOUT'),
-('INT'),
-('INT3'),
-('INTEGER'),
-('IS'),
-('KEY'),
-('LEADING'),
-('LIKE'),
-('LINES'),
-('LOCALTIMESTAMP'),
-('LONGBLOB'),
-('LOW_PRIORITY'),
-('MEDIUMBLOB'),
-('MIDDLEINT'),
-('MOD'),
-('NOT'),
-('NUMERIC'),
-('OPTION'),
-('ORDER'),
-('OUTFILE'),
-('PROCEDURE'),
-('READ'),
-('REAL'),
-('RELEASE'),
-('REPLACE'),
-('RETURN'),
-('RLIKE'),
-('SECOND_MICROSECOND'),
-('SEPARATOR'),
-('SMALLINT'),
-('SQL'),
-('SQLWARNING'),
-('SQL_SMALL_RESULT'),
-('STRAIGHT_JOIN'),
-('THEN'),
-('TINYTEXT'),
-('TRIGGER'),
-('UNION'),
-('UNSIGNED'),
-('USE'),
-('UTC_TIME'),
-('VARBINARY'),
-('VARYING'),
-('WHILE'),
-('XOR')
-;
+CREATE TABLE `reserved_words` (
+  `reserved_word` varchar(50) default NULL,
+  `id` int(11) NOT NULL auto_increment,
+  PRIMARY KEY  (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=224 DEFAULT CHARSET=latin1;
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ACCESSIBLE','1');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ALTER','2');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('AS','3');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BEFORE','4');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BINARY','5');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BY','6');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CASE','7');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CHARACTER','8');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('COLUMN','9');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CONTINUE','10');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CROSS','11');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CURRENT_TIMESTAMP','12');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DATABASE','13');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DAY_MICROSECOND','14');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DEC','15');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DEFAULT','16');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DESC','17');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DISTINCT','18');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DOUBLE','19');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('EACH','20');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ENCLOSED','21');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('EXIT','22');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FETCH','23');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FLOAT8','24');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FOREIGN','25');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('GRANT','26');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('HIGH_PRIORITY','27');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('HOUR_SECOND','28');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('IN','29');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INNER','30');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INSERT','31');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT2','32');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT8','33');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INTO','34');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('JOIN','35');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('KILL','36');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LEFT','37');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LINEAR','38');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOCALTIME','39');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LONG','40');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOOP','41');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MATCH','42');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MEDIUMTEXT','43');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MINUTE_SECOND','44');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('NATURAL','45');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('NULL','46');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OPTIMIZE','47');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OR','48');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OUTER','49');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('PRIMARY','50');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RANGE','51');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('READ_WRITE','52');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REGEXP','53');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REPEAT','54');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RESTRICT','55');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RIGHT','56');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SCHEMAS','57');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SENSITIVE','58');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SHOW','59');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SPECIFIC','60');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQLSTATE','61');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQL_CALC_FOUND_ROWS','62');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('STARTING','63');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TERMINATED','64');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TINYINT','65');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TRAILING','66');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UNDO','67');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UNLOCK','68');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('USAGE','69');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UTC_DATE','70');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('VALUES','71');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('VARCHARACTER','72');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('WHERE','73');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('WRITE','74');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ZEROFILL','75');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ALL','76');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('AND','77');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ASENSITIVE','78');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BIGINT','79');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BOTH','80');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CASCADE','81');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CHAR','82');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('COLLATE','83');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CONSTRAINT','84');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CREATE','85');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CURRENT_TIME','86');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CURSOR','87');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DAY_HOUR','88');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DAY_SECOND','89');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DECLARE','90');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DELETE','91');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DETERMINISTIC','92');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DIV','93');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DUAL','94');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ELSEIF','95');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('EXISTS','96');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FALSE','97');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FLOAT4','98');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FORCE','99');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FULLTEXT','100');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('HAVING','101');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('HOUR_MINUTE','102');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('IGNORE','103');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INFILE','104');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INSENSITIVE','105');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT1','106');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT4','107');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INTERVAL','108');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ITERATE','109');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('KEYS','110');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LEAVE','111');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LIMIT','112');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOAD','113');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOCK','114');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LONGTEXT','115');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MASTER_SSL_VERIFY_SERVER_CERT','116');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MEDIUMINT','117');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MINUTE_MICROSECOND','118');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MODIFIES','119');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('NO_WRITE_TO_BINLOG','120');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ON','121');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OPTIONALLY','122');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OUT','123');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('PRECISION','124');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('PURGE','125');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('READS','126');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REFERENCES','127');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RENAME','128');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REQUIRE','129');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REVOKE','130');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SCHEMA','131');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SELECT','132');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SET','133');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SPATIAL','134');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQLEXCEPTION','135');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQL_BIG_RESULT','136');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SSL','137');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TABLE','138');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TINYBLOB','139');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TO','140');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TRUE','141');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UNIQUE','142');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UPDATE','143');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('USING','144');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UTC_TIMESTAMP','145');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('VARCHAR','146');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('WHEN','147');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('WITH','148');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('YEAR_MONTH','149');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ADD','150');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ANALYZE','151');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ASC','152');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BETWEEN','153');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('BLOB','154');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CALL','155');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CHANGE','156');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CHECK','157');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CONDITION','158');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CONVERT','159');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CURRENT_DATE','160');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('CURRENT_USER','161');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DATABASES','162');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DAY_MINUTE','163');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DECIMAL','164');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DELAYED','165');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DESCRIBE','166');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DISTINCTROW','167');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('DROP','168');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ELSE','169');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ESCAPED','170');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('EXPLAIN','171');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FLOAT','172');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FOR','173');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('FROM','174');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('GROUP','175');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('HOUR_MICROSECOND','176');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('IF','177');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INDEX','178');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INOUT','179');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT','180');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INT3','181');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('INTEGER','182');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('IS','183');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('KEY','184');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LEADING','185');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LIKE','186');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LINES','187');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOCALTIMESTAMP','188');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LONGBLOB','189');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('LOW_PRIORITY','190');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MEDIUMBLOB','191');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MIDDLEINT','192');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('MOD','193');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('NOT','194');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('NUMERIC','195');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OPTION','196');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('ORDER','197');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('OUTFILE','198');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('PROCEDURE','199');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('READ','200');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REAL','201');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RELEASE','202');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('REPLACE','203');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RETURN','204');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('RLIKE','205');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SECOND_MICROSECOND','206');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SEPARATOR','207');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SMALLINT','208');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQL','209');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQLWARNING','210');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('SQL_SMALL_RESULT','211');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('STRAIGHT_JOIN','212');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('THEN','213');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TINYTEXT','214');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('TRIGGER','215');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UNION','216');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UNSIGNED','217');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('USE','218');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('UTC_TIME','219');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('VARBINARY','220');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('VARYING','221');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('WHILE','222');
+INSERT INTO `reserved_words` (`reserved_word`,`id`) values('XOR','223');

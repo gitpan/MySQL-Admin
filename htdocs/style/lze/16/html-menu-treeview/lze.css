@@ -5,6 +5,7 @@ font-family:verdana,sans-serif;
 font-size:14px;
 height:22px;
 vertical-align:top;
+white-space:nowrap;
 }
 a.dropzone16{
 color:#000;
@@ -14,6 +15,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 background-color:red;
+white-space:nowrap;
 }
 a.treeviewLink16:hover {
 color:red;
@@ -22,6 +24,7 @@ font-family:verdana,sans-serif;
 font-size:14px;
 height:22px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.caption16 {
 color:black;
@@ -32,6 +35,7 @@ height:24px;
 vertical-align:top;
 text-align:left;
 padding-left:2px;
+white-space:nowrap;
 }
 td.captionBorder16 {
 border-bottom:1px;
@@ -44,6 +48,7 @@ height:24px;
 vertical-align:top;
 text-align:left;
 padding-left:2px;
+white-space:nowrap;
 }
 td.columnsFolder16,td.columnsNode16 {
 color:#000;
@@ -52,6 +57,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 padding-left:2px;
+white-space:nowrap;
 }
 td.columnsFolderBorder16,td.columnsNodeBorder16 {
 border-left:1px;
@@ -62,6 +68,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 padding-left:2px;
+white-space:nowrap;
 }
 td.columnsLastNode16 {
 color:#000;
@@ -70,6 +77,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 padding-left:2px;
+white-space:nowrap;
 }
 table.treeview16 {
 color:#000;
@@ -84,6 +92,7 @@ font-size:14px;
 height:22px;
 vertical-align:top;
 padding-left:2px;
+white-space:nowrap;
 }
 td.folder16 {
 background-image:url('/style/lze/16/html-menu-treeview/folderOpen.gif');
@@ -93,6 +102,7 @@ cursor:pointer;
 font-size:14px;
 height:22px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.folderClosed16 {
 background-image:url('/style/lze/16/html-menu-treeview/folderClosed.gif');
@@ -102,6 +112,7 @@ cursor:pointer;
 font-size:14px;
 height:22px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.lastMinusNode16 {
 background-image:url('/style/lze/16/html-menu-treeview/lastMinusNode.gif');
@@ -109,6 +120,7 @@ background-repeat:no-repeat;
 cursor:pointer;
 height:22px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.lastNode16 {
 background-image:url('/style/lze/16/html-menu-treeview/lastNode.gif');
@@ -117,7 +129,7 @@ cursor:pointer;
 font-size:14px;
 height:22px;
 vertical-align:top;
-vertical-align:top;
+white-space:nowrap;
 }
 td.lastPlusNode16 {
 background-image:url('/style/lze/16/html-menu-treeview/lastPlusNode.gif');
@@ -126,6 +138,7 @@ cursor:pointer;
 height:22px;
 font-size:14px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.minusNode16 {
 background-image:url('/style/lze/16/html-menu-treeview/minusNode.gif');
@@ -134,6 +147,7 @@ cursor:pointer;
 height:22px;
 font-size:14px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.node16 {
 background-image:url('/style/lze/16/html-menu-treeview/node.gif');
@@ -143,6 +157,7 @@ font-size:14px;
 height:22px;
 text-align:left;
 vertical-align:top;
+white-space:nowrap;
 }
 td.plusNode16 {
 background-image:url('/style/lze/16/html-menu-treeview/plusNode.gif');
@@ -151,6 +166,7 @@ cursor:pointer;
 height:22px;
 font-size:14px;
 vertical-align:top;
+white-space:nowrap;
 }
 td.submenuDeco16 {
 background-image:url('/style/lze/16/html-menu-treeview/vertLine.gif');

@@ -7,7 +7,7 @@ use vars qw($DefaultClass @ISA  $m_bMod_perl $action $scriptname);
 our $m_sStyle;
 use Template::Quick;
 @HTML::TabWidget::ISA     = qw( Exporter Template::Quick);
-$HTML::TabWidget::VERSION = '0.51';
+$HTML::TabWidget::VERSION = '0.52';
 $DefaultClass             = 'HTML::TabWidget'
     unless defined $HTML::TabWidget::DefaultClass;
 @HTML::TabWidget::EXPORT_OK
@@ -292,7 +292,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2006- 2008 by Hr. Dirk Lindner
+Copyright (C) 2005- 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

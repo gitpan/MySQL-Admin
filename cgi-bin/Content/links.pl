@@ -62,7 +62,7 @@ sub _showBookmarksNavi {
              },
              translate('edit')
         )
-        . '&#160;|&#160;'
+        .br()
         if ( $m_nRight >= $m_oDatabase->getActionRight('editTreeview') );
     $m_sContent .= a(
                    { class => $m_sAction eq "ImportOperaBookmarks"

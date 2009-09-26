@@ -36,7 +36,7 @@ $CGI::DefaultClass     = 'CGI';
 $DefaultClass          = 'MySQL::Admin' unless defined $MySQL::Admin::DefaultClass;
 $defaultconfig         = '/srv/www/cgi-bin/config/settings.pl';
 $CGI::AutoloadClass    = 'CGI';
-$MySQL::Admin::VERSION = '0.51';
+$MySQL::Admin::VERSION = '0.52';
 $m_bMod_perl           = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI);
@@ -420,7 +420,13 @@ sub getSelf
     return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin' || UNIVERSAL::isa($_[0], 'MySQL::Admin'))) ? @_ : ($MySQL::Admin::DefaultClass->new, @_);
 }
 
+=head1 AUTHOR
+
+Dirk Lindner <lze@cpan.org>
+
 =head1 LICENSE
+
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
@@ -430,7 +436,7 @@ but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 GNU Lesser General Public License for more details.
 
-Copyright (C) 2009 by Hr. Dirk Lindner
+=cut
 
 =head2 see Also
 

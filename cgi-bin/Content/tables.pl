@@ -2586,7 +2586,7 @@ function DisplayKeyWords(b){
     }
 
     @tables = $m_oDatabase->fetch_array(
-        "select * from $m_hrSettings->{database}{name}.reserved_words order by 'reserved_words'"
+        "select reserved_word from $m_hrSettings->{database}{name}.reserved_words order by 'reserved_words'"
     );
     $list .=
         qq|<select onSubmit="return false;" id="selKeyword" size="10" onkeypress="var keyCode = event.keyCode ? event.keyCode :event.charCode ? event.charCode :event.which;if (keyCode != 13) return;var e = document.getElementById('sqlEdit');e.value +=this.options[this.options.selectedIndex].value;return false;" style="display:none;width:150px;height:200px;">|;

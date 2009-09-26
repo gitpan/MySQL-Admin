@@ -1,4 +1,12 @@
-Revision history for Perl MySQL::Admin 0.51
+Revision history for Perl MySQL::Admin 0.52
+0.52
+     Crystal Style
+     delete some old translations and settings.
+     maxlength news fixed
+     Settings
+     Espanol translation (Thanks to  moises marquez )
+     maxlength fixed
+     reserved_words primary key
 0.51
      a few fixes.
      %ALIAS% htaccess

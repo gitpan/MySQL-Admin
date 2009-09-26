@@ -19,7 +19,7 @@ use Template::Quick;
         qw(set_title set_class set_style set_closeable set_resizeable set_collapse set_moveable initWindow windowHeader windowFooter)
     ]
 );
-$HTML::Window::VERSION = '0.51';
+$HTML::Window::VERSION = '0.52';
 
 $DefaultClass = 'HTML::Window' unless defined $HTML::Window::DefaultClass;
 
@@ -343,7 +343,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2006-2009 by Hr. Dirk Lindner
+Copyright (C) 2005 - 2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

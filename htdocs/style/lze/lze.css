@@ -61,8 +61,8 @@ width:100%;
 /*<<allgemein*/
 /* datenbank headline */
 td.caption{
-	color:#black;
-  background-color:#White;
+  color:black;
+  background-color:white;
   border-bottom:1px;
   border-bottom-style:solid;
   border-left-style:solid;

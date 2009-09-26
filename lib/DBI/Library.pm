@@ -18,7 +18,7 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.51';
+$DBI::Library::VERSION = '0.52';
 $m_tbl                   = 'querys';
 $driver                = 'mysql';
 require Exporter;
@@ -650,7 +650,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2006-2009 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

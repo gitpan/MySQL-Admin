@@ -1,6 +1,5 @@
-MySQL::Admin::Settings::loadSettings(
-                              "$m_hrSettings->{cgi}{bin}/config/settings.pl");
-my $TITLE = 'Edit Configuration';
+MySQL::Admin::Settings::loadSettings("$m_hrSettings->{cgi}{bin}/config/settings.pl");
+my $TITLE = translate('editConfiguration');
 my @boxes;
 my @a = $m_oDatabase->fetch_AoH('select * from box ');
 my %options = ( 'left'     => [ 'left',     'right', 'disabled' ],
@@ -23,7 +22,7 @@ show_form(
     -CHECK    => ( param('checkForm') ? 1 : 0 ),
     -LANGUAGE => $ACCEPT_LANGUAGE,
     -FIELDS   => [
-        {  -LABEL    => 'Boxen',
+        {  -LABEL    => translate('Boxen'),
            -HEADLINE => 1,
            -COLSPAN  => 2,
            -END_ROW  => 1,
@@ -106,7 +105,7 @@ show_form(
            -default  => $m_hrSettings->{cgi}{mod_rewrite},
         },
         {  -LABEL    => 'htmlright',
-           -VALIDATE => \&validhtmlright,
+           -VALIDATE  => \&validInt,
            -default  => $m_hrSettings->{htmlright},
         },
         {  -LABEL   => 'Server Name',
@@ -137,51 +136,6 @@ show_form(
         },
         {  -LABEL   => 'Email',
            -default => $m_hrSettings->{admin}{email},
-        },
-        {  -LABEL   => 'Name',
-           -default => $m_hrSettings->{admin}{name},
-        },
-        {  -LABEL   => 'First Name',
-           -default => $m_hrSettings->{admin}{firstname},
-        },
-        {  -LABEL   => 'Street',
-           -default => $m_hrSettings->{admin}{street},
-        },
-        {  -LABEL   => 'House Number',
-           -default => $m_hrSettings->{admin}{number},
-        },
-        {  -LABEL   => 'postcode',
-           -default => $m_hrSettings->{admin}{postcode},
-        },
-        {  -LABEL   => 'Town',
-           -default => $m_hrSettings->{admin}{town},
-        },
-        {  -LABEL   => 'country',
-           -default => $m_hrSettings->{admin}{country},
-        },
-        {  -LABEL   => 'phonenumber',
-           -default => $m_hrSettings->{admin}{tel},
-        },
-        {  -LABEL   => 'signature',
-           -default => $m_hrSettings->{admin}{signature},
-        },
-        {  -LABEL   => 'jabber',
-           -default => $m_hrSettings->{admin}{jabber},
-        },
-        {  -LABEL   => 'icq',
-           -default => $m_hrSettings->{admin}{icq},
-        },
-        {  -LABEL   => 'msn',
-           -default => $m_hrSettings->{admin}{msn},
-        },
-        {  -LABEL   => 'jahoo',
-           -default => $m_hrSettings->{admin}{jahoo},
-        },
-        {  -LABEL   => 'skype',
-           -default => $m_hrSettings->{admin}{skype},
-        },
-        {  -LABEL   => 'aim',
-           -default => $m_hrSettings->{admin}{aim},
         },
         {  -LABEL    => 'News',
            -HEADLINE => 1,
@@ -258,20 +212,6 @@ sub on_valid_form {
     my $p5 = param('Email');
     $m_hrSettings->{admin}{email}     = $p5;
     $m_hrSettings->{admin}{name}      = param('Name');
-    $m_hrSettings->{admin}{firstname} = param('First Name');
-    $m_hrSettings->{admin}{street}    = param('Street');
-    $m_hrSettings->{admin}{tonwn}     = param('Town');
-    $m_hrSettings->{admin}{number}    = param('House Number');
-    $m_hrSettings->{admin}{tel}       = param('phonenumber');
-    $m_hrSettings->{admin}{jabber}    = param('jabber');
-    $m_hrSettings->{admin}{icq}       = param('icq');
-    $m_hrSettings->{admin}{msn}       = param('msn');
-    $m_hrSettings->{admin}{country}   = param('country');
-    $m_hrSettings->{admin}{skype}     = param('skype');
-    $m_hrSettings->{admin}{aim}       = param('aim');
-    $m_hrSettings->{admin}{postcode}  = param('postcode');
-    $m_hrSettings->{admin}{signature} = param('signature');
-    $m_hrSettings->{admin}{jahoo}     = param('jahoo');
     my $p6 = param('CookiePath');
     $m_hrSettings->{cgi}{cookiePath} = $p6;
     my $p7 = param('mod_rewrite');
@@ -353,4 +293,6 @@ sub validExpires {
 }
 sub validSize      { $_[0] =~ /^(16|22|32|48|64|128)$/; }
 sub validhtmlright { $_[0] =~ /^\d+$/; }
+sub validInt      { $_[0] > 0  && $_[0] < 32766 }
+
 1;

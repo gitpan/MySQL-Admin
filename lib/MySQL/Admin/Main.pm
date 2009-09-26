@@ -12,7 +12,7 @@ our $server;
 @MySQL::Admin::Main::EXPORT_OK   = qw(all initMain Header Footer);
 %MySQL::Admin::Main::EXPORT_TAGS = ( 'all' => [qw(initMain Header Footer)] );
 @MySQL::Admin::Main::ISA         = qw( Exporter Template::Quick);
-$MySQL::Admin::Main::VERSION     = '0.51';
+$MySQL::Admin::Main::VERSION     = '0.52';
 $DefaultClass                    = 'MySQL::Admin::Main'
     unless defined $MySQL::Admin::Main::DefaultClass;
 
@@ -150,7 +150,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2008 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

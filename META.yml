@@ -1,18 +1,19 @@
 ---
 name: MySQL-Admin
-version: 0.51
+version: 0.52
 author:
+  - 'Dirk Lindner <lze@cpan.org>'
   - 'Dirk Lindner <lze@cpan.org>'
 abstract: Admin
 license: lgpl
 resources:
-  license: http://opensource.org/licenses/lgpl-license.php
+  license: http://opensource.org/licenses/artistic-license.php
 requires:
   Authen::Captcha: '>=1.023'
   CGI: '>=3.47'
   DBI: '>=1.50'
   Frontier::RPC2: '>=0.07b4'
-  HTML::Menu::TreeView: '>=1.09'
+  HTML::Menu::TreeView: '>=1.11'
   HTML::Parser: '>=3.56'
   MD5: '>=2.03'
   Mail::Sendmail: '>=0.79'
@@ -21,16 +22,17 @@ requires:
   Syntax::Highlight::Engine::Kate: '>=0.04'
   Syntax::Highlight::Perl: '>=1.00'
   Test::More: '>=0.7'
+  URI: '>=1.40'
 provides:
   CGI::QuickFormR:
     file: lib/CGI/QuickFormR.pm
     version: 1.93
   DBI::Library:
     file: lib/DBI/Library.pm
-    version: 0.51
+    version: 0.52
   DBI::Library::Database:
     file: lib/DBI/Library/Database.pm
-    version: 0.51
+    version: 0.52
   DBI::Library::Database::db:
     file: lib/DBI/Library/Database.pm
   DBI::Library::Database::st:
@@ -41,47 +43,47 @@ provides:
     file: lib/DBI/Library.pm
   HTML::Editor:
     file: lib/HTML/Editor.pm
-    version: 0.51
+    version: 0.52
   HTML::Editor::BBCODE:
     file: lib/HTML/Editor/BBCODE.pm
-    version: 0.51
+    version: 0.52
   HTML::Menu::Pages:
     file: lib/HTML/Menu/Pages.pm
-    version: 0.51
+    version: 0.52
   HTML::TabWidget:
     file: lib/HTML/TabWidget.pm
-    version: 0.51
+    version: 0.52
   HTML::Window:
     file: lib/HTML/Window.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin:
     file: lib/MySQL/Admin.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Actions:
     file: lib/MySQL/Admin/Actions.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Config:
     file: lib/MySQL/Admin/Config.pm
-    version: 0.51
+    version: 0.53
   MySQL::Admin::GUI:
     file: lib/MySQL/Admin/GUI.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Main:
     file: lib/MySQL/Admin/Main.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Session:
     file: lib/MySQL/Admin/Session.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Settings:
     file: lib/MySQL/Admin/Settings.pm
-    version: 0.51
+    version: 0.52
   MySQL::Admin::Translate:
     file: lib/MySQL/Admin/Translate.pm
-    version: 0.51
+    version: 0.52
   Template::Quick:
     file: lib/Template/Quick.pm
-    version: 0.51
-generated_by: Module::Build version 0.280801
+    version: 0.53
+generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html
   version: 1.2

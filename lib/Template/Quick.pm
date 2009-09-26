@@ -10,7 +10,7 @@ use vars
 @Template::Quick::EXPORT = qw(initTemplate appendHash Template initArray);
 %Template::Quick::EXPORT_TAGS =
     ( 'all' => [qw(initTemplate appendHash Template initArray  )] );
-$Template::Quick::VERSION = '0.51';
+$Template::Quick::VERSION = '0.53';
 $DefaultClass             = 'Template::Quick'
     unless defined $Template::Quick::DefaultClass;
 our %tmplate;

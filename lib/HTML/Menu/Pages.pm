@@ -20,7 +20,7 @@ use vars qw(
 );
 @HTML::Menu::Pages::EXPORT  = qw(makePages);
 @ISA                        = qw(Exporter);
-$HTML::Menu::Pages::VERSION = '0.51';
+$HTML::Menu::Pages::VERSION = '0.52';
 $DefaultClass               = 'HTML::Menu::Pages'
     unless defined $HTML::Menu::Pages::DefaultClass;
 
@@ -250,7 +250,7 @@ L<CGI> L<MySQL::Admin::GUI> L<MySQL::Admin::Actions> L<MySQL::Admin::Translate> 
 
 =head1 LICENSE
 
-Copyright (C) 2006 - 2008 by Hr. Dirk Lindner
+Copyright (C) 2005 - 2008 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

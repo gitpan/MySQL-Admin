@@ -6,11 +6,10 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.51';
+$HTML::Editor::BBCODE::VERSION = '0.52';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
-
-# use Syntax::Highlight::Perl;
+use Syntax::Highlight::Perl ':FULL';
 
 =head1 NAME
 
@@ -197,7 +196,6 @@ sub BBCODE {
                        my ( $parser, $attr, $content, $attribute_fallback ) =
                            @_;
                        if ( $attr eq 'Perl' ) {
-                           use Syntax::Highlight::Perl ':FULL';
                            my $color_Keys = {
                                  'Variable_Scalar' => 'Variable_ # or Scalar',
                                  'Variable_Array'  => 'Variable_Array',
@@ -271,11 +269,17 @@ sub BBCODE {
         }
     );
     if ( $ACCEPT_LANGUAGE eq 'de' ) {
-        $$string =~ s/\[en\](.*?)\[\/en\]//gs;
+        $$string =~ s/\[en\](.*?)\[\/en\]//gs;gs;
+        $$string =~ s/\[es\](.*?)\[\/es\]//gs;gs;
         $$string =~ s/\[de\](.*?)\[\/de\]/$1/gs;
-    } else {
-        $$string =~ s/\[en\](.*?)\[\/en\]/$1/gs;
+    } elsif($ACCEPT_LANGUAGE eq 'es' ) {
+        $$string =~ s/\[es\](.*?)\[\/es\]/$1/gs;
+        $$string =~ s/\[en\](.*?)\[\/en\]//gs;gs;
         $$string =~ s/\[de\](.*?)\[\/de\]//gs;
+    }else{
+        $$string =~ s/\[de\](.*?)\[\/de\]//gs;gs;
+        $$string =~ s/\[es\](.*?)\[\/es\]//gs;gs;
+        $$string =~ s/\[en\](.*?)\[\/en\]/$1/gs;
     }
     $$string = $p->render($$string);
 }
@@ -329,9 +333,11 @@ Dirk Lindner <lze@cpan.org>
 
 L<CGI> L<Parse::BBCode> L<HTML::Editor> L<MySQL::Admin::GUI>
 
+L<Parse::BBCode> L<Syntax::Highlight::Engine::Kate> L<Syntax::Highlight::Perl>
+
 =head1 LICENSE
 
-Copyright (C) 2008 by Hr. Dirk Lindner
+Copyright (C) 2005 - 2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

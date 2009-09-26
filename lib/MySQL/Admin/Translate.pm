@@ -2,14 +2,12 @@ package MySQL::Admin::Translate;
 use strict;
 use warnings;
 require Exporter;
-use vars
-    qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
-@MySQL::Admin::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
+use vars qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
+@MySQL::Admin::Translate::EXPORT  = qw(loadTranslate saveTranslate $lang);
 use MySQL::Admin::Config;
 @ISA                              = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Translate::VERSION = '0.51';
-$DefaultClass                     = 'MySQL::Admin::Translate'
-    unless defined $MySQL::Admin::Translate::DefaultClass;
+$MySQL::Admin::Translate::VERSION = '0.52';
+$DefaultClass                     = 'MySQL::Admin::Translate' unless defined $MySQL::Admin::Translate::DefaultClass;
 $defaultconfig = '%CONFIG%';
 
 =head1 NAME
@@ -98,7 +96,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2008 by Hr. Dirk Lindner
+Copyright (C) 2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License

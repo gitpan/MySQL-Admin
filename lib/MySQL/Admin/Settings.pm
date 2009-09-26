@@ -6,7 +6,7 @@ use vars qw($m_hrSettings $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Settings::EXPORT = qw(loadSettings saveSettings $m_hrSettings);
 use MySQL::Admin::Config;
 @ISA                             = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Settings::VERSION = '0.51';
+$MySQL::Admin::Settings::VERSION = '0.52';
 $DefaultClass                    = 'MySQL::Admin::Settings'
     unless defined $MySQL::Admin::Settings::DefaultClass;
 $defaultconfig = '%CONFIG%';
@@ -102,7 +102,7 @@ Dirk Lindner <lze@cpan.org>
 
 =head1 LICENSE
 
-Copyright (C) 2005-2008 by Hr. Dirk Lindner
+Copyright (C) 2005-2009 by Hr. Dirk Lindner
 
 This program is free software; you can redistribute it and/or
 modify it under the terms of the GNU Lesser General Public License
