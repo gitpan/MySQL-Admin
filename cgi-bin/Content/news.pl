@@ -41,7 +41,6 @@ sub show
                      atemp     => qq(<input  name="von" value="$m_nStart" style="display:none;"/><input  name="bis" value="$m_nEnd" style="display:none;"/>),
     );
 
-    #     use HTML::Editor;
     my $editor = new HTML::Editor(\%parameter);
     $m_sContent .= '<div align="center">';
     $m_sContent .= $editor->show() if ($m_nRight >= $m_hrSettings->{news}{right});
@@ -158,13 +157,14 @@ sub saveedit
         $cit =~ s/("|'|\s| )//g;
         my $sra = ($cit && $type) ? "$cit.$type" : undef;
         my $format = param('format') eq 'on' ? 'html' : 'bbcode';
-        my @cat = param('catlist');
+        my @cat    = param('catlist');
+        my $c      = join '|', @cat;
         my %message = (
                        thread     => $thread,
                        title      => $headline,
                        body       => $body,
                        thread     => $thread,
-                       cat        => $cat,
+                       cat        => $c,
                        attach     => $sra,
                        format     => $format,
                        id         => $id,

@@ -6,7 +6,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.52';
+$HTML::Editor::BBCODE::VERSION = '0.54';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
 use Syntax::Highlight::Perl ':FULL';
@@ -269,16 +269,16 @@ sub BBCODE {
         }
     );
     if ( $ACCEPT_LANGUAGE eq 'de' ) {
-        $$string =~ s/\[en\](.*?)\[\/en\]//gs;gs;
-        $$string =~ s/\[es\](.*?)\[\/es\]//gs;gs;
+        $$string =~ s/\[en\](.*?)\[\/en\]//gs;
+        $$string =~ s/\[es\](.*?)\[\/es\]//gs;
         $$string =~ s/\[de\](.*?)\[\/de\]/$1/gs;
     } elsif($ACCEPT_LANGUAGE eq 'es' ) {
         $$string =~ s/\[es\](.*?)\[\/es\]/$1/gs;
-        $$string =~ s/\[en\](.*?)\[\/en\]//gs;gs;
+        $$string =~ s/\[en\](.*?)\[\/en\]//gs;
         $$string =~ s/\[de\](.*?)\[\/de\]//gs;
     }else{
-        $$string =~ s/\[de\](.*?)\[\/de\]//gs;gs;
-        $$string =~ s/\[es\](.*?)\[\/es\]//gs;gs;
+        $$string =~ s/\[de\](.*?)\[\/de\]//gs;
+        $$string =~ s/\[es\](.*?)\[\/es\]//gs;
         $$string =~ s/\[en\](.*?)\[\/en\]/$1/gs;
     }
     $$string = $p->render($$string);
