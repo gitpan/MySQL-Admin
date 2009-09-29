@@ -5,6 +5,7 @@ cgi-bin/config/session.pl
 cgi-bin/config/settings.pl
 cgi-bin/config/translate.pl
 cgi-bin/config/tree.pl
+cgi-bin/Content/addtranslate.pl
 cgi-bin/Content/admin.pl
 cgi-bin/Content/editTree.pl
 cgi-bin/Content/env.pl

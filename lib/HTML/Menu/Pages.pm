@@ -20,7 +20,7 @@ use vars qw(
 );
 @HTML::Menu::Pages::EXPORT  = qw(makePages);
 @ISA                        = qw(Exporter);
-$HTML::Menu::Pages::VERSION = '0.54';
+$HTML::Menu::Pages::VERSION = '0.55';
 $DefaultClass               = 'HTML::Menu::Pages'
     unless defined $HTML::Menu::Pages::DefaultClass;
 

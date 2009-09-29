@@ -5,7 +5,7 @@ require Exporter;
 use vars qw($config $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Config::EXPORT  = qw(loadConfig saveConfig $config);
 @ISA                           = qw(Exporter);
-$MySQL::Admin::Config::VERSION = '0.54';
+$MySQL::Admin::Config::VERSION = '0.55';
 $DefaultClass                  = 'MySQL::Admin::Config'
     unless defined $MySQL::Admin::Config::DefaultClass;
 $defaultconfig = '%CONFIG%';

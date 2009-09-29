@@ -211,8 +211,6 @@ $newFolder<input type="checkbox" name="newFolder"/>
                 $text = $1 if ( $adrFile[ $line+ 1 ] =~ /NAME=(.*)$/ );
                 my $href = $1 if ( $adrFile[ $line+ 3 ] =~ /URL=(.*)$/ );
                 $href = $1 if ( $adrFile[ $line+ 2 ] =~ /URL=(.*)$/ );
-
-              #                 Encode::from_to($text, "utf-8", "iso-8859-1");
                 if ( defined $text && defined $href ) {
                     push @{$treeTempRef},
                         { text => $text =~ /(.{75}).+/ ? "$1..." : $text,
@@ -263,8 +261,6 @@ $newFolder<input type="checkbox"  name="newFolder"/>
                 $folderId++;
                 if ( $adrFile[ $line- 1 ] =~ /<H3[^>]+>(.*)<\/H3>/ ) {
                     my $text = $1;
-
-          #                     Encode::from_to($text, "utf-8", "iso-8859-1");
                     push @{$treeTempRef},
                         { text => $text =~ /(.{50}).+/ ? "$1..." : $text,
                           subtree => []

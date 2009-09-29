@@ -733,11 +733,10 @@ sub threadBody
               ? "/news$id.html"
               : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
 
-            if ($th eq 'news') {
-                $reply .= qq( <a href="$permalink" class="link" >Permalink</a>);
-                $reply .=
-qq( <a href="#" target="_blank" onclick="window.open('http://www.facebook.com/sharer.php?u=$m_hrSettings->{cgi}{serverName}$ENV{SCRIPT_NAME}?action=showthread&amp;reply=$id&amp;thread=$th&amp;t=$headline', '$m_hrSettings->{cgi}{serverName}','width=620, height=440');return false;">Facebook</a>)
-                  if $m_hrSettings->{news}{facebook};
+              if ($th eq 'news') {
+                 my $Permalink = translate('Permalink');
+                $reply .= qq( <a href="$permalink" class="link" >$permalink</a>)
+                if $m_hrSettings->{news}{permalink};
                 $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
             }
             BBCODE(\$body, $ACCEPT_LANGUAGE) if ($format eq 'bbcode');
@@ -775,5 +774,63 @@ sub saveUpload
             chmod("$m_hrSettings->{'uploads'}{'chmod'}", "$m_hrSettings->{uploads}{path}/$sra") if (-e "$m_hrSettings->{uploads}{path}/$sra");
         }
     }
+    }
+sub trash{
+        my @trash = $m_oDatabase->fetch_AoH('select * from trash');
+        my %parameter = (
+                         path   => $m_hrSettings->{cgi}{bin} . '/templates',
+                         style  => $m_sStyle,
+                         title  => qq(Trash),
+                         server => $m_hrSettings->{cgi}{serverName},
+                         id     => "n$id",
+                         class  => 'min',
+        );
+        my $window = new HTML::Window(\%parameter);
+        $m_sContent .= $window->windowHeader().q(<table align="center" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%">
+        <tr>
+        <td class="caption">title</td>
+        <td class="caption">date</td>
+        <td class="caption">user</td>
+        <td class="caption">format</td>
+        <td class="caption">oldId</td>
+        <td class="caption">right</td>
+        <td class="caption">attach</td>
+        <td class="caption"></td>
+        </tr>
+        );
+
+        for(my $i = 0; $i <= $#trash; $i++){
+                my $rebuild = translate('rebuild');
+                my $delete  = translate('delete');
+                my $body = $trash[$i]->{body};
+                $m_sContent .= qq(<tr>
+                <td>$trash[$i]->{title}</td>
+                <td>$trash[$i]->{date}</td>
+                <td>$trash[$i]->{user}</td>
+                <td>$trash[$i]->{format}</td>
+                <td align="center">$trash[$i]->{oldId}</td>
+                <td align="center">$trash[$i]->{right}</td>
+                <td align="center">$trash[$i]->{attach}</td>
+                <td align="right"><a href="$ENV{SCRIPT_NAME}?action=rebuildtrash&amp;id=$trash[$i]->{id}" width="50">$rebuild</a>&#160;<a href="$ENV{SCRIPT_NAME}?action=DeleteEntry&amp;table=trash&amp;&id=$trash[$i]->{id}">$delete</a></td>
+                </tr>);
+                }
+        $m_sContent .= '</table>'.$window->windowFooter();
+}
+sub rebuildtrash{
+        my $id = param('id');
+        my $trash = $m_oDatabase->fetch_hashref('select * from trash where id = ?',$id);
+        my %message = (
+                               title  => $trash->{title},
+                               body   => $trash->{body},
+                               thread => 'news',
+                               user   => $trash->{user},
+                               cat    => $trash->{cat},
+                               attach => $trash->{attach},
+                               format => $trash->{format},
+                               ip     => remote_addr()
+        );
+        $m_oDatabase->addMessage(\%message);
+        $m_oDatabase->void('delete from trash where id = ?',$id);
+        &show();
 }
 1;

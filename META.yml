@@ -1,6 +1,6 @@
 ---
 name: MySQL-Admin
-version: 0.54
+version: 0.55
 author:
   - 'Dirk Lindner <lze@cpan.org>'
   - 'Dirk Lindner <lze@cpan.org>'
@@ -29,10 +29,10 @@ provides:
     version: 1.93
   DBI::Library:
     file: lib/DBI/Library.pm
-    version: 0.54
+    version: 0.55
   DBI::Library::Database:
     file: lib/DBI/Library/Database.pm
-    version: 0.54
+    version: 0.55
   DBI::Library::Database::db:
     file: lib/DBI/Library/Database.pm
   DBI::Library::Database::st:
@@ -43,46 +43,46 @@ provides:
     file: lib/DBI/Library.pm
   HTML::Editor:
     file: lib/HTML/Editor.pm
-    version: 0.54
+    version: 0.55
   HTML::Editor::BBCODE:
     file: lib/HTML/Editor/BBCODE.pm
-    version: 0.54
+    version: 0.55
   HTML::Menu::Pages:
     file: lib/HTML/Menu/Pages.pm
-    version: 0.54
+    version: 0.55
   HTML::TabWidget:
     file: lib/HTML/TabWidget.pm
-    version: 0.54
+    version: 0.55
   HTML::Window:
     file: lib/HTML/Window.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin:
     file: lib/MySQL/Admin.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Actions:
     file: lib/MySQL/Admin/Actions.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Config:
     file: lib/MySQL/Admin/Config.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::GUI:
     file: lib/MySQL/Admin/GUI.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Main:
     file: lib/MySQL/Admin/Main.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Session:
     file: lib/MySQL/Admin/Session.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Settings:
     file: lib/MySQL/Admin/Settings.pm
-    version: 0.54
+    version: 0.55
   MySQL::Admin::Translate:
     file: lib/MySQL/Admin/Translate.pm
-    version: 0.54
+    version: 0.55
   Template::Quick:
     file: lib/Template/Quick.pm
-    version: 0.54
+    version: 0.55
 generated_by: Module::Build version 0.2808
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.2.html

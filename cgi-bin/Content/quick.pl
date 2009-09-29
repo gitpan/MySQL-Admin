@@ -170,9 +170,9 @@ show_form(
            -default => $m_hrSettings->{floodtime},
         },
         {  -LABEL    => ' ',
-           -name     => 'facebook link',
+           -name     => 'permalink link',
            -TYPE     => 'checkbox',
-           -selected => $m_hrSettings->{news}{facebook} ? "selected" : '',
+           -selected => $m_hrSettings->{news}{permalink} ? "selected" : '',
         },
 
     ],
@@ -234,8 +234,8 @@ sub on_valid_form {
     $m_hrSettings->{htmlright} = $htmlright;
     my $floodtime = param('time between Posts');
     $m_hrSettings->{floodtime} = $floodtime;
-    my $facebook = param('facebook link') eq 'on' ? 1 : 0;
-    $m_hrSettings->{news}{facebook} = $facebook;
+    my $permalink = param('permalink link') eq 'on' ? 1 : 0;
+    $m_hrSettings->{news}{permalink} = $permalink;
 
     #general
     my $p16 = param('language');

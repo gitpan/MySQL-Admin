@@ -6,7 +6,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.54';
+$HTML::Editor::BBCODE::VERSION = '0.55';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
 use Syntax::Highlight::Perl ':FULL';

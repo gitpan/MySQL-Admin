@@ -953,7 +953,7 @@ sub EditEntry {
                 . $m_oDatabase->quote(
                              param( $p_key[0] ) ? param( $p_key[0] ) : $rid );
         }
-        my $ed = translate('Edit Entry');
+        my $ed = translate('EditEntry');
         my $a  = $m_oDatabase->fetch_hashref("select * from $tbl2 $eid");
         my %parameter = ( path  => $m_hrSettings->{cgi}{bin} . '/templates',
                           style => $m_sStyle,
@@ -1257,7 +1257,7 @@ dmit richtig sortiert wird.
 
 =cut
 
-sub round {
+sub round{
     my $x = shift;
     floor( $x+ 0.5 ) if ( $x =~ /\d+/ );
 }

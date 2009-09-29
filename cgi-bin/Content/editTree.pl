@@ -1,10 +1,8 @@
 use vars
-    qw($m_sDump $m_sPdmp $m_sJs %m_hTempNode $m_hrTempNode $m_nRid %m_hWindowParameter $m_oWindow $m_nPrid);
+qw($m_sDump $m_sPdmp $m_sJs %m_hTempNode $m_hrTempNode $m_nRid %m_hWindowParameter $m_oWindow $m_nPrid );
 no warnings "uninitialized";
-$m_sPdmp = param('dump') ? param('dump') : 'navigation';
-$m_sDump = $m_hrSettings->{tree}{$m_sPdmp};
-$m_nPrid = param('rid');
-$m_nPrid =~ s/^a(.*)/$1/;
+
+
 $m_sJs = qq|
 <script language="JavaScript" >
 var m_bOver = true;
@@ -63,9 +61,13 @@ $m_hrTempNode = \%m_hTempNode;
                         class  => 'min',
 );
 $m_oWindow = new HTML::Window( \%m_hWindowParameter );
+$m_sPdmp = param('dump') ? param('dump') : 'navigation';
+$m_sDump = $m_hrSettings->{tree}{$m_sPdmp};
+$m_nPrid = param('rid');
 
 sub linkseditTreeview {
-    $m_sDump = $m_hrSettings->{tree}{'links'};
+$m_sDump = $m_hrSettings->{tree}{'links'};
+
     editTreeview();
 }
 
@@ -233,6 +235,7 @@ sub newEntry {
     $m_sContent .= br() . $m_oWindow->windowHeader();
     my $value = param('title') ? param('title') : '';
     my $push = '';
+
     if ( param('addBookMark') ) {
         &load();
         &rid();
@@ -241,24 +244,21 @@ sub newEntry {
             '<input type="hidden" name="addBookMark" value="addBookMark"/>';
     }
     $m_sContent .=
-        qq(<b>New Entry</b><form action="$ENV{SCRIPT_NAME}#a$m_nRid"><input type="hidden" name="rid" value="a$m_nRid"/>$push<br/><table align="center" class="mainborder" cellpadding="2"  cellspacing="2" summary="mainLayolut"><tr><td>Text:</td><td><input type="text" value="$value" name="text"></td></tr><tr><td>Folder</td><td><input type="checkbox" name="folder" /></td></tr>);
+    qq(<b>New Entry</b><form action="$ENV{SCRIPT_NAME}#a$m_nPrid"><input type="hidden" name="rid" value="a$m_nPrid"/>$push<br/><table align="center" class="mainborder" cellpadding="2"  cellspacing="2" summary="mainLayolut"><tr><td>Text:</td><td><input type="text" value="$value" name="text"></td></tr><tr><td>Folder</td><td><input type="checkbox" name="folder" /></td></tr>);
+    language('de') if $ACCEPT_LANGUAGE eq 'de';
     my $node = help();
     foreach my $key ( sort( keys %{$node} ) ) {
         $value = "";
         $value = param('addBookMark')
             if ( $key eq 'href' && param('addBookMark') );
         $value = param('title') if ( $key eq 'title' && param('title') );
-        $value = 'a' . $m_nRid if ( $key eq 'id' && param('addBookMark') );
+        $value = 'a' . $m_nPrid if ( $key eq 'id' && param('addBookMark') );
         $m_sContent .=
             qq(<tr><td></td><td>$node->{$key}</td></tr><tr><td>$key :</td><td><input type="text" value="$value" name="$key" id="$key"/><br/></td></tr>)
             if ( $key ne 'class' );
     }
     $m_sContent .=
-        '<tr><td><input type="hidden" name="action" value="addTreeviewEntry"/><input type="hidden" name="rid" value="'
-        . param('rid')
-        . '"><input type="hidden" name="dump" value="'
-        . $m_sPdmp
-        . '"/></td><td><input type="submit"/></td></tr></table></form>';
+        qq|<tr><td><input type="hidden" name="action" value="addTreeviewEntry"/><input type="hidden" name="dump" value="$m_sPdmp"/></td><td><input type="submit"/></td></tr></table></form>|;
 
     $m_sContent .= $m_oWindow->windowFooter();
 }
@@ -267,7 +267,8 @@ sub addEntry {
     my $t    = shift;
     my $find = shift;
     for ( my $i = 0; $i < @$t; $i++ ) {
-        if ( @$t[$i]->{rid}== $find ) {
+    if ( @$t[$i]->{rid} eq $find ) {
+   
             my %params = Vars();
             my $node   = {};
             foreach my $key ( sort( keys %params ) ) {
@@ -451,6 +452,11 @@ sub rid {
 }
 
 sub load {
+$m_sPdmp = param('dump') ? param('dump') : 'navigation';
+$m_sDump = $m_hrSettings->{tree}{$m_sPdmp};
+$m_nPrid = param('rid');
+
+$m_nPrid =~ s/^a(.*)/$1/;
     $m_sPdmp = param('dump') ? param('dump') : 'navigation';
     $m_sDump = $m_hrSettings->{tree}{$m_sPdmp};
     if ( -e $m_sDump ) {

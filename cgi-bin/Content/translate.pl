@@ -1,6 +1,3 @@
-# use CGI::QuickFormR;
-# use MySQL::Admin::Translate;
-#todo createVars benutzen.
 use vars qw($m_hrLng});
 loadTranslate( $m_hrSettings->{translate} );
 *m_hrLng = \$MySQL::Admin::Translate::lang;

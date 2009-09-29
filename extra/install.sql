@@ -119,6 +119,10 @@ INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES(
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ShowVariables','tables.pl','ShowVariables',5,'tables;navigation','ShowVariables',135);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('chownFile','files.pl','chownFile',5,'tables;navigation','chownFile',136);
 INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('ImportFireFoxBookmarks','links.pl','ImportFireFoxBookmarks',5,'navigation','ImportFireFoxBookmarks',137);
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('rebuildtrash','news.pl','weblog','5','news;navigation','rebuildtrash','138');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('trash','news.pl','trash','5','navigation','trash','139');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('showaddTranslation','addtranslate.pl','showaddTranslation','5','navigation','main','140');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('translate','translate.pl','translate','5','navigation','main','141');
 CREATE TABLE box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
@@ -212,6 +216,8 @@ INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('navigatio
 INSERT INTO submenuadmin (title,`action`,src,`right`,submenu,id) VALUES('env','env','link.gif',5,NULL,10);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Edit links','linkseditTreeview','link.gif',5,'',12);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Explorer','showDir','link.gif',5,'',15);
+INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('trash','trash','','5','','16');
+INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('translate','translate','link.png','5','','17');
 CREATE TABLE trash (
   `table` varchar(50) NOT NULL default '',
   oldId bigint(50) NOT NULL default '0',
