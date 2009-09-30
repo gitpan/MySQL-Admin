@@ -344,7 +344,10 @@ sub deleteNews
         &showMessage($tid[0]);
     } else {
         $m_oDatabase->deleteMessage($th, $del);
-        $m_oDatabase->void("DELETE FROM `replies` where `refererId`  = ?", $del) if ($th eq 'news');
+        my @a_id = $m_oDatabase->fetch_array("select id from  `replies` where refererId = ?",$del);
+        foreach my $id (@a_id){
+                $m_oDatabase->deleteMessage('replies', $del);
+        }
         &show();
     }
 }
@@ -733,10 +736,9 @@ sub threadBody
               ? "/news$id.html"
               : "$ENV{SCRIPT_NAME}?action=showthread&amp;thread=$th&amp;reply=$id";
 
-              if ($th eq 'news') {
-                 my $Permalink = translate('Permalink');
-                $reply .= qq( <a href="$permalink" class="link" >$permalink</a>)
-                if $m_hrSettings->{news}{permalink};
+            if ($th eq 'news') {
+                my $Permalink = translate('Permalink');
+                $reply .= qq( <a href="$permalink" class="link" >$permalink</a>) if $m_hrSettings->{news}{permalink};
                 $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
             }
             BBCODE(\$body, $ACCEPT_LANGUAGE) if ($format eq 'bbcode');
@@ -774,63 +776,128 @@ sub saveUpload
             chmod("$m_hrSettings->{'uploads'}{'chmod'}", "$m_hrSettings->{uploads}{path}/$sra") if (-e "$m_hrSettings->{uploads}{path}/$sra");
         }
     }
-    }
-sub trash{
-        my @trash = $m_oDatabase->fetch_AoH('select * from trash');
-        my %parameter = (
-                         path   => $m_hrSettings->{cgi}{bin} . '/templates',
-                         style  => $m_sStyle,
-                         title  => qq(Trash),
-                         server => $m_hrSettings->{cgi}{serverName},
-                         id     => "n$id",
-                         class  => 'min',
-        );
-        my $window = new HTML::Window(\%parameter);
-        $m_sContent .= $window->windowHeader().q(<table align="center" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%">
+}
+
+sub trash
+{
+    my @trash = $m_oDatabase->fetch_AoH('select * from trash');
+    my %parameter = (
+                     path   => $m_hrSettings->{cgi}{bin} . '/templates',
+                     style  => $m_sStyle,
+                     title  => translate('trash'),
+                     server => $m_hrSettings->{cgi}{serverName},
+                     id     => "windowTrash",
+                     class  => 'min',
+    );
+    my $window = new HTML::Window(\%parameter);
+    $m_sContent .= $window->windowHeader() . qq(<div style="overflow:auto;"><form action="$ENV{SCRIPT_NAME}" method="get" enctype="multipart/form-data">
+    <input type="hidden" name="action" value="rebuildtrash"/>
+    <table align="center" border ="0" cellpadding="0" cellspacing="0" summary="threadBody"  width="100%">
         <tr>
+        <td class="caption"></td>
         <td class="caption">title</td>
         <td class="caption">date</td>
         <td class="caption">user</td>
-        <td class="caption">format</td>
+        <td class="caption">table</td>
         <td class="caption">oldId</td>
-        <td class="caption">right</td>
-        <td class="caption">attach</td>
+        <td class="caption">refererId</td>
+        <td class="caption">cat</td>
         <td class="caption"></td>
         </tr>
         );
 
-        for(my $i = 0; $i <= $#trash; $i++){
-                my $rebuild = translate('rebuild');
-                my $delete  = translate('delete');
-                my $body = $trash[$i]->{body};
-                $m_sContent .= qq(<tr>
+    for (my $i = 0; $i <= $#trash; $i++) {
+        my $rebuild = translate('rebuild');
+        my $delete  = translate('delete');
+        my $body    = $trash[$i]->{body};
+        $m_sContent .= qq(<tr>
+                <td><input type="checkbox" name="markBox$i" class="markBox" value="$trash[$i]->{id}" /></td>
                 <td>$trash[$i]->{title}</td>
                 <td>$trash[$i]->{date}</td>
                 <td>$trash[$i]->{user}</td>
-                <td>$trash[$i]->{format}</td>
+                <td>$trash[$i]->{table}</td>
                 <td align="center">$trash[$i]->{oldId}</td>
-                <td align="center">$trash[$i]->{right}</td>
-                <td align="center">$trash[$i]->{attach}</td>
+                <td align="center">$trash[$i]->{refererId}</td>
+                <td align="center">$trash[$i]->{cat}</td>
                 <td align="right"><a href="$ENV{SCRIPT_NAME}?action=rebuildtrash&amp;id=$trash[$i]->{id}" width="50">$rebuild</a>&#160;<a href="$ENV{SCRIPT_NAME}?action=DeleteEntry&amp;table=trash&amp;&id=$trash[$i]->{id}">$delete</a></td>
                 </tr>);
-                }
-        $m_sContent .= '</table>'.$window->windowFooter();
+    }
+    my $delete   = translate('delete');
+    my $mmark    = translate('selected');
+    my $markAll  = translate('select_all');
+    my $umarkAll = translate('unselect_all');
+    my $rebuild  = translate('rebuild');
+    $m_sContent .= qq{
+                <td colspan="9">
+                <table align="center" border="0" cellpadding="0"  cellspacing="0" summary="layout" width="100%" ><tr>
+                <td><a id="markAll" href="javascript:markInput(true);" class="links">$markAll</a><a class="links" id="umarkAll" style="display:none;" href="javascript:markInput(false);">$umarkAll</a>
+                </td><td align="right">
+                <select  name="MultipleRebuild"  onchange="if(this.value != '$mmark' )this.form.submit();">
+                <option  value="$mmark" selected="selected">$mmark</option>
+                <option value="delete">$delete</option>
+                <option value="rebuild">$rebuild</option>
+                </select>
+                </td></tr></table>
+                };
+    $m_sContent .= '</table></div>' . $window->windowFooter();
 }
-sub rebuildtrash{
+
+sub rebuildtrash
+{
+    unless (param("MultipleRebuild")) {
         my $id = param('id');
-        my $trash = $m_oDatabase->fetch_hashref('select * from trash where id = ?',$id);
-        my %message = (
-                               title  => $trash->{title},
-                               body   => $trash->{body},
-                               thread => 'news',
-                               user   => $trash->{user},
-                               cat    => $trash->{cat},
-                               attach => $trash->{attach},
-                               format => $trash->{format},
-                               ip     => remote_addr()
-        );
-        $m_oDatabase->addMessage(\%message);
-        $m_oDatabase->void('delete from trash where id = ?',$id);
-        &show();
+        my $trash = $m_oDatabase->fetch_hashref('select * from trash where id = ?', $id);
+        if ($trash->{table} eq 'news') {
+            my $err = $m_oDatabase->void("insert into news (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",
+                                         $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{action}, $trash->{format}, $trash->{date}, $trash->{oldId});
+            &show();
+            $m_oDatabase->void("delete from news where id = ?", $id);
+        } else {
+            my $err = $m_oDatabase->void("insert into replies (`title`,`body`,`attach`,`cat`,`right`,`user`,`format`,`refererId`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",
+                                         $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{format}, $trash->{refererId}, $trash->{date}, $trash->{oldId});
+            &showMessage($trash->{refererId});
+            $m_oDatabase->void("delete from replies where id = ?", $id);
+        }
+    } else {
+        &multipleRebuild();
+    }
+}
+
+=head2 multipleRebuild()
+
+Action:
+
+multipleRebuild
+
+=cut
+
+sub multipleRebuild
+{
+    my $a      = param("MultipleRebuild");
+    my @params = param();
+
+    for (my $i = 0; $i <= $#params; $i++) {
+        if ($params[$i] =~ /markBox\d?/) {
+            my $id = param($params[$i]);
+            my $trash = $m_oDatabase->fetch_hashref('select * from trash where id = ?', $id);
+            SWITCH : {
+                if ($a eq "delete"){
+                    $m_oDatabase->void("delete from trash where id = ?", $id);
+                    last SWITCH;
+                }
+                if ($a eq "rebuild") {
+                    if ($trash->{table} eq 'news') {
+                        $m_oDatabase->void("insert into news (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",                                          $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{action}, $trash->{format}, $trash->{date}, $trash->{oldId});
+                        $m_oDatabase->void("delete from trash where id = ?", $id);
+                    } else {
+                        $m_oDatabase->void("insert into replies (`title`,`body`,`attach`,`cat`,`right`,`user`,`format`,`refererId`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",                                           $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{format}, $trash->{refererId}, $trash->{date}, $trash->{oldId});
+                        $m_oDatabase->void("delete from trash where id = ?", $id);
+                    }
+                    last SWITCH;
+                }
+             }
+        }
+    }
+    &show();
 }
 1;

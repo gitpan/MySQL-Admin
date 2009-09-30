@@ -8,12 +8,12 @@ print start_html( -title  => 'HTML::TabWidget',
                                  -src  => '/javascript/tabwidget.js'
                                }
                   ],
-                  -style => '/style/lze/tabwidget.css',
+                  -style => '/style/Crystal/tabwidget.css',
 );
 
 use HTML::TabWidget qw(:all);
 
-my %parameter = ( style   => 'lze',
+my %parameter = ( style   => 'Crystal',
                   path    => "../templates",
                   anchors => [ { text  => 'HTML::TabWidget ',
                                  src   => 'link.png',
@@ -27,26 +27,22 @@ my %parameter = ( style   => 'lze',
                   ],
 );
 initTabWidget( \%parameter );
-print Menu( \%parameter );
-print tabwidgetHeader();
-print Menu( \%parameter );
-print tabwidgetHeader();
-print tabwidgetFooter();
-print tabwidgetFooter();
+
 
 if ( param('do') ) {
     $parameter{anchors}[1]{class} = 'currentLink';
     $parameter{anchors}[1]{text}  = 'Current Page';
-
+    print Menu( \%parameter );
+    print tabwidgetHeader();
     do("./content.pl");
 } else {
     $parameter{anchors}[0]{class} = 'currentLink';
     print Menu( \%parameter );
     print tabwidgetHeader();
-    print "Body";
+    print "Print Body";
 }
 use showsource;
 &showSource($0);
-
+print tabwidgetFooter();
 print end_html;
 

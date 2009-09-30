@@ -1,22 +1,21 @@
 #!/usr/bin/perl
 use strict;
 use lib qw(../lib);
-use DBI::Library qw(:independent );
+use DBI::Library qw(:all );
 use vars qw($db $m_sUser $host $password $m_hrSettings);
 use MySQL::Admin qw(header init);
-use strict;
-init();
-*m_hrSettings = \$MySQL::Admin::settings;
+init('/home/groups/l/li/lindnerei/cgi-bin/config/settings.pl');
+*m_hrSettings = \$MySQL::Admin::m_hrSettings;
 print header;
-my $m_dbh = initDB( { name     => $m_hrSettings->{db}{name},
-                      host     => $m_hrSettings->{db}{host},
-                      user     => $m_hrSettings->{db}{user},
-                      password => $m_hrSettings->{db}{password},
+my $m_dbh = initDB( { name     => $m_hrSettings->{database}{name},
+                      host     => $m_hrSettings->{database}{host},
+                      user     => $m_hrSettings->{database}{user},
+                      password => $m_hrSettings->{database}{password},
                     }
 );
 addexecute( { title       => 'select',
               description => 'show query',
-              sql         => "select *from <TABLE> where `title` = ?",
+              sql         => "select *from querys where `title` = ?",
               return      => "fetch_hashref",
             }
 );

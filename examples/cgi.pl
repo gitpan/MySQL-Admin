@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+use CGI::Carp qw(fatalsToBrowser);
 use lib qw(../lib);
 use MySQL::Admin;
 use strict;

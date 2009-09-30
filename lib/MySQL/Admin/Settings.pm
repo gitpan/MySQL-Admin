@@ -6,10 +6,9 @@ use vars qw($m_hrSettings $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Settings::EXPORT = qw(loadSettings saveSettings $m_hrSettings);
 use MySQL::Admin::Config;
 @ISA                             = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Settings::VERSION = '0.55';
-$DefaultClass                    = 'MySQL::Admin::Settings'
-    unless defined $MySQL::Admin::Settings::DefaultClass;
-$defaultconfig = '%CONFIG%';
+$MySQL::Admin::Settings::VERSION = '0.56';
+$DefaultClass                    = 'MySQL::Admin::Settings' unless defined $MySQL::Admin::Settings::DefaultClass;
+$defaultconfig                   = '%CONFIG%';
 
 =head1 NAME
 
@@ -46,8 +45,9 @@ loadSettings() saveSettings() $m_hrSettings
 
 =cut
 
-sub new {
-    my ( $class, @initializer ) = @_;
+sub new
+{
+    my ($class, @initializer) = @_;
     my $self = {};
     bless $self, ref $class || $class || $DefaultClass;
     return $self;
@@ -57,20 +57,22 @@ sub new {
 
 =cut
 
-sub loadSettings {
-    my ( $self, @p ) = getSelf(@_);
-    my $do = ( defined $p[0] ) ? $p[0] : $defaultconfig;
-    if ( -e $do ) { do $do; }
+sub loadSettings
+{
+    my ($self, @p) = getSelf(@_);
+    my $do = (defined $p[0]) ? $p[0] : $defaultconfig;
+    if (-e $do) {do $do;}
 }
 
 =head2 saveSettings()
 
 =cut
 
-sub saveSettings {
-    my ( $self, @p ) = getSelf(@_);
+sub saveSettings
+{
+    my ($self, @p) = getSelf(@_);
     my $l = defined $p[0] ? $p[0] : $defaultconfig;
-    $self->SUPER::saveConfig( $l, $m_hrSettings, 'm_hrSettings' );
+    $self->SUPER::saveConfig($l, $m_hrSettings, 'm_hrSettings');
 }
 
 =head1 Private
@@ -79,17 +81,12 @@ sub saveSettings {
 
 =cut
 
-sub getSelf {
-    return @_
-        if defined( $_[0] )
-            && ( !ref( $_[0] ) )
-            && ( $_[0] eq 'MySQL::Admin::Settings' );
-    return ( defined( $_[0] )
-                 && ( ref( $_[0] ) eq 'MySQL::Admin::Settings'
-                      || UNIVERSAL::isa( $_[0], 'MySQL::Admin::Settings' ) )
-        )
-        ? @_
-        : ( $MySQL::Admin::Settings::DefaultClass->new, @_ );
+sub getSelf
+{
+    return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'MySQL::Admin::Settings');
+    return (defined($_[0]) && (ref($_[0]) eq 'MySQL::Admin::Settings' || UNIVERSAL::isa($_[0], 'MySQL::Admin::Settings')))
+      ? @_
+      : ($MySQL::Admin::Settings::DefaultClass->new, @_);
 }
 
 =head2 see Also

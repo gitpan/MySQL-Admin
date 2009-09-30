@@ -1,6 +1,7 @@
 #!/usr/bin/perl -w
-use MySQL::Admin;
 use strict;
+use lib qw(../lib);
+use MySQL::Admin qw(param);
 my $m_oCgi = MySQL::Admin->new();
 $m_oCgi->init("/srv/www/cgi-bin/config/settings.pl");
 print $m_oCgi->header;
@@ -21,6 +22,5 @@ if( param('include') ) {
         $m_oCgi->a( { href => "$ENV{SCRIPT_NAME}?include=$qstring" },
         'next' );
 }
-print "Content Source<br/>";
 use showsource;
-&showSource('./content.pl');
+&showSource('./include-oo.pl');

@@ -1,4 +1,5 @@
 #!/usr/bin/perl -w
+use lib qw(../lib);
 use HTML::Editor;
 use HTML::Editor::BBCODE;
 use MySQL::Admin qw(:all);
@@ -6,7 +7,13 @@ use vars qw($m_hrSettings);
 init();
 *m_hrSettings= \$MySQL::Admin::settings;
 print header;
-print start_html(-title => 'HTML::Editor', -script => [{-type => 'text/javascript', -src => '/javascript/editor.js'}], -style => '/style/lze/editor.css',);
+print start_html(-title => 'HTML::Editor', -script => [{-type => 'text/javascript', -src => '/javascript/content.js'}], -style =>[ '/style/lze/lze16.css', '/style/lze/window.css'],);
+print qq|
+<script type="text/javascript">
+var style ="lze";
+var right = 0;
+var htmlright = 0;
+</script>|;
 if(param('action') && param('action') eq 'add') {
         my $txt = param('message');
         if(param('submit') eq translate('preview')) {
@@ -19,7 +26,8 @@ if(param('action') && param('action') eq 'add') {
                 print $txt;
                 print br(), a({href => "$ENV{SCRIPT_NAME}?txt=$txt"}, 'Edit it Again');
         }
-} else {
+        } else {
+
         my %parameter = (
 
                 action => 'add',
@@ -28,15 +36,15 @@ if(param('action') && param('action') eq 'add') {
 
                 class => "min",
 
-                attach => 0,
+                attach => ' ',
 
                 maxlength => '100',
 
-                path => "$m_hrSettings->{cgi}{bin}/templates/",
+                path => "../templates/",
 
                 reply => '',
 
-                server => "$m_hrSettings->{cgi}{serverName}",
+                server => "http://localhost",
 
                 style => 'lze',
 
@@ -45,7 +53,7 @@ if(param('action') && param('action') eq 'add') {
                 headline => "New Message",
                 title    => "title",
                 catlist  => ' ',
-                html     => 0,               # html enabled ? 0 for bbcode
+                html     => 1,               # html enabled ? 0 for bbcode
         );
         my $editor = new HTML::Editor(\%parameter);
 

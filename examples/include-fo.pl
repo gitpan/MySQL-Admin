@@ -1,13 +1,14 @@
 #!/usr/bin/perl -w
-use MySQL::Admin;
+use CGI::Carp qw(fatalsToBrowser);
+use lib qw(../lib);
+use MySQL::Admin qw(:all);
 use strict;
-my $m_oCgi = MySQL::Admin->new();
-$m_oCgi->init();
-print $m_oCgi->header;
+init();
+print header;
 if( param('include') ) {
-    $m_oCgi->include();
-    print $m_oCgi->a( { href => "$ENV{SCRIPT_NAME}" }, 'next' );
-    $m_oCgi->clearSession();
+    include().br();
+    print a( { href => "$ENV{SCRIPT_NAME}" }, 'next' );
+    clearSession();
 } else {
     my %vars = (
         user   => 'guest',
@@ -15,12 +16,11 @@ if( param('include') ) {
         file   => "./content.pl",
         sub    => 'main'
     );
-    my $qstring = $m_oCgi->createSession( \%vars );
+    my $qstring = createSession( \%vars );
     print qq(Action wurde erzeugt.);
-    print $m_oCgi->br(),
-        $m_oCgi->a( { href => "$ENV{SCRIPT_NAME}?include=$qstring" },
+    print br(),
+        a( { href => "$ENV{SCRIPT_NAME}?include=$qstring" },
         'next' );
 }
-print "Content Source<br/>";
 use showsource;
-&showSource('./content.pl');
+&showSource('./include-fo.pl');

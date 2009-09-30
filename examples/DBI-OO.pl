@@ -7,19 +7,19 @@ use MySQL::Admin;
 use strict;
 my $m_oCgi = MySQL::Admin->new();
 $m_oCgi->init();
-*m_hrSettings = \$MySQL::Admin::settings;
+*m_hrSettings = \$MySQL::Admin::m_hrSettings;
 print $m_oCgi->header;
 my ( $dbi, $m_dbh ) = DBI::Library->new(
-    {   name     => $m_hrSettings->{db}{name},
-        host     => $m_hrSettings->{db}{host},
-        user     => $m_hrSettings->{db}{user},
-        password => $m_hrSettings->{db}{password},
+    {   name     => $m_hrSettings->{database}{name},
+        host     => $m_hrSettings->{database}{host},
+        user     => $m_hrSettings->{database}{user},
+        password => $m_hrSettings->{database}{password},
     }
 );
 $dbi->addexecute(
     {   title       => 'select',
         description => 'show query',
-        sql         => "select *from <TABLE> where `title` = ?",
+        sql         => "select *from querys where `title` = ?",
         return      => "fetch_hashref",
     }
 );

@@ -218,23 +218,24 @@ INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Edit link
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Explorer','showDir','link.gif',5,'',15);
 INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('trash','trash','','5','','16');
 INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('translate','translate','link.png','5','','17');
-CREATE TABLE trash (
+CREATE TABLE `trash` (
   `table` varchar(50) NOT NULL default '',
-  oldId bigint(50) NOT NULL default '0',
-  title varchar(100) NOT NULL default '',
+  `oldId` bigint(50) NOT NULL default '0',
+  `title` varchar(100) NOT NULL default '',
   `body` text NOT NULL,
   `date` timestamp NOT NULL default CURRENT_TIMESTAMP on update CURRENT_TIMESTAMP,
   `user` text NOT NULL,
   `right` int(11) NOT NULL default '0',
-  attach varchar(100) NOT NULL default '0',
-  cat varchar(25) NOT NULL default 'main',
+  `attach` varchar(100) NOT NULL default '0',
+  `cat` varchar(25) NOT NULL default 'main',
   `action` varchar(50) NOT NULL default 'news',
-  sticky int(1) NOT NULL default '0',
+  `sticky` int(1) NOT NULL default '0',
   `id` int(11) NOT NULL auto_increment,
-  format varchar(10) NOT NULL default 'bbcode',
-  PRIMARY KEY  (id),
-  FULLTEXT KEY title (title,body)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+  `format` varchar(10) NOT NULL default 'bbcode',
+  `refererId` int(11) NOT NULL,
+  PRIMARY KEY  (`id`),
+  FULLTEXT KEY `title` (`title`,`body`)
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
 CREATE TABLE users (
   pass text NOT NULL,
   `user` varchar(25) NOT NULL default '',

@@ -1,5 +1,5 @@
 #!/usr/bin/perl -w
-use lib qw(lib);
+use lib qw(../lib);
 use HTML::Menu::Pages;
 use Cwd;
 my $cwd  = cwd();
@@ -19,11 +19,11 @@ my %needed = (
 
         start => param('von') ? param('von') : 0,
 
-        path => "/srv/www/cgi-bin/",
+        path => "../",
 
 );
 print $test->makePages(\%needed);
 
-# use showsource;
-# &showSource("./pages.pl");
+use showsource;
+&showSource("./pages.pl");
 print end_html;

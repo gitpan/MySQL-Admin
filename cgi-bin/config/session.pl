@@ -1,7 +1,7 @@
 $VAR1 = {
           'guest' => {
-                       '0992743ca5510d9e5c7b3f1f202aaaef' => {
-                                                               'timestamp' => 1254220003,
+                       '04d210088622de9d80ea146e73a011b9' => {
+                                                               'timestamp' => 1254328087,
                                                                'sub' => 'main',
                                                                'user' => 'guest',
                                                                'file' => 't/content.pl',

@@ -1,18 +1,18 @@
 #!/usr/bin/perl -w
-use lib qw(lib);
+use lib("../lib");
 use strict;
-use MySQL::Admin::GUI::Main;
+use MySQL::Admin qw(:all);
+print header();
+use MySQL::Admin::Main;
 my %set = (
-    path   => "./templates",
-    size   => 16,
-    style  => "lze",
-    title  => "MySQL::Admin::GUI::Main",
-    server => "http://localhost",
-    login  => "",
+path   => "../templates",
+size   => 16,
+style  => "lze",
+title  => "MySQL::Admin::Main",
+server => "http://localhost",
 );
-my $main = new MySQL::Admin::GUI::Main( \%set );
-use MySQL::Admin qw(header);
-print header;
+my $main = new MySQL::Admin::Main( );
+$main->initMain( \%set );
 print $main->Header();
 use showsource;
 &showSource("./main.pl");

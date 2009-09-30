@@ -5,8 +5,8 @@ use lib(".");
 use HTML::Window qw(:all);
 use MySQL::Admin qw(:all);
 print header;
-print start_html(-title => 'Window', -script => [{-type => 'text/javascript', -src => '/javascript/window.js'}], -style => '/style/lze/window.css',);
-my %parameter = (path => "../cgi-bin/templates/", server => "http://localhost", id => "a", style => 'lze');
+print start_html(-title => 'Window', -script => [{-type => 'text/javascript', -src => '/javascript/window.js'}], -style => ['/style/lze/lze16.css','/style/lze/window.css']);
+my %parameter = (path => "../templates/", server => "http://localhost", id => "a", style => 'lze');
 set_closeable(1);
 set_moveable(1);
 set_resizeable(1);
@@ -19,5 +19,4 @@ print "Body", br();
 print windowFooter();
 print a({href => 'javascript:displayWindow()', style => "display:none", id => "showWindows"}, "show Window");
 print end_html;
-
 use showsource;&showSource($0);
