@@ -123,6 +123,37 @@ function markInput(bool){
        hide (bool ? 'markAll' : 'umarkAll' );
 }
 
+function markTables(bool){
+       var body  = document.getElementsByTagName("body")[0];
+       var node = body.getElementsByTagName("option");
+       for(var i=0,j=node.length; i<j; i++)
+       if(node[i].className == 'table')    node[i].selected = bool;
+
+       visible (bool ? 'umarkAll2' : 'markAll2' );
+       hide (bool ? 'markAll2' : 'umarkAll2' );
+}
+var nCurrentShown;
+function DisplayTable(id){
+        hide( nCurrentShown);
+        visible(id);
+        nCurrentShown = id;
+}
+function DisplayKeyWords(b){
+        if(b){
+        document.getElementById('akeywods').className = 'currentLink';
+        document.getElementById('afieldNames').className = 'link';
+        hide( 'divTables');
+        hide( nCurrentShown);
+        visible('selKeyword');
+        document.getElementById('selKeyword').focus();
+        }else{
+        document.getElementById('akeywods').className = 'link';
+        document.getElementById('afieldNames').className = 'currentLink';
+        hide( 'selKeyword');
+        visible('divTables');
+        document.getElementById('divTables').focus();
+        }
+}
 var html = 0;
 
 function enableHtml(){
@@ -834,4 +865,64 @@ function CheckFormCreateDatabase(){
               alert("Insert"+ array.join(" and "));
        }
        return ret;
+}
+
+function showTableMenu(id){
+       hide('DatabaseMenu');
+       hide('SqlEditor');
+       hide('NewEntry');
+       hide('SqlSearch');
+       visible('TableMenu');
+       SetCurrent(id);
+}
+function showDatabaseMenu(id){
+       hide('TableMenu');
+       hide('SqlEditor');
+       hide('NewEntry');
+       hide('SqlSearch');
+       visible('DatabaseMenu');
+       SetCurrent(id);
+}
+function showSqlEditor(id){
+       hide('DatabaseMenu');
+       hide('TableMenu');
+       hide('NewEntry');
+       hide('SqlSearch');
+       visible('SqlEditor');
+       SetCurrent(id);
+}
+function showSearch(id){
+       hide('DatabaseMenu');
+       hide('TableMenu');
+       hide('NewEntry');
+       hide('SqlEditor');
+       visible('SqlSearch');
+       SetCurrent(id);
+}
+function showNewEntry(){
+       hide('DatabaseMenu');
+       hide('SqlEditor');
+       hide('SqlSearch');
+       visible('TableMenu');
+       displayTree('NewEntry');
+}
+function SetCurrent(id){
+       if(document.getElementById("under1menuLink0")){
+              document.getElementById("imagemenuLink0").src ="/style/lze/tabwidget/mlU.png";
+              document.getElementById("under1menuLink0").className ="under";
+              document.getElementById("under2menuLink0").className ="underR";
+       }
+       if(document.getElementById("under1menuLink1")){
+       document.getElementById("imagemenuLink1").src ="/style/lze/tabwidget/mlU.png";
+       document.getElementById("under1menuLink1").className ="under";
+       document.getElementById("under2menuLink1").className ="underR";
+       }
+       if(document.getElementById("under1menuLink2")){
+              document.getElementById("imagemenuLink2").src ="/style/lze/tabwidget/mlU.png";
+              document.getElementById("under1menuLink2").className ="under";
+              document.getElementById("under2menuLink2").className ="underR";
+       }
+       document.getElementById("image"+id).src ="/style/lze/tabwidget/mlO.png";
+       document.getElementById("under1"+id).className ="over";
+       document.getElementById("under2"+id).className ="overR";
 }

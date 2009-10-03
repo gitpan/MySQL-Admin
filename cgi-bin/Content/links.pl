@@ -7,6 +7,7 @@ sub ShowBookmarks
 {
     loadTree($m_hrSettings->{tree}{links});
     *t = \@{$HTML::Menu::TreeView::TreeView[0]};
+    applyRights(\@t);
     my %parameter = (
                      path   => $m_hrSettings->{cgi}{bin} . '/templates',
                      style  => $m_sStyle,
@@ -32,7 +33,7 @@ sub _showBookmarksNavi
     $sortstate = $ss;
     $ss = $ss ? 0 : 1;
     $m_sContent .=
-        '<div align="right">' 
+        '<div align="left">' 
       . br()
       . a(
           {
@@ -66,19 +67,18 @@ sub _showBookmarksNavi
            title => translate('edit')
           },
           translate('edit')
-      )
-      . br()
-      if ($m_nRight >= $m_oDatabase->getActionRight('editTreeview'));
-    $m_sContent .= a(
-                     {
-                      class => $m_sAction eq "ImportOperaBookmarks"
-                      ? 'currentLink'
-                      : 'link',
-                      href  => "$ENV{SCRIPT_NAME}?action=ImportOperaBookmarks",
-                      title => translate("ImportOperaBookmarks")
-                     },
-                     translate("ImportOperaBookmarks")
-    ) if ($m_nRight >= $m_oDatabase->getActionRight('ImportOperaBookmarks'));
+      ) if ($m_nRight >= $m_oDatabase->getActionRight('editTreeview'));
+    $m_sContent .= '&#160;|&#160;'
+      . a(
+          {
+           class => $m_sAction eq "ImportOperaBookmarks"
+           ? 'currentLink'
+           : 'link',
+           href  => "$ENV{SCRIPT_NAME}?action=ImportOperaBookmarks",
+           title => translate("ImportOperaBookmarks")
+          },
+          translate("ImportOperaBookmarks")
+      ) if ($m_nRight >= $m_oDatabase->getActionRight('ImportOperaBookmarks'));
     $m_sContent .= '&#160;|&#160;'
       . a(
           {
@@ -86,7 +86,8 @@ sub _showBookmarksNavi
            ? 'currentLink'
            : 'link',
            href  => "$ENV{SCRIPT_NAME}?action=ImportFireFoxBookmarks&dump=links",
-           title => translate('importFireFox')
+           title => translate('importFireFox'),
+           id    => 'ShareLink'
           },
           translate('importFireFox')
       ) if ($m_nRight >= $m_oDatabase->getActionRight('ImportFireFoxBookmarks'));
@@ -102,7 +103,7 @@ sub _showBookmarksNavi
           translate('shareLink')
       ) if ($m_nRight >= $m_oDatabase->getActionRight('newTreeviewEntry'));
 
-    $m_sContent .= '</div>' . br();
+    $msContent .= q|</div>| . br();
 }
 
 sub ExportOperaBookmarks
@@ -182,8 +183,6 @@ $newFolder<input type="checkbox" name="newFolder"/>
                 $folderId++;
                 my $text = $1 if ($adrFile[$line + 1] =~ /NAME=(.*)$/);
                 $text = $1 if ($adrFile[$line + 2] =~ /NAME=(.*)$/);
-
-                #                 Encode::from_to($text, "utf-8", "iso-8859-1");
                 push @{$treeTempRef},
                   {
                     text => $text =~ /(.{50}).+/ ? "$1..." : $text,
@@ -274,8 +273,6 @@ $newFolder<input type="checkbox"  name="newFolder"/>
             if ($adrFile[$line] =~ /<A HREF="([^"]+)"[^>]+>(.*)<\/A>/) {                    #Node anhängen
                 my $text = $2;
                 my $href = $1;
-
-                #                 Encode::from_to($text, "utf-8", "iso-8859-1");
                 if (defined $text && defined $href) {
                     push @{$treeTempRef},
                       {

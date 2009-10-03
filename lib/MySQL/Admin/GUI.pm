@@ -62,9 +62,9 @@ use vars qw(
   $m_sCurrentUser
   $m_sCurrentPass
 );
-@MySQL::Admin::GUI::EXPORT  = qw(action ContentHeader Body maxlength openFile ChangeDb action Unique);
+@MySQL::Admin::GUI::EXPORT  = qw(action ContentHeader Body maxlength openFile ChangeDb action Unique applyRights);
 @ISA                        = qw(Exporter MySQL::Admin);
-$MySQL::Admin::GUI::VERSION = '0.56';
+$MySQL::Admin::GUI::VERSION = '0.57';
 $m_bMod_perl                = ($ENV{MOD_PERL}) ? 1 : 0;
 local $^W = 0;
 
@@ -314,6 +314,7 @@ sub Body
                template  => 'blog.htm'
     );
     initMain(\%set);
+    $m_sContent = '';
     $m_sContent .= Header();
     $m_sContent .= '<table align="center" border="0" cellpadding="0" cellspacing="0" summary="contentLayout"  class="contentLayout" width="100%"><tr>';
 
@@ -349,7 +350,7 @@ sub Body
                      scriptname  => $ENV{SCRIPT_NAME},
     );
     my $sth = $m_dbh->prepare("select title,action,src from `topnavigation` where `right` <= $m_nRight");
-    $sth->execute() or warn $m_dbh->errstr;
+    $sth->execute() or warn "select title,action,src from `topnavigation` where `right` <= $m_nRight" . $m_dbh->errstr;
     my $hasCurrentlink = 0;
     while (my @a = $sth->fetchrow_array()) {
         my $fm =
@@ -601,7 +602,9 @@ sub ChangeDb
 
 =head2 Unique()
 
-        Gibt einen eindeutigen schlüssel zurück.
+Gibt einen eindeutigen schlüssel zurück.
+
+        $unique =Unique();
 
 =cut
 
@@ -613,11 +616,32 @@ sub Unique
     return $unic;
 }
 
+=head2 applyRights()
+
+updates the user rights to a treeviewLink
+
+        applyRights(\@tree);
+
+=cut
+
+sub applyRights
+{
+    my $t = shift;
+    for (my $i = 0; $i < @$t; $i++) {
+        my $r = defined @$t[$i]->{right} ? @$t[$i]->{right} : 0;
+        if ($r > $m_nRight) {
+            undef @$t[$i];
+        } elsif (defined @{@$t[$i]->{subtree}}) {
+            applyRights(\@{@$t[$i]->{subtree}});
+        }
+    }
+}
+
 =head1 SEE ALSO
 
 L<CGI> L<MySQL::Admin>
 L<DBI> L<DBI::Library> L<DBI::Library::Database>
-L<MySQL::Admin::GUI::Main> L<HTML::TabWidget>
+L<MySQL::Admin::Main> L<HTML::TabWidget>
 L<HTML::Window> L<HTML::Menu::Pages>
 L<HTML::Menu::TreeView> L<HTML::Editor::BBCODE> L<HTML::Editor>
 

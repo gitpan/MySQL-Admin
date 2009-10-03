@@ -63,58 +63,6 @@
 </td>
 </tr>
 </table>
-<script language="JavaScript1.5" type="text/javascript">
-/* <![CDATA[ */
-function showTableMenu(id){
-       hide('DatabaseMenu');
-       hide('SqlEditor');
-       hide('NewEntry');
-       visible('TableMenu');
-       SetCurrent(id);
-}
-function showDatabaseMenu(id){
-       hide('TableMenu');
-       hide('SqlEditor');
-       hide('NewEntry');
-       visible('DatabaseMenu');
-       SetCurrent(id);
-}
-function showSqlEditor(id){
-       hide('DatabaseMenu');
-       hide('TableMenu');
-       hide('NewEntry');
-       visible('SqlEditor');
-       SetCurrent(id);
-}
-function showNewEntry(){
-       hide('DatabaseMenu');
-       hide('SqlEditor');
-       visible('TableMenu');
-       displayTree('NewEntry');
-}
-function SetCurrent(id){
-       if(document.getElementById("under1menuLink0")){
-              document.getElementById("imagemenuLink0").src ="/style/lze/tabwidget/mlU.png";
-              document.getElementById("under1menuLink0").className ="under";
-              document.getElementById("under2menuLink0").className ="underR";
-       }
-       if(document.getElementById("under1menuLink1")){
-       document.getElementById("imagemenuLink1").src ="/style/lze/tabwidget/mlU.png";
-       document.getElementById("under1menuLink1").className ="under";
-       document.getElementById("under2menuLink1").className ="underR";
-       }
-       if(document.getElementById("under1menuLink2")){
-              document.getElementById("imagemenuLink2").src ="/style/lze/tabwidget/mlU.png";
-              document.getElementById("under1menuLink2").className ="under";
-              document.getElementById("under2menuLink2").className ="underR";
-       }
-       document.getElementById("image"+id).src ="/style/lze/tabwidget/mlO.png";
-       document.getElementById("under1"+id).className ="over";
-       document.getElementById("under2"+id).className ="overR";
-}
-
-/* ]]> */
-</script>
 <table id="menupopup" class="menupopup"  border="0" style="display:none;border-width:1px;border-style:solid;" cellpadding="0" cellspacing="0">
 <tr>
 <td align="left" style="border-width:0px;"><a onclick="location.href='[scriptName/]?action=EditFile&amp;name=[action/]'" class="menupoint">[tr=EditFile/]</a></td>
@@ -123,10 +71,10 @@ function SetCurrent(id){
 <td align="left" ><a onclick="location.href='[scriptName/]?action=EditAction&amp;name=[action/]'" class="menupoint">[tr=EditAction/]</a></td>
 </tr>
 <tr>
-<td align="left" ><a onclick="location.href='[scriptName/]?action=EditTopMenu&amp;name=[action/]'" class="menupoint">[tr=EditVMenu/]</a></td>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditTopMenu&amp;name=[action/]'" class="menupoint">[tr=EditHMenu/]</a></td>
 </tr>
 <tr>
-<td align="left" ><a onclick="location.href='[scriptName/]?action=EditVertMenu&amp;name=[action/]'" class="menupoint">[tr=EditHMenu/]</a></td>
+<td align="left" ><a onclick="location.href='[scriptName/]?action=EditVertMenu&amp;name=[action/]'" class="menupoint">[tr=EditVMenu/]</a></td>
 </tr>
 </table>
 [bfooter/]

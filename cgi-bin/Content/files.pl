@@ -156,7 +156,7 @@ sub showDir
               )
               . '&#160;',
             "",
-    );
+    ) if $#t >= 0;
     my $hf = "$ENV{SCRIPT_NAME}?action=FileOpen&file=$elinks";
     my %parameter = (
                      path   => $m_hrSettings->{cgi}{bin} . '/templates',
@@ -212,15 +212,17 @@ sub showDir
           )
           . br()
           . br()
-          . Tree(\@t, $m_sStyle)
+          . ($#t >= 0 ? Tree(\@t, $m_sStyle) : '')
           . br()
           . $window->windowFooter()
     );
+
+    $HTML::Menu::TreeView::orderbyColumn = undef;
     border(0);
     TrOver(0);
     sortTree(0);
-    orderByColumn(0);
-    $HTML::Menu::TreeView::orderbyColumn = undef;
+    orderByColumn(-1);
+    columns(0);
     desc();
 }
 
@@ -251,22 +253,23 @@ sub readFiles
                 my ($gname, $passwd, $gid, $members) = getgrgid $sb->gid;
 
                 if (-d $fl) {
-                    push @TREEVIEW,
-                      {
+                    push @TREEVIEW, {
                         text    => $d,
                         href    => "$href/",
                         empty   => 1,
                         mtime   => $sb->mtime,
                         size    => $sb->size,
                         columns => [
-                                   sprintf("%s",   $sb->size),
-                                   sprintf("%04o", $sb->mode & 07777),
-                                   getpwuid($sb->uid)->name,
-                                   $gname,
-                                   "$year-$mon-$mday $hour:$min:$sec",
-qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter User:'),b = prompt('Enter Group:');if(a != null  && b != null)location.href = '$ENV{SCRIPT_NAME}?action=chownFile&file=$efl&user='+encodeURIComponent(a)+'&gid='+encodeURIComponent(b);">Chown</a></td><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
+                            sprintf("%s",   $sb->size),
+                            sprintf("%04o", $sb->mode & 07777),
+                            getpwuid($sb->uid)->name,
+                            $gname,
+                            "$year-$mon-$mday $hour:$min:$sec",
+                            qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td>
+<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Filename:');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=renameFile&file=$efl&newName='+encodeURIComponent(a);">rename</a></td>
+ <td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter User:'),b = prompt('Enter Group:');if(a != null  && b != null)location.href = '$ENV{SCRIPT_NAME}?action=chownFile&file=$efl&user='+encodeURIComponent(a)+'&gid='+encodeURIComponent(b);">Chown</a></td><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter File Name');location.href = '$ENV{SCRIPT_NAME}?action=newFile&file='+encodeURIComponent(a)+'&dir=$edir';"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></td></tr></table>|
                         ],
-                      };
+                    };
                     last TYPE;
                 }
 
@@ -284,11 +287,11 @@ qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layo
                                    (getpwuid($sb->uid)->name),
                                    $gname,
                                    "$year-$mon-$mday $hour:$min:$sec",
-qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter User:'),b = prompt('Enter Group:');if(a != null  && b != null)location.href = '$ENV{SCRIPT_NAME}?action=chownFile&file=$efl&user='+encodeURIComponent(a)+'&gid='+encodeURIComponent(b);">Chown</a></td><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="$href"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
+qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout" style="whitespace:nowrap;"><tr><td><a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Filename:');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=renameFile&file=$efl&newName='+encodeURIComponent(a);">rename</a></td><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter User:'),b = prompt('Enter Group:');if(a != null  && b != null)location.href = '$ENV{SCRIPT_NAME}?action=chownFile&file=$efl&user='+encodeURIComponent(a)+'&gid='+encodeURIComponent(b);">Chown</a></td><td>&#160;<a class="treeviewLink$m_nSize" href="javascript:var a = prompt('Enter Chmod: 0755');if(a != null )location.href = '$ENV{SCRIPT_NAME}?action=chmodFile&file=$efl&chmod='+encodeURIComponent(a);">chmod</a></td><td><a class="treeviewLink$m_nSize" href="$href"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"/></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteFile&amp;file=$efl" onclick="return confirm('Realy delete ?')"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"/></a></td></tr></table>|,
                         ],
                         image => (-e "$m_hrSettings->{cgi}{DocumentRoot}/style/$m_sStyle/$m_nSize/mimetypes/$suffix.png")
                         ? "$suffix.png"
-                        : 'link.gif',
+                        : 'link_overlay.png',
                       };
                 }
             }
@@ -421,6 +424,15 @@ sub makeDir
         $m_sContent .= translate('fileExists');
     }
     &showDir($sFile);
+}
+
+sub renameFile
+{
+    my $file    = param('file');
+    my $newName = param('newName');
+    my $dir     = $file =~ /(.*\/)[^\/]+$/ ? $1 : '/';
+    rename $file, "$dir$newName";
+    &showDir($dir);
 }
 
 sub chownFile

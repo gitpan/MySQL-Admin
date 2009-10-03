@@ -4,232 +4,503 @@ use Module::Build;
 my $class = Module::Build->subclass(
     class => "Module::Build::Custom",
     code  => <<'END');
-              use vars qw($m_hrSettings $cwd);
-              use File::Copy;
-              use File::Path;
-              use Cwd;
-              $cwd = cwd;
-              my $release = "$cwd/blib/rhtml/";
-              my $dir     = "$cwd/htdocs/";
-              my $path    = '.';
+use vars qw($m_hrSettings $cwd);
+use File::Copy;
+use File::Path;
+use Cwd;
+$cwd = cwd;
+my $release = "$cwd/blib/rhtml/";
+my $dir     = "$cwd/htdocs/";
+my $path    = '.';
 
-              loadSettings("$cwd/cgi-bin/config/settings.pl");
+loadSettings("$cwd/cgi-bin/config/settings.pl");
 
-              sub ACTION_build {
-              my $self = shift;
-              mkpath($release);
-              &change($dir);
-              $release = "$cwd/blib/perl/";
-              $dir     = "$cwd/cgi-bin/";
-              mkpath($release);
-              &change($dir);
-              $self->SUPER::ACTION_build;
-              &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/lze.pl");
-              &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/rpc.pl");
+sub ACTION_build
+{
+    my $self = shift;
+    mkpath($release);
+    &change($dir);
+    $release = "$cwd/blib/perl/";
+    $dir     = "$cwd/cgi-bin/";
+    mkpath($release);
+    &change($dir);
+    $self->SUPER::ACTION_build;
+    &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/lze.pl");
+    &replace('%PATH%', $m_hrSettings->{cgi}{bin}, "$cwd/blib/perl/rpc.pl");
 
-              if(-e "$m_hrSettings->{cgi}{bin}/config/links.pl") {
-                     copy("$m_hrSettings->{cgi}{bin}/config/links.pl", "$cwd/blib/perl/config/links.pl") or die "Copy failed: $m_hrSettings->{cgi}{bin}/config/links.pl $!";
-              }
-              if(-e "$m_hrSettings->{cgi}{bin}/config/tree.pl") {
-                     copy("$m_hrSettings->{cgi}{bin}/config/tree.pl", "$cwd/blib/perl/config/tree.pl") or die "Copy failed: $m_hrSettings->{cgi}{bin}/config/tree.pl $!";
-              }
-              if(-e "$m_hrSettings->{cgi}{DocumentRoot}/.htaccess") {
-                     copy("$m_hrSettings->{cgi}{DocumentRoot}/.htaccess", "$cwd/blib/rhtml/.htaccess") or die $!;
-              } elsif ($m_hrSettings->{cgi}{mod_rewrite}) {
-                     copy("$cwd/extra/.htaccess", "$cwd/blib/rhtml/.htaccess") or die "Copy failed: $!";
-                     &replace('%ALIAS%', $m_hrSettings->{cgi}{alias}, "$cwd/blib/rhtml/.htaccess");
-              }
-#             &replace('%PATH%',   "$cwd/blib/perl",                 "$cwd/blib/perl/config/startup.pl"  );
-#             &replace('%host%',   $m_hrSettings->{cgi}{serverName}, "$cwd/blib/perl/config/startup.pl"  );
-              &replace('%CONFIG%', "$cwd/t/config.pl",               "$cwd/blib/lib/MySQL/Admin/Config.pm"   );
-              &replace('%CONFIG%', "$cwd/t/translate.pl",            "$cwd/blib/lib/MySQL/Admin/Translate.pm");
-              &replace('%CONFIG%', "$cwd/t/settings.pl",             "$cwd/blib/lib/MySQL/Admin/Settings.pm" );
-              &replace('%CONFIG%', "$cwd/t/session.pl",              "$cwd/blib/lib/MySQL/Admin/Session.pm"  );
-              &replace('%CONFIG%', "$cwd/t/actions.pl",              "$cwd/blib/lib/MySQL/Admin/Actions.pm"  );
-              &replace('%CONFIG%', "$cwd/t/settings.pl",             "$cwd/blib/lib/MySQL/Admin.pm"          );
-              &replace('%CONFIG%', "$cwd/t/config.pl",               "$cwd/blib/lib/MySQL/Admin/Config.pm"   );
-              &replace('%CONFIG%', "$cwd/t/settings.pl",             "$cwd/blib/lib/HTML/Editor.pm"      );
-              &replace('%CONFIG%', "$cwd/t/settings.pl",             "$cwd/blib/lib/Template/Quick.pm"   );
-              }
+    if (-e "$m_hrSettings->{cgi}{bin}/config/links.pl") {
+        copy("$m_hrSettings->{cgi}{bin}/config/links.pl", "$cwd/blib/perl/config/links.pl") or die "Copy failed: $m_hrSettings->{cgi}{bin}/config/links.pl $!";
+    }
+    if (-e "$m_hrSettings->{cgi}{bin}/config/tree.pl") {
+        copy("$m_hrSettings->{cgi}{bin}/config/tree.pl", "$cwd/blib/perl/config/tree.pl") or die "Copy failed: $m_hrSettings->{cgi}{bin}/config/tree.pl $!";
+    }
+    if (-e "$m_hrSettings->{cgi}{DocumentRoot}/.htaccess") {
+        copy("$m_hrSettings->{cgi}{DocumentRoot}/.htaccess", "$cwd/blib/rhtml/.htaccess") or die $!;
+    } elsif ($m_hrSettings->{cgi}{mod_rewrite}) {
+        copy("$cwd/extra/.htaccess", "$cwd/blib/rhtml/.htaccess") or die "Copy failed: $!";
+        &replace('%ALIAS%', $m_hrSettings->{cgi}{alias}, "$cwd/blib/rhtml/.htaccess");
+    }
+    if (-e "$cwd/extra/startup.pl") {
+        copy("$cwd/extra/startup.pl", "$cwd/blib/perl/config/startup.pl") or die "Copy failed: $cwd/extra/startup.pl $!";
+    }
+    &replace('%PATH%',   "$m_hrSettings->{cgi}{bin}", "$cwd/blib/perl/config/startup.pl"  );
+    &replace('%host%',   $m_hrSettings->{cgi}{serverName}, "$cwd/blib/perl/config/startup.pl"  );
+    &replace('%CONFIG%', "$cwd/t/config.pl",    "$cwd/blib/lib/MySQL/Admin/Config.pm");
+    &replace('%CONFIG%', "$cwd/t/translate.pl", "$cwd/blib/lib/MySQL/Admin/Translate.pm");
+    &replace('%CONFIG%', "$cwd/t/settings.pl",  "$cwd/blib/lib/MySQL/Admin/Settings.pm");
+    &replace('%CONFIG%', "$cwd/t/session.pl",   "$cwd/blib/lib/MySQL/Admin/Session.pm");
+    &replace('%CONFIG%', "$cwd/t/actions.pl",   "$cwd/blib/lib/MySQL/Admin/Actions.pm");
+    &replace('%CONFIG%', "$cwd/t/settings.pl",  "$cwd/blib/lib/MySQL/Admin.pm");
+    &replace('%CONFIG%', "$cwd/t/config.pl",    "$cwd/blib/lib/MySQL/Admin/Config.pm");
+    &replace('%CONFIG%', "$cwd/t/settings.pl",  "$cwd/blib/lib/HTML/Editor.pm");
+    &replace('%CONFIG%', "$cwd/t/settings.pl",  "$cwd/blib/lib/Template/Quick.pm");
+}
 
-              sub ACTION_realclean {
-                    my $self = shift;
-                    $m_hrSettings->{database}{password} = '';
-                    saveSettings("$cwd/cgi-bin/config/settings.pl");
-                    $self->SUPER::ACTION_realclean;
-              }
+sub ACTION_realclean
+{
+    my $self = shift;
+    $m_hrSettings->{database}{password} = '';
+    saveSettings("$cwd/cgi-bin/config/settings.pl");
+    $self->SUPER::ACTION_realclean;
+}
 
-              sub ACTION_install {
-                    my $self = shift;
-          #             &replace("$cwd/blib/perl",     $m_hrSettings->{cgi}{bin},                          "$cwd/blib/perl/config/startup.pl"  );
-          #             &replace('%host%',             $m_hrSettings->{cgi}{serverName},                   "$cwd/blib/perl/config/startup.pl"  );
-                    &replace("$cwd/t/config.pl",   $m_hrSettings->{cgi}{bin} . '/config/config.pl',    "$cwd/blib/lib/MySQL/Admin/Config.pm"   );
-                    &replace("$cwd/t/translate.pl",$m_hrSettings->{cgi}{bin} . '/config/translate.pl', "$cwd/blib/lib/MySQL/Admin/Translate.pm");
-                    &replace("$cwd/t/settings.pl", $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib/MySQL/Admin/Settings.pm" );
-                    &replace("$cwd/t/session.pl",  $m_hrSettings->{cgi}{bin} . '/config/session.pl',   "$cwd/blib/lib/MySQL/Admin/Session.pm"  );
-                    &replace("$cwd/t/actions.pl",  $m_hrSettings->{cgi}{bin}. '/config/actions.pl',    "$cwd/blib/lib/MySQL/Admin/Actions.pm"  );
-                    &replace("$cwd/t/settings.pl", $m_hrSettings->{cgi}{bin}. '/config/settings.pl',   "$cwd/blib/lib/MySQL/Admin.pm"          );
-                    &replace("$cwd/t/settings.pl", $m_hrSettings->{cgi}{bin}. '/config/settings.pl',   "$cwd/blib/lib/HTML/Editor.pm"      );
-                    &replace("$cwd/t/settings.pl", $m_hrSettings->{cgi}{bin}. '/config/settings.pl',   "$cwd/blib/lib//Template/Quick.pm"  );
-                    $self->SUPER::ACTION_install;
-                    my %conf = (
-                              name => $self->{'properties'}{dbname},
-                              host => $self->{'properties'}{sqlhost},
-                              user => $self->{'properties'}{dbuser},
-                    );
-                    $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
-                    eval 'use lib qw(lib);use DBI::Library ';
-                    unless ($@) {
-                         my $m_oDatabase = new DBI::Library();
-                         $m_oDatabase->initDB(\%conf);
-                         open(IN, "extra/install.sql") or die $!;
-                         local $/;
-                         my $m_sFile = <IN>;
-                         foreach my $sql (split /;\n/, $m_sFile) {
-                              $m_oDatabase->void($sql);
-                              print $/, $sql, $/, $@ if $@;
-                         }
-                         eval 'use MD5';
-                         unless ($@) {
-                              my $md5 = new MD5;
-                              $md5->add('admin');
-                              $md5->add($self->{'properties'}{password});
-                              my $fingerprint = $md5->hexdigest();
-                              $m_oDatabase->void(qq/insert into users (user,pass,email,`right`,cats) values(?,?,?,5,'news|draft|member')/, 'admin',$fingerprint , $self->{'properties'}{email} );
-                         }else{
-                              $m_oDatabase->void(qq/insert into users (user,pass,`right`,cats) values('admin','0008e525bc0894a780297b7f3aed6f58',5,'news|draft')/ );
-                         }
-                    } else {
-                              warn $@;
-                    }
+sub ACTION_install
+{
+    my $self = shift;
 
-                    my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
-                    system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{DocumentRoot}");
-                    system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{bin}");
-                    system("chown $m_hrSettings->{files}{owner}:$m_hrSettings->{files}{group} -R  $prefix/$m_hrSettings->{cgi}{DocumentRoot}");
-                    system("chown $m_hrSettings->{files}{owner}:$m_hrSettings->{files}{group} -R  $prefix/$m_hrSettings->{cgi}{bin}");
+    &replace("$cwd/blib/perl",     $m_hrSettings->{cgi}{bin},                          "$cwd/blib/perl/config/startup.pl"  );
+    &replace('%host%',             $m_hrSettings->{cgi}{serverName},                   "$cwd/blib/perl/config/startup.pl"  );
+    &replace("$cwd/t/config.pl",    $m_hrSettings->{cgi}{bin} . '/config/config.pl',    "$cwd/blib/lib/MySQL/Admin/Config.pm");
+    &replace("$cwd/t/translate.pl", $m_hrSettings->{cgi}{bin} . '/config/translate.pl', "$cwd/blib/lib/MySQL/Admin/Translate.pm");
+    &replace("$cwd/t/settings.pl",  $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib/MySQL/Admin/Settings.pm");
+    &replace("$cwd/t/session.pl",   $m_hrSettings->{cgi}{bin} . '/config/session.pl',   "$cwd/blib/lib/MySQL/Admin/Session.pm");
+    &replace("$cwd/t/actions.pl",   $m_hrSettings->{cgi}{bin} . '/config/actions.pl',   "$cwd/blib/lib/MySQL/Admin/Actions.pm");
+    &replace("$cwd/t/settings.pl",  $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib/MySQL/Admin.pm");
+    &replace("$cwd/t/settings.pl",  $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib/HTML/Editor.pm");
+    &replace("$cwd/t/settings.pl",  $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib//Template/Quick.pm");
+    $self->SUPER::ACTION_install;
+    my %conf = (
+                name => $self->{'properties'}{dbname},
+                host => $self->{'properties'}{sqlhost},
+                user => $self->{'properties'}{dbuser},
+    );
+    $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
+    eval 'use lib qw(lib);use DBI::Library ';
 
-              }
+    unless ($@) {
+        my $m_oDatabase = new DBI::Library();
+        $m_oDatabase->initDB(\%conf);
+        open(IN, "extra/install.sql") or die $!;
+        local $/;
+        my $m_sFile = <IN>;
+        foreach my $sql (split /;\n/, $m_sFile) {
+            $m_oDatabase->void($sql);
+            print $/, $sql, $/, $@ if $@;
+        }
+        eval 'use MD5';
+        unless ($@) {
+            my $md5 = new MD5;
+            $md5->add('admin');
+            $md5->add($self->{'properties'}{password});
+            my $fingerprint = $md5->hexdigest();
+            $m_oDatabase->void(qq/insert into users (user,pass,email,`right`,cats) values(?,?,?,5,'news|draft|member')/, 'admin', $fingerprint, $self->{'properties'}{email});
+        } else {
+            $m_oDatabase->void(qq/insert into users (user,pass,`right`,cats) values('admin','0008e525bc0894a780297b7f3aed6f58',5,'news|draft')/);
+        }
+    } else {
+        warn $@;
+    }
 
-              sub ACTION_uninstall {
-                    my %conf = (
-                              name => $self->{'properties'}{dbname},
-                              host => $self->{'properties'}{sqlhost},
-                              user => $self->{'properties'}{dbuser},
-                    );
-                    if(defined $self->{'properties'}{dbpass}) {
-                              $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
-                    }
-                    eval 'use lib qw(lib);use DBI::Library ';
-                    unless ($@) {
-                              my $m_oDatabase = new DBI::Library();
-                              $m_oDatabase->initDB(\%conf);
-                              open(IN, "extra/uninstall.sql") or die $!;
-                              local $/;
-                              my $m_sFile = <IN>;
-                              foreach my $sql (split /;\n/, $m_sFile) {
-                              $m_oDatabase->void($sql . ";");
-                              print $@ if $@;
-                              }
-                    }
-              }
+    my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
+    system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{DocumentRoot}");
+    system("chmod $m_hrSettings->{files}{chmod} -R  $prefix/$m_hrSettings->{cgi}{bin}");
+    system("chown $m_hrSettings->{files}{owner}:$m_hrSettings->{files}{group} -R  $prefix/$m_hrSettings->{cgi}{DocumentRoot}");
+    system("chown $m_hrSettings->{files}{owner}:$m_hrSettings->{files}{group} -R  $prefix/$m_hrSettings->{cgi}{bin}");
 
-              sub change {
-                    my $d = shift;
-                    chomp($d);
-                    opendir(IN, $d) or die "Install failed: $d $!:$/";
-                    my @files = readdir(IN);
-                    closedir(IN);
-                    for(my $i = 0 ; $i <= $#files ; $i++) {
-                              unless ($files[$i] =~ /^\./) {
-                              my $c = "$d/$files[$i]";
-                              my $e = $c;
-                              $e =~ s/^$dir(.*)/$1/;
-                              unless (-d $c) {
-                                   copy($c, "$release/$e") or die "copy failed: $! $/ $c  $/ $release/$e";
-                              } else {
-                                   mkpath("$release/$e") unless (-d "$release/$e");
-                                   &change("$d/$files[$i]") unless $files[$i] =~ /^\./;
-                              }
-                              }
-                    }
-              }
+}
 
-              sub replace {
-                    my $replace = shift;
-                    my $with    = shift;
-                    my $f       = shift;
-                    chmod 0644, $f;
-                    open(EDIT, "+<$f") or die "$! $f $/";
-                    my $files = '';
-                    while(<EDIT>) {
-                              $_ =~ s/$replace/$with/g;
-                              $files .= $_;
-                    }
-                    seek(EDIT, 0, 0);
-                    print EDIT $files;
-                    truncate(EDIT, tell(EDIT));
-                    close(EDIT);
-                    chmod 0755, $f if($f =~ /.pl$/);
-              }
+sub ACTION_uninstall
+{
+    my %conf = (
+                name => $self->{'properties'}{dbname},
+                host => $self->{'properties'}{sqlhost},
+                user => $self->{'properties'}{dbuser},
+    );
+    if (defined $self->{'properties'}{dbpass}) {
+        $conf{password} = $self->{'properties'}{dbpass} unless $self->{'properties'}{dbpass} =~ /^$/;
+    }
+    eval 'use lib qw(lib);use DBI::Library ';
+    unless ($@) {
+        my $m_oDatabase = new DBI::Library();
+        $m_oDatabase->initDB(\%conf);
+        open(IN, "extra/uninstall.sql") or die $!;
+        local $/;
+        my $m_sFile = <IN>;
+        foreach my $sql (split /;\n/, $m_sFile) {
+            $m_oDatabase->void($sql . ";");
+            print $@ if $@;
+        }
+    }
+}
 
-              sub ACTION_testdb {
-                    my $self = shift;
-                    eval("use File::Copy;");
-                    unless ($@) {
-                              copy("extra/00-DBI-Database.t", "t/00-DBI-Database.t") or die "Copy failed: $!";
-                              copy("extra/00-DBI-OO.t",       "t/00-DBI-OO.t")       or die "Copy failed: $!";
-                              copy("extra/00-DBI-FO.t",       "t/00-DBI-FO.t")       or die "Copy failed: $!";
-                              $self->SUPER::ACTION_test;
-                              unlink("t/00-DBI-Database.t");
-                              unlink("t/00-DBI-OO.t");
-                              unlink("t/00-DBI-FO.t");
-                    }
-              }
+sub change
+{
+    my $d = shift;
+    chomp($d);
+    opendir(IN, $d) or die "Install failed: $d $!:$/";
+    my @files = readdir(IN);
+    closedir(IN);
+    for (my $i = 0; $i <= $#files; $i++) {
+        unless ($files[$i] =~ /^\./) {
+            my $c = "$d/$files[$i]";
+            my $e = $c;
+            $e =~ s/^$dir(.*)/$1/;
+            unless (-d $c) {
+                copy($c, "$release/$e") or die "copy failed: $! $/ $c  $/ $release/$e";
+            } else {
+                mkpath("$release/$e") unless (-d "$release/$e");
+                &change("$d/$files[$i]") unless $files[$i] =~ /^\./;
+            }
+        }
+    }
+}
 
-              sub ACTION_install_examples {
-                    my $self = shift;
-                    my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix}.'/' : '';
+sub replace
+{
+    my $replace = shift;
+    my $with    = shift;
+    my $f       = shift;
+    chmod 0644, $f;
+    open(EDIT, "+<$f") or die "$! $f $/";
+    my $files = '';
+    while (<EDIT>) {
+        $_ =~ s/$replace/$with/g;
+        $files .= $_;
+    }
+    seek(EDIT, 0, 0);
+    print EDIT $files;
+    truncate(EDIT, tell(EDIT));
+    close(EDIT);
+    chmod 0755, $f if ($f =~ /.pl$/);
+}
 
-                    $release = "$prefix$self->{properties}{cgi}/examples";
-                    use Cwd;
-                    my $cwd = cwd;
-                    $dir     = $cwd.'/examples';
-                    mkpath("$release") unless (-d "$release");
-                    &change($dir);
-                    system("chmod 0755 -R  $release");
-              }
+sub ACTION_testdb
+{
+    my $self = shift;
+    eval("use File::Copy;");
+    unless ($@) {
+        copy("extra/00-DBI-Database.t", "t/00-DBI-Database.t") or die "Copy failed: $!";
+        copy("extra/00-DBI-OO.t",       "t/00-DBI-OO.t")       or die "Copy failed: $!";
+        copy("extra/00-DBI-FO.t",       "t/00-DBI-FO.t")       or die "Copy failed: $!";
+        $self->SUPER::ACTION_test;
+        unlink("t/00-DBI-Database.t");
+        unlink("t/00-DBI-OO.t");
+        unlink("t/00-DBI-FO.t");
+    }
+}
 
-              sub loadSettings {
-                    my $do = shift;
-                    if(-e $do) {
-                              do $do;
-                    }
-              }
+sub ACTION_install_examples
+{
+    my $self = shift;
+    my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} . '/' : '';
 
-              sub saveSettings {
-                    my $saveAs = shift;
-                    use Data::Dumper;
-                    my $content = Dumper($m_hrSettings);
-                    $content .= "\$m_hrSettings =\$VAR1;";
-                    use Fcntl qw(:flock);
-                    use Symbol;
-                    my $fh = gensym();
-                    my $rsas = $saveAs =~ /^(\S+)$/ ? $1 : 0;
+    $release = "$prefix$self->{properties}{cgi}/examples";
+    use Cwd;
+    my $cwd = cwd;
+    $dir = $cwd . '/examples';
+    mkpath("$release") unless (-d "$release");
+    &change($dir);
+    system("chmod 0755 -R  $release");
+}
+use HTML::Menu::TreeView qw(:all);
+my ($htdocs, $key);
+my $style = 'Crystal';
+my (@modules, @r, $p, $root);
+my $size       = 32;
+my $Changeroot = 1;
+my %Paths;
 
-                    if($rsas) {
-                              open $fh, ">$rsas.bak" or die "$/saveSettings$/ $! $/ File: $rsas";
-                              flock $fh, 2;
-                              seek $fh, 0, 0;
-                              truncate $fh, 0;
-                              print $fh $content;
-                              close $fh;
-                    }
-                    if(-e "$rsas.bak") {
-                              rename "$rsas.bak", $rsas or die "$/saveSettings$/ $! $/ File: $rsas $/";
-                              do $rsas;
-                    }
-              }
+sub ACTION_install_docs
+{
+    my $self = shift;
+    my $prefix = defined $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} . '/' : '';
+    $htdocs      = "$prefix$self->{properties}{htd}";
+    $key         = "$prefix$self->{properties}{cgi}/lib";
+    $root        = $key;
+    @r           = split "", $root;
+    $Paths{$key} = $key;
+    push @modules, &recursive($key);
+    documentRoot($htdocs);
+    Style($style);
+    size(48);
+    sortTree(1);
+    folderFirst(1);
+    my $tree = Tree(\@modules);
+    open OUT, ">$htdocs/perldoc.htm" or warn "$!";
+    print OUT qq(<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>Perldoc Navigation</title>
+<meta name="description" content="module2treeview"/>
+<meta name="author" content="Dirk Lindner"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<meta name="robots" content="index"/>
+<meta name="revisit-after" content="30 days"/>
+<link href="/style/$style/48/html-menu-treeview/$style.css" rel="stylesheet" type="text/css"/>
+<script language="JavaScript1.5"  type="text/javascript" src="/style/treeview.js"></script>
+<script language="JavaScript1.5"  type="text/javascript" src="/style/$style/48/html-menu-treeview/preload.js"></script>
+</head>
+<body>
+<table align="left" class="mainborder" cellpadding="0"  cellspacing="0" summary="mainLayout" width="100%" >
+<tr>
+<td align="center">$tree</td>
+</tr>
+</table>
+</body>
+</html>);
+    close(OUT);
+}
+
+sub loadSettings
+{
+    my $do = shift;
+    if (-e $do) {
+        do $do;
+    }
+}
+
+sub saveSettings
+{
+    my $saveAs = shift;
+    use Data::Dumper;
+    my $content = Dumper($m_hrSettings);
+    $content .= "\$m_hrSettings =\$VAR1;";
+    use Fcntl qw(:flock);
+    use Symbol;
+    my $fh = gensym();
+    my $rsas = $saveAs =~ /^(\S+)$/ ? $1 : 0;
+
+    if ($rsas) {
+        open $fh, ">$rsas.bak" or die "$/saveSettings$/ $! $/ File: $rsas";
+        flock $fh, 2;
+        seek $fh, 0, 0;
+        truncate $fh, 0;
+        print $fh $content;
+        close $fh;
+    }
+    if (-e "$rsas.bak") {
+        rename "$rsas.bak", $rsas or die "$/saveSettings$/ $! $/ File: $rsas $/";
+        do $rsas;
+    }
+}
+
+sub module2treeview
+{
+    my $module    = shift;
+    my $modulname = shift;
+    my $ddir      = shift;
+    recursiveMkDir("$htdocs/$ddir");
+    my $module2path = $module;
+    $module2path =~ s?::?/?g;
+    my $module2html = $modulname ? $modulname : $module;
+    $module2html =~ s?::?-?g;
+    $module2html =~ s?/([^/])$?$1?g;
+    my $infile = undef;
+
+    if (-e $module) {
+        $infile = $module;
+        $module =~ s?.*/([^/]+)$?$1?;
+    }
+    foreach my $key (@INC) {
+        if (-e $key . "/" . $module2path . ".pm") {
+            $infile = $key . "/" . $module2path . ".pm";
+            last;
+        }
+    }
+    $module =~ s/\.pm//;
+    my $ffsrc = "$ddir/$module" . 'frame.html';
+    my @t = (
+             {
+              text    => $module,
+              href    => $ffsrc,
+              target  => 'rightFrame',
+              subtree => [openTree($module, $infile, $module2html, $ddir),],
+             },
+    );
+    documentRoot($htdocs);
+    Style($style);
+    size($size);
+    my $nsrc  = "$htdocs/$ddir/$module" . 'navi.html';
+    my $nnsrc = "$ddir/$module" . 'navi.html';
+    open OUT, ">$nsrc" or warn "$!";
+    my $tree = Tree(\@t);
+    print OUT qq(<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>$module2html</title>
+<meta name="description" content="$module2html"/>
+<meta name="author" content="Dirk Lindner"/>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"/>
+<meta name="robots" content="index"/>
+<meta name="revisit-after" content="30 days"/>
+<link href="/style/$style/$size/html-menu-treeview/$style.css" rel="stylesheet" type="text/css"/>
+<script language="JavaScript1.5"  type="text/javascript" src="/style/treeview.js"></script>
+<script language="JavaScript1.5"  type="text/javascript" src="/style/$style/$size/html-menu-treeview/preload.js"></script>
+<script language="JavaScript1.5"  type="text/javascript">
+     if (parent.frames.length == 0){
+     location.href = "$ddir/$module.html";
+}
+</script>
+</head>
+<body>
+<table align="left" class="mainborder" cellpadding="0"  cellspacing="0" summary="mainLayout" width="100%" >
+<tr>
+<td align="left" >$tree</td>
+</tr>
+</table>
+</body>
+</html>);
+    close(OUT);
+    my $fsrc = "$htdocs/$ddir/$module" . '.html';
+    open FRAME, ">$fsrc" or warn $!;
+    print FRAME qq(<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+<title>$module</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name="robots" content="index">
+</head>
+<frameset cols="300,*">
+<frame src="$nnsrc" name="navi">
+<frame src="$ffsrc" name="rightFrame">
+</frameset>
+</html>);
+    close(FRAME);
+}
+
+sub recursive
+{
+    my $d = shift;
+    my @DIR;
+    chomp($d);
+    opendir(IN, $d) or warn "$d $!:$/";
+    my @files = readdir(IN);
+    closedir(IN);
+    for (my $i = 0; $i <= $#files; $i++) {
+        my $newFile = "$d/$files[$i]";
+        unless ($files[$i] =~ /^\./) {
+            my $prefix = "";
+            my @fields = split "", $d;
+            for (my $j = 0; $j <= $#fields; $j++) {
+                $prefix .= $fields[$j] if not defined $r[$j];
+            }
+            my $module2html = "$prefix/$files[$i]";
+            $module2html =~ s/\.pm$//;
+            if (-d $newFile && ((not defined $Paths{$newFile})) && ($files[$i] ne 'auto') && !(is_empty($newFile))) {
+                my $node = {
+                            text    => $files[$i],
+                            subtree => [&recursive($newFile)]
+                };
+                $node->{href} = "$module2html.html" if (-e "$newFile.pm");
+                push @DIR, $node;
+            } else {
+                if ($files[$i] =~ /^.*\.pm$/ && has_pod($newFile)) {
+                    my $m = "$prefix/$files[$i]";
+                    $m =~ s?(\w)/?$1::?g;
+                    $m =~ s/\///g;
+                    $m =~ s/\.pm$//;
+                    module2treeview($newFile, $m, $prefix);
+                    push @DIR,
+                      {
+                        text => $m,
+                        href => "$module2html.html",
+                      } unless -d $m
+                          && !-e "$htdocs/$module2html.html";
+                }
+            }
+        }
+    }
+    return @DIR;
+}
+
+sub has_pod
+{
+    my $m = shift;
+    use Fcntl qw(:flock);
+    use Symbol;
+    my $fh = gensym;
+    open $fh, $m or warn "$!: $m";
+    seek $fh, 0, 0;
+    my @lines = <$fh>;
+    close $fh;
+    for (@lines) {
+        return 1 if ($_ =~ /^=head1/);
+    }
+    return 0;
+}
+
+sub openTree
+{
+    my ($module, $infile, $m2, $ddir) = @_;
+    my @TREEVIEW;
+    $module =~ s/\.pm$//;
+    my $fsrc = "$htdocs/$ddir/$module" . 'frame.html';
+    system("pod2html --quiet --noindex --title=$module --infile=$infile  --outfile=$fsrc");
+    use Fcntl qw(:flock);
+    use Symbol;
+    my $fh = gensym;
+    open $fh, $fsrc or warn "$!: $fsrc";
+    seek $fh, 0, 0;
+    my @lines = <$fh>;
+    close $fh;
+
+    for (@lines) {
+        if ($_ =~ /<li><a href="([^"]+)">(.+)<\/a>/) {
+            my $href  = $1;
+            my $title = $2;
+            push @TREEVIEW,
+              {
+                text   => $title,
+                href   => "$ddir/$module" . "frame.html$href",
+                target => 'rightFrame',
+              };
+        }
+
+        $_ =~ s/<body([^>]+)>/<body $1 onload="if (parent.frames.length == 0){location.href = '$ddir\/$module.html';}">/;
+        $_ =~ s/<a/<a target="_parent" /gi;
+    }
+    open OUT, ">$fsrc" or warn "$!: $fsrc";
+    print OUT @lines;
+    close OUT;
+    return @TREEVIEW;
+}
+
+sub is_empty
+{
+    my ($path) = @_;
+    opendir DIR, $path;
+    while (my $entry = readdir DIR) {
+        next if ($entry =~ /^\.\.?$/);
+        closedir DIR;
+        return 0;
+    }
+    closedir DIR;
+    return 1;
+}
+
+sub recursiveMkDir
+{
+    my $d = shift;
+    my @dirs = split "/", $d;
+    my $x;
+    for (my $i = 0; $i <= $#dirs; $i++) {
+        $x = '/' if $i == 0;
+        $x .= $dirs[$i] . '/' if $dirs[$i];
+        mkdir $x unless -d $x;
+    }
+}
 END
 
 my $inctance = $class->new(
@@ -259,6 +530,7 @@ my $inctance = $class->new(
 use Cwd;
 $cwd = cwd;
 $prefix = $inctance->{phash}{runtime_params}{disk}{prefix} ? $inctance->{phash}{runtime_params}{disk}{prefix} : '';
+eval 'use lib qw(/srv/www/cgi-bin/lib);' if -e '/srv/www/cgi-bin/lib';
 eval 'use MySQL::Admin::Settings qw(loadSettings)';
 unless ($@) {
     *m_hrSettings = \$MySQL::Admin::Settings::m_hrSettings;
@@ -280,7 +552,7 @@ $inctance->{properties}{sqlhost}     = $m_hrSettings->{database}{host}     ? $m_
 $inctance->{properties}{dbpass}      = $m_hrSettings->{database}{password} ? $m_hrSettings->{database}{password} : '';
 $inctance->{properties}{group}       = $m_hrSettings->{files}{group}       ? $m_hrSettings->{files}{group}       : 'wwwrun';
 $inctance->{properties}{owner}       = $m_hrSettings->{files}{owner}       ? $m_hrSettings->{files}{owner}       : $ENV{USER};
-$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.56';
+$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.57';
 $inctance->{properties}{password}    = $m_hrSettings->{admin}{pass}        ? $m_hrSettings->{admin}{pass}        : 'testpass';
 $inctance->{properties}{email}       = $m_hrSettings->{admin}{email}       ? $m_hrSettings->{admin}{email}       : '';
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
@@ -333,7 +605,7 @@ unless ($skip) {
     $inctance->{properties}{owner}    = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
     $inctance->{properties}{group}    = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
     $inctance->{properties}{group}    = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
-    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.56';
+    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.57';
     $inctance->{properties}{chmod}    = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
     $inctance->{properties}{password} = Module::Build->prompt("Enter Password for login!", $inctance->{properties}{password});
     $inctance->{properties}{email}    = Module::Build->prompt("Enter your email adress!", $inctance->{properties}{email});
@@ -385,7 +657,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.56',
+    version   => '0.57',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

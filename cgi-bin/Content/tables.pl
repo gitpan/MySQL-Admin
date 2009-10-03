@@ -9,7 +9,7 @@ ChangeDb(
           password => $m_sCurrentPass,
          }
 );
-$PAGES = br() . br();
+$PAGES = br();
 
 =head2 ShowNewTable()
 
@@ -61,75 +61,134 @@ sub ShowNewTable
                 rows   => {}
     );
     sessionValidity(60 * 60);
-    my $m_hUniqueRadio = Unique();
+    my $session = param('create_table_session_new_table');
 
-    for (my $j = 0; $j < $count; $j++) {
-        my $m_hUniqueField   = Unique();
-        my $m_hUniqueType    = Unique();
-        my $m_hUniqueLength  = Unique();
-        my $m_hUniqueNull    = Unique();
-        my $m_hUniqueKey     = Unique();
-        my $m_hUniqueDefault = Unique();
-        my $m_hUniqueExtra   = Unique();
-        my $m_hUniqueComment = Unique();
-        my $m_hUniqueAttrs   = Unique();
-        my $m_hUniquePrimary = Unique();
-        my $atrrs            = $m_oDatabase->GetAttrs(0, "none", $m_hUniqueAttrs);
-        $m_sContent .= qq|
+    if (defined $tbl and defined $session) {
+
+        session($session, $m_sUser);
+        foreach my $row (keys %{$m_hrParams->{rows}}) {
+            my $type    = param($m_hrParams->{rows}{$row}{Type});
+            my $length  = param($m_hrParams->{rows}{$row}{Length});
+            my $fie1d   = param($m_hrParams->{rows}{$row}{Field});
+            my $null    = param($m_hrParams->{rows}{$row}{Null});
+            my $extra   = param($m_hrParams->{rows}{$row}{Extra});
+            my $default = param($m_hrParams->{rows}{$row}{Default});
+            my $attr    = param($m_hrParams->{rows}{$row}{Attrs});
+            my $atrrs   = $m_oDatabase->GetAttrs(0, $attr, $m_hrParams->{rows}{$row}{Attrs});
+            my $prim    = param($m_hrParams->{rows}{$row}{Primary});
+            $m_sContent .= qq|
+    <tr>
+    <td calss="values"><input type="text" value="$fie1d" name="$m_hrParams->{rows}{$row}{Field}"/></td>
+    <td calss="values">|
+              . $m_oDatabase->GetTypes($type, $m_hrParams->{rows}{$row}{Type}) . qq{</td>
+    <td calss="values"><input type="text" value="$length" style="width:40px;" name="$m_hrParams->{rows}{$row}{Length}"/></td>
+    <td calss="values">
+    <select name="$m_hrParams->{rows}{$row}{Null}">
+    <option  value="not NULL" } . ($null eq 'not NULL' ? 'selected="selected"' : '') . qq{>not NULL</option>
+    <option value="NULL" } .      ($null eq 'NULL'     ? 'selected="selected"' : '') . qq{>NULL</option>
+    </select>
+    </td>
+    <td calss="values"><input type="text" value="$default" name="$m_hrParams->{rows}{$row}{Default}"/></td>
+    <td calss="values">
+    <select name="$m_hrParams->{rows}{$row}{Extra}">
+    <option value=""></option>
+    <option value="auto_increment" } . ($extra eq 'auto_increment' ? 'selected="selected"' : '') . qq{>auto_increment</option>
+    </select>
+    </td>
+    <td calss="values">$atrrs</td>
+    <td calss="values">
+    <input type="checkbox" class="checkbox" } . ($prim eq 'on' ? 'checked="checked"' : '') . qq { name="$m_hrParams->{rows}{$row}{Primary}"/> Primary Key
+    </td>
+    </tr>
+    };
+            $vars{rows}{$m_hrParams->{rows}{$row}{Field}} = {
+                                                             Field   => $m_hrParams->{rows}{$row}{Field},
+                                                             Type    => $m_hrParams->{rows}{$row}{Type},
+                                                             Length  => $m_hrParams->{rows}{$row}{Length},
+                                                             Null    => $m_hrParams->{rows}{$row}{Null},
+                                                             Key     => $m_hrParams->{rows}{$row}{Key},
+                                                             Default => $m_hrParams->{rows}{$row}{Default},
+                                                             Extra   => $m_hrParams->{rows}{$row}{Extra},
+                                                             Comment => $m_hrParams->{rows}{$row}{Comment},
+                                                             Attrs   => $m_hrParams->{rows}{$row}{Attrs},
+                                                             Primary => $m_hrParams->{rows}{$row}{Primary},
+            };
+        }
+    } else {
+        for (my $j = 0; $j < $count; $j++) {
+            my $sUniqueField   = Unique();
+            my $sUniqueType    = Unique();
+            my $sUniqueLength  = Unique();
+            my $sUniqueNull    = Unique();
+            my $sUniqueKey     = Unique();
+            my $sUniqueDefault = Unique();
+            my $sUniqueExtra   = Unique();
+            my $sUniqueComment = Unique();
+            my $sUniqueAttrs   = Unique();
+            my $sUniquePrimary = Unique();
+            my $atrrs          = $m_oDatabase->GetAttrs(0, "none", $sUniqueAttrs);
+            $m_sContent .= qq|
               <tr>
-              <td calss="values"><input type="text" value="" name="$m_hUniqueField"/></td>
+              <td calss="values"><input type="text" value="" name="$sUniqueField"/></td>
               <td calss="values">|
-          . $m_oDatabase->GetTypes('INT', $m_hUniqueType) . qq{</td>
-              <td calss="values"><input type="text" value="" style="width:40px;" name="$m_hUniqueLength"/></td>
+              . $m_oDatabase->GetTypes('INT', $sUniqueType) . qq{</td>
+              <td calss="values"><input type="text" value="" style="width:40px;" name="$sUniqueLength"/></td>
               <td calss="values">
-              <select name="$m_hUniqueNull">
+              <select name="$sUniqueNull">
                      <option  value="not NULL">not NULL</option>
                      <option value="NULL">NULL</option>
               </select>
               </td>
-              <td calss="values"><input type="text" value="" name="$m_hUniqueDefault"/></td>
+              <td calss="values"><input type="text" value="" name="$sUniqueDefault"/></td>
               <td calss="values">
-              <select name="$m_hUniqueExtra">
+              <select name="$sUniqueExtra">
                      <option value=""></option>
                      <option value="auto_increment">auto_increment</option>
               </select>
               </td>
               <td calss="values">$atrrs</td>
               <td calss="values">
-              <input type="checkbox" class="checkbox"   name="$m_hUniquePrimary"/> Primary Key
+              <input type="checkbox" class="checkbox"   name="$sUniquePrimary"/> Primary Key
               </td>
               </tr>
      };
-        $vars{rows}{$m_hUniqueField} = {
-                                        Field   => $m_hUniqueField,
-                                        Type    => $m_hUniqueType,
-                                        Length  => $m_hUniqueLength,
-                                        Null    => $m_hUniqueNull,
-                                        Key     => $m_hUniqueKey,
-                                        Default => $m_hUniqueDefault,
-                                        Extra   => $m_hUniqueExtra,
-                                        Comment => $m_hUniqueComment,
-                                        Attrs   => $m_hUniqueAttrs,
-                                        Primary => $m_hUniquePrimary,
-        };
+            $vars{rows}{$sUniqueField} = {
+                                          Field   => $sUniqueField,
+                                          Type    => $sUniqueType,
+                                          Length  => $sUniqueLength,
+                                          Null    => $sUniqueNull,
+                                          Key     => $sUniqueKey,
+                                          Default => $sUniqueDefault,
+                                          Extra   => $sUniqueExtra,
+                                          Comment => $sUniqueComment,
+                                          Attrs   => $sUniqueAttrs,
+                                          Primary => $sUniquePrimary,
+            };
+        }
     }
-    my $m_hUniqueCollation = Unique();
-    my $m_hUniqueEngine    = Unique();
-    my $m_hUniqueComment   = Unique();
-    $vars{Collation} = $m_hUniqueCollation;
-    $vars{Engine}    = $m_hUniqueEngine;
+    my $col              = param($m_hrParams->{Collation});
+    my $sUniqueCollation = $col ? $m_hrParams->{Collation} : Unique();
+    my $extra            = param($m_hrParams->{Engine});
+    my $sUniqueEngine    = $extra ? $m_hrParams->{Engine} : Unique();
+    my $comment          = param($m_hrParams->{Comment});
+    my $sUniqueComment   = $comment ? $m_hrParams->{Comment} : Unique();
+    $vars{Collation} = $sUniqueCollation;
+    $vars{Engine}    = $sUniqueEngine;
+    $vars{Comment}   = $sUniqueComment;
     clearSession();
-    my $qstring   = createSession(\%vars);
-    my $collation = $m_oDatabase->GetCollation($m_hUniqueCollation);
+    my $qstring    = createSession(\%vars);
+    my $collation  = $m_oDatabase->GetCollation($sUniqueCollation, $col);
+    my $sComment   = translate('comment');
+    my $sCollation = translate('collation');
     $m_sContent .= qq(
-       </table>
-       <br/>
-       $collation <input type="text" value="" name="$m_hUniqueComment" align="left"/><br/>
-       <input type="submit" value="$save" align="right"/>
-       <input type="hidden" name="create_table_sessionPop" value="$qstring"/>
-       </form>
-       </div>
-       );
+                        </table>
+                        <br/>
+                        $sCollation: $collation $sComment: <input type="text" value="$comment" name="$sUniqueComment" align="left"/><br/>
+                        <input type="submit" value="$save" align="right"/>
+                        <input type="hidden" name="create_table_session_new_table" value="$qstring"/>
+                        </form>
+                        </div>
+        );
     $m_sContent .= $window->windowFooter();
 }
 
@@ -143,14 +202,14 @@ Neue Tabelle erstellen.
 
 sub SaveNewTable
 {
-    my $session = param('create_table_sessionPop');
+    my $session = param('create_table_session_new_table');
     session($session, $m_sUser);
     my $tbl = $m_hrParams->{table};
     my $pk;
     my @prims;
     if (defined $tbl and defined $session) {
         my $tbl2 = $m_dbh->quote_identifier($tbl);
-        my $sql  = qq|CREATE TABLE IF NOT EXISTS $tbl2 (|;
+        my $sql  = qq|CREATE TABLE IF NOT EXISTS $tbl2 (\n|;
         foreach my $row (keys %{$m_hrParams->{rows}}) {
             my $type   = param($m_hrParams->{rows}{$row}{Type});
             my $length = param($m_hrParams->{rows}{$row}{Length});
@@ -164,12 +223,12 @@ sub SaveNewTable
             my $default = param($m_hrParams->{rows}{$row}{Default});
             my $attrs   = param(param($m_hrParams->{rows}{$row}{Attrs}));
             my $prim    = param($m_hrParams->{rows}{$row}{Primary});
-            push @prims, $fie1d if $prim eq 'on';
+            push @prims, $m_dbh->quote_identifier($fie1d) if $prim eq 'on';
             $default =
               $extra
               ? 'auto_increment'
               : ($default ? 'default ' . $m_oDatabase->quote($default) : '');
-            $sql .= $m_dbh->quote_identifier($fie1d) . " $type $null $default $attrs,";
+            $sql .= $m_dbh->quote_identifier($fie1d) . " $type $null $default $attrs,\n";
         }
         my $comment  = param($m_hrParams->{Comment});
         my $vcomment = $m_dbh->quote($comment);
@@ -177,9 +236,7 @@ sub SaveNewTable
             param($m_hrParams->{Engine})
           ? param($m_hrParams->{Engine})
           : 'MyISAM';
-        for (my $i = 0; $i < $#prims; $i++) {
-            $prims[$i] = $m_dbh->quote_identifier($i);
-        }
+
         my $key = join(' , ', @prims);
         my $character_set = $m_oDatabase->GetCharacterSet(param($m_hrParams->{Collation}));
         $sql .= qq| PRIMARY KEY  ($key) ) ENGINE=$engine DEFAULT CHARSET=$character_set|;
@@ -345,7 +402,7 @@ sub HighlightSQl
                                                                   Warning      => ['<span class="Warning">',      '</span>'],
                                                  },
     );
-    return $hl->highlightText(shift);
+    return '<pre>' . $hl->highlightText(shift) . '</pre>';
 }
 
 =head2 AddFulltext()
@@ -477,7 +534,8 @@ sub DropUnique
 sub ExecSql
 {
     my $sql        = shift;
-    my $showSql    = $_[0] ? $_[0] : param('showsql');
+    my $showSql    = $_[0] ? shift : param('showsql');
+    my $table      = $_[0] ? $_[0] : 0;
     my @statements = split /;\n/, $sql unless param('sql');
     @statements = split /%3B%0D%0A/, uri_escape($sql) if param('sql');
     my %parameter = (
@@ -488,7 +546,7 @@ sub ExecSql
                      id       => 'ExecSql',
                      class    => 'max',
     );
-    $RIBBONCONTENT .= '<br/><br/><div class="sqlBox" style="width:100%;overflow:auto;">' if $showSql;
+    $RIBBONCONTENT .= '<div class="sqlBox" style="width:100%;overflow:auto;">' if $showSql;
     my $id2 = 0;
     my $ret = 1;
 
@@ -504,18 +562,46 @@ sub ExecSql
             $rows_affected = $sth->rows;
             if ($showSql) {
                 if ($rows_affected > 0) {
+                    $RIBBONCONTENT .= br() . $table if ($m_oDatabase->tableExists($table));
                     my $id = 0;
                     while (my $ergebnis = $sth->fetchrow_hashref) {
-                        $RIBBONCONTENT .= '<table border="0" cellpadding="5" cellspacing="0" class="dataBaseTable"  summary="SelectEntry" width="100%" style="border-bottom:1px solid black;border-right:1px solid black;">';
+
+                        $RIBBONCONTENT .= '<table border="0" cellpadding="5" cellspacing="0" class="dataBaseTable"  summary="SelectEntry" width="100%" >';
                         $parameter{id} = "ExecSql$id";
+                        $RIBBONCONTENT .= qq|<tr>|;
+
+                        foreach my $name (keys %$ergebnis) {
+                            $RIBBONCONTENT .= qq(<td class="caption" valign="top" align="left" >$name</td>);
+                        }
+                        $RIBBONCONTENT .= qq|</tr><tr>|;
                         while (my ($spaltenname, $inhalt) = each(%$ergebnis)) {
                             if (!utf8::is_utf8($inhalt)) {
                                 utf8::decode($inhalt);
                             }
-                            $RIBBONCONTENT .=
-qq|<tr><td class="caption" valign="top" align="left" style="border-left:1px solid black;border-top:1px solid black;" width="120">$spaltenname</td><td valign="top" align="left" class="value" style="border-left:1px solid black;border-top:1px solid black;" width="*">|
-                              . encode_entities($inhalt)
-                              . '</td></tr>';
+
+                            $RIBBONCONTENT .= qq|
+                            <td valign="top" align="left" class="value" >|
+                              . encode_entities($inhalt) . '</td>';
+                        }
+                        $RIBBONCONTENT .= qq|</tr>|;
+                        if ($m_oDatabase->tableExists($table)) {
+                            my @p_key = $m_oDatabase->GetPrimaryKey($table);
+                            my $eid   = "";
+                            if ($#p_key > 0) {
+                                for (my $j = 0; $j < $#p_key; $j++) {
+                                    $eid .= "$p_key[$j]=$ergebnis->{$p_key[$j]}&amp;";
+                                }
+                                $eid .= "$p_key[$#p_key]=$ergebnis->{$p_key[$#p_key]}";
+                            } else {
+                                $eid .= "$p_key[0]=$ergebnis->{$p_key[0]}";
+                            }
+                            my $trdelete = translate('delete');
+                            my $tredit   = translate('EditEntry');
+                            my $len      = keys(%$ergebnis);
+                            $RIBBONCONTENT .= qq|<tr>
+                            <td align="right" colspan="$len"><a href="?action=EditEntry&table=$table&$eid">$tredit</a>
+                            &#160;<a href="?action=DeleteEntry&table=$table&$eid" onclick="return confirm('$trdelete ?')">$trdelete</a></td>
+                            </tr>|;
                         }
                         $id++;
                         $RIBBONCONTENT .= '</table><br/>';
@@ -529,9 +615,9 @@ qq|<tr><td class="caption" valign="top" align="left" style="border-left:1px soli
             }
         };
         $id2++;
-        $RIBBONCONTENT .= br() . translate('rows in effect') . $rows_affected if ($rows_affected > 0 && $showSql);
+        $RIBBONCONTENT .= translate('rows in effect') . $rows_affected if ($rows_affected > 0 && $showSql);
     }
-    $RIBBONCONTENT .= '</div><br/>' if $showSql;
+    $RIBBONCONTENT .= '</div>' if $showSql;
 
     return $ret;
 }
@@ -613,8 +699,7 @@ sub ShowTable
              $count > 20
              ? div(
                    {align => 'right'},
-                   translate('links_pro_page') 
-                     . '&#160;|&#160;'
+                   translate('links_pro_page') . ' | '
                      . a(
                          {
                           href  => "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=10&von=$m_nStart&orderBy=$field&desc=$state",
@@ -624,7 +709,7 @@ sub ShowTable
                      )
                      . (
                         $count > 20
-                        ? '&#160;|&#160;'
+                        ? ' | '
                           . a(
                               {
                                href  => "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=20&von=$m_nStart&orderBy=$field&desc=$state",
@@ -636,7 +721,7 @@ sub ShowTable
                      )
                      . (
                         $count > 30
-                        ? '&#160;|&#160;'
+                        ? ' | '
                           . a(
                               {
                                href  => "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=30&von=$m_nStart&orderBy=$field&desc=$state",
@@ -648,7 +733,7 @@ sub ShowTable
                      )
                      . (
                         $count > 100
-                        ? '&#160;|&#160;'
+                        ? ' | '
                           . a(
                               {
                                href  => "$ENV{SCRIPT_NAME}?action=ShowTable&table=$tbl&links_pro_page=100&von=$m_nStart&orderBy=$field&desc=$state",
@@ -1293,8 +1378,7 @@ sub ShowTables
     ShowDbHeader($m_sCurrentDb, 0, 'Show');
     $m_sContent .= div(
                        {align => 'right'},
-                       translate('links_pro_page') 
-                         . '&#160;|&#160;'
+                       translate('links_pro_page') . ' | '
                          . (
                             $#a > 10
                             ? a(
@@ -1492,13 +1576,13 @@ sub ShowTableDetails
                      class    => 'max',
     );
     my $window = new HTML::Window(\%parameter);
-    $m_sContent .= br() . $window->windowHeader();
+    $m_sContent .= $window->windowHeader();
     ShowDbHeader($tbl, 1, "Details");
     $m_sContent .= '<div align="center" style="padding-top:5px;width:100%;padding-right:2px;">';
     my $name = param('table');
     my @a    = $m_oDatabase->fetch_AoH("SHOW TABLE STATUS");
     $m_sContent .= qq(
-              <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="ShowTables">
+              <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="ShowTableDetails">
               <tr><td colspan="2" align="left">$name</td></tr>
               <tr><td class="caption">Name</td><td class="caption">Value</td></tr>);
 
@@ -1509,7 +1593,7 @@ sub ShowTableDetails
             }
         }
     }
-    $m_sContent .= '</table></div><br/>' . $window->windowFooter();
+    $m_sContent .= '</table></div>' . $window->windowFooter();
 }
 
 =head2 AddPrimaryKey()
@@ -1649,19 +1733,18 @@ sub EditTable
                      </tr></table>
               </td></tr></table>|;
 
-        #                 $m_sContent
-        #                     .= qq|<td class="values"><form action="$ENV{SCRIPT_NAME}" method="POST" enctype="multipart/form-data">
-        #                        <table border="0" align="left" cellpadding="2" cellspacing="0" class="dataBaseTable">
-        #                       <tr><td class="values">|
-        #                     . $m_oDatabase->GetCollation($tbl,'charset') . qq|
-        #                       </td>
-        #                       <td class="values"><input type="submit" value="|
-        #                     . translate('ChangeCharset') . qq|"/>
-        #                       </td>
-        #                       </tr></table>
-        #                       <input type="hidden" value="$tbl" name="table"/>
-        #                       <input type="hidden" value="ChangeCharset" name="action"/>
-        #                       </form></td></table></td>|;
+        $m_sContent .= qq|<td class="values"><form action="$ENV{SCRIPT_NAME}" method="POST" enctype="multipart/form-data">
+                               <table border="0" align="left" cellpadding="2" cellspacing="0" class="dataBaseTable">
+                              <tr><td class="values">|
+          . $m_oDatabase->GetCollation($tbl, 'charset') . qq|
+                              </td>
+                              <td class="values"><input type="submit" value="|
+          . translate('ChangeCharset') . qq|"/>
+                              </td>
+                              </tr></table>
+                              <input type="hidden" value="$tbl" name="table"/>
+                              <input type="hidden" value="ChangeCharset" name="action"/>
+                              </form></td></table></td>|;
         $m_sContent .= qq(
               <tr><td >
               <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
@@ -1688,43 +1771,44 @@ sub EditTable
                     rows   => {}
         );
         sessionValidity(60 * 60 * 3);
+
         for (my $j = 0; $j <= $#caption; $j++) {
-            my $field              = $caption[$j]->{'Field'};
-            my $lght               = $caption[$j]->{'Type'};
-            my $length             = ($lght =~ /\((\d+)\)/) ? $1 : '';
-            my $m_hUniqueField     = Unique();
-            my $m_hUniqueType      = Unique();
-            my $m_hUniqueLength    = Unique();
-            my $m_hUniqueNull      = Unique();
-            my $m_hUniqueDefault   = Unique();
-            my $m_hUniqueExtra     = Unique();
-            my $m_hUniqueComment   = Unique();
-            my $m_hUniqueCollation = Unique();
-            my $m_hUniqueAttrs     = Unique();
-            my $m_hUniquePrimary   = Unique();
-            my $clm                = 0;
+            my $field            = $caption[$j]->{'Field'};
+            my $lght             = $caption[$j]->{'Type'};
+            my $length           = ($lght =~ /\((\d+)\)/) ? $1 : '';
+            my $sUniqueField     = Unique();
+            my $sUniqueType      = Unique();
+            my $sUniqueLength    = Unique();
+            my $sUniqueNull      = Unique();
+            my $sUniqueDefault   = Unique();
+            my $sUniqueExtra     = Unique();
+            my $sUniqueComment   = Unique();
+            my $sUniqueCollation = Unique();
+            my $sUniqueAttrs     = Unique();
+            my $sUniquePrimary   = Unique();
+            my $clm              = 0;
 
             for (my $j = 0; $j <= $#p_key; $j++) {
                 $clm = 1 if $p_key[$j] eq $field;
             }
             $m_sContent .= qq|
               <tr class="values">
-              <td><input type="text" value="$field" style="width:80px;" name="$m_hUniqueField"/></td>
+              <td><input type="text" value="$field" style="width:80px;" name="$sUniqueField"/></td>
               <td>|
-              . $m_oDatabase->GetTypes($caption[$j]->{'Type'}, $m_hUniqueType) . qq|</td>
-              <td><input type="text" value="$length" style="width:80px;" name="$m_hUniqueLength"/></td>
+              . $m_oDatabase->GetTypes($caption[$j]->{'Type'}, $sUniqueType) . qq|</td>
+              <td><input type="text" value="$length" style="width:80px;" name="$sUniqueLength"/></td>
               <td>|
-              . $m_oDatabase->GetNull($caption[$j]->{'Null'}, $m_hUniqueNull) . qq|</td>
-              <td><input type="text" value="$caption[$j]->{'Default'}" style="width:80px;" name="$m_hUniqueDefault"/></td>
+              . $m_oDatabase->GetNull($caption[$j]->{'Null'}, $sUniqueNull) . qq|</td>
+              <td><input type="text" value="$caption[$j]->{'Default'}" style="width:80px;" name="$sUniqueDefault"/></td>
               <td>|
-              . $m_oDatabase->GetExtra($caption[$j]->{'Extra'}, $m_hUniqueExtra) . '</td>
+              . $m_oDatabase->GetExtra($caption[$j]->{'Extra'}, $sUniqueExtra) . '</td>
               <td>'
-              . $m_oDatabase->GetColumnCollation($tbl, $field, $m_hUniqueCollation) . qq{</td> <td>} . $m_oDatabase->GetAttrs($tbl, $field, $m_hUniqueAttrs) . qq{</td>
-              <td><input type="text" value="$caption[$j]->{Comment}" style="width:80px;" name="$m_hUniqueComment"/></td><td>}
+              . $m_oDatabase->GetColumnCollation($tbl, $field, $sUniqueCollation) . qq{</td> <td>} . $m_oDatabase->GetAttrs($tbl, $field, $sUniqueAttrs) . qq{</td>
+              <td><input type="text" value="$caption[$j]->{Comment}" style="width:80px;" name="$sUniqueComment"/></td><td>}
               . (
                  $clm
-                 ? qq|<input align="left" type="checkbox"   name="$m_hUniquePrimary" title="Primary Key"  checked="checked"/>|
-                 : qq|<input align="left" type="checkbox"   name="$m_hUniquePrimary" title="Primary Key"/> |
+                 ? qq|<input align="left" type="checkbox"   name="$sUniquePrimary" title="Primary Key"  checked="checked"/>|
+                 : qq|<input align="left" type="checkbox"   name="$sUniquePrimary" title="Primary Key"/> |
               )
               . qq{</td><td><a href="?action=AddFulltext;&amp;table=$tbl&amp;column=$field" title="Add fulltext $field" title="Add fulltext"><img src="/style/$m_sStyle/buttons/fulltext.png" alt="Add fulltext" width="16" height="16" align="left" border="0"/></a>
               <a href="?action=AddIndex;&amp;table=$tbl&amp;column=$field" title="Add Index $field"><img src="/style/$m_sStyle/buttons/index.png" alt="Add Index" width="16" height="16" align="left" border="0"/></a>
@@ -1734,16 +1818,16 @@ sub EditTable
               </tr>
 };
             $vars{rows}{$field} = {
-                                   Field     => $m_hUniqueField,
-                                   Type      => $m_hUniqueType,
-                                   Length    => $m_hUniqueLength,
-                                   Null      => $m_hUniqueNull,
-                                   Default   => $m_hUniqueDefault,
-                                   Extra     => $m_hUniqueExtra,
-                                   Comment   => $m_hUniqueComment,
-                                   Collation => $m_hUniqueCollation,
-                                   Attrs     => $m_hUniqueAttrs,
-                                   Primary   => $m_hUniquePrimary,
+                                   Field     => $sUniqueField,
+                                   Type      => $sUniqueType,
+                                   Length    => $sUniqueLength,
+                                   Null      => $sUniqueNull,
+                                   Default   => $sUniqueDefault,
+                                   Extra     => $sUniqueExtra,
+                                   Comment   => $sUniqueComment,
+                                   Collation => $sUniqueCollation,
+                                   Attrs     => $sUniqueAttrs,
+                                   Primary   => $sUniquePrimary,
             };
         }
         clearSession();
@@ -1776,56 +1860,55 @@ sub EditTable
               </tr>
        );
         sessionValidity(60 * 60);
-        my $m_hUniqueRadio      = Unique();
-        my $m_hUniqueColField   = Unique();
-        my $m_hUniqueColType    = Unique();
-        my $m_hUniqueColLength  = Unique();
-        my $m_hUniqueColNull    = Unique();
-        my $m_hUniqueColKey     = Unique();
-        my $m_hUniqueColDefault = Unique();
-        my $m_hUniqueColExtra   = Unique();
-        my $m_hUniqueColComment = Unique();
-        my $m_hUniqueColAttrs   = Unique();
+        my $sUniqueColField   = Unique();
+        my $sUniqueColType    = Unique();
+        my $sUniqueColLength  = Unique();
+        my $sUniqueColNull    = Unique();
+        my $sUniqueColKey     = Unique();
+        my $sUniqueColDefault = Unique();
+        my $sUniqueColExtra   = Unique();
+        my $sUniqueColComment = Unique();
+        my $sUniqueColAttrs   = Unique();
         $m_sContent .= qq|
               <tr>
-              <td class="values"><input type="text" value="" name="$m_hUniqueColField" style="width:100px;"/></td>
+              <td class="values"><input type="text" value="" name="$sUniqueColField" style="width:100px;"/></td>
               <td class="values">|
-          . $m_oDatabase->GetTypes('INT', $m_hUniqueColType) . qq{</td>
-              <td class="values"><input type="text" value="" style="width:80px;" name="$m_hUniqueColLength"/></td>
+          . $m_oDatabase->GetTypes('INT', $sUniqueColType) . qq{</td>
+              <td class="values"><input type="text" value="" style="width:80px;" name="$sUniqueColLength"/></td>
               <td class="values">
-              <select name="$m_hUniqueColNull" style="width:80px;">
+              <select name="$sUniqueColNull" style="width:80px;">
               <option  value="not NULL">not NULL</option>
               <option value="NULL">NULL</option>
               </select>
               </td>
-              <td class="values"><input type="text" value="" id="default" onkeyup="intputMaskType('default','$m_hUniqueColType')" name="$m_hUniqueColDefault" style="width:80px;"/></td>
+              <td class="values"><input type="text" value="" id="default" onkeyup="intputMaskType('default','$sUniqueColType')" name="$sUniqueColDefault" style="width:80px;"/></td>
               <td class="values">
-              <select name="$m_hUniqueColExtra" style="width:80px;">
+              <select name="$sUniqueColExtra" style="width:80px;">
               <option value=""></option>
               <option value="auto_increment">auto_increment</option>
               </select>
               </td>
         };
-        my $m_hUniqueColCollation = Unique();
-        my $m_hUniqueColEngine    = Unique();
+        my $sUniqueColCollation = Unique();
+        my $sUniqueColEngine    = Unique();
         my $qstringCol = createSession(
                                        {
                                         user      => $m_sUser,
                                         action    => 'SaveNewColumn',
                                         table     => $tbl,
-                                        Collation => $m_hUniqueColCollation,
-                                        Engine    => $m_hUniqueColEngine,
-                                        Primary   => $m_hUniqueColRadio,
+                                        Collation => $sUniqueColCollation,
+                                        Engine    => $sUniqueColEngine,
+                                        Primary   => $sUniqueColRadio,
                                         rows      => {
-                                                 Field   => $m_hUniqueColField,
-                                                 Type    => $m_hUniqueColType,
-                                                 Length  => $m_hUniqueColLength,
-                                                 Null    => $m_hUniqueColNull,
-                                                 Key     => $m_hUniqueColKey,
-                                                 Default => $m_hUniqueColDefault,
-                                                 Extra   => $m_hUniqueColExtra,
-                                                 Comment => $m_hUniqueColComment,
-                                                 Attrs   => $m_hUniqueColAttrs,
+                                                 Field   => $sUniqueColField,
+                                                 Type    => $sUniqueColType,
+                                                 Length  => $sUniqueColLength,
+                                                 Null    => $sUniqueColNull,
+                                                 Key     => $sUniqueColKey,
+                                                 Default => $sUniqueColDefault,
+                                                 Extra   => $sUniqueColExtra,
+                                                 Comment => $sUniqueColComment,
+                                                 Attrs   => $sUniqueColAttrs,
                                         }
                                        }
         );
@@ -1834,13 +1917,13 @@ sub EditTable
         my $sInsert   = translate('insertAfter');
         my $sAfter    = translate('after');
         my $si        = translate('insert');
-        my $collation = $m_oDatabase->GetCollation($m_hUniqueColCollation);
-        my $atrrs     = $m_oDatabase->GetAttrs($tbl, "none", $m_hUniqueColAttrs);
+        my $collation = $m_oDatabase->GetCollation($sUniqueColCollation);
+        my $atrrs     = $m_oDatabase->GetAttrs($tbl, "none", $sUniqueColAttrs);
         my $clmns     = $m_oDatabase->GetColumns($tbl, 'after_name');
         $m_sContent .= qq(
               <td class="values">$collation</td>
               <td class="values">$atrrs</td>
-              <td class="values"><input type="text" value="" name="$m_hUniqueColComment" align="left" style="width:80px;"/><br/></td>
+              <td class="values"><input type="text" value="" name="$sUniqueColComment" align="left" style="width:80px;"/><br/></td>
               </tr>
               <tr>
               <td colspan="10"  >
@@ -1930,26 +2013,26 @@ sub ShowEditIndex
     );
     my $window = new HTML::Window(\%parameter);
     $RIBBONCONTENT .= $window->windowHeader();
-    my $tbl                = param('tbl');
-    my $tbl2               = $m_dbh->quote_identifier($tbl);
-    my $cls                = param('over_cols');
-    my $m_hUniqueTyp       = Unique();
-    my $m_hUniqueIndexName = Unique();
-    my $sField             = translate('field');
-    my $sSize              = translate('size');
-    my $sName              = translate('name');
-    my $sTyp               = translate('type');
-    my $iname              = param('index') ? param('index') : '';
-    my $hashref            = $m_oDatabase->fetch_hashref("SHOW INDEX FROM $tbl2 where `Key_name` = ?", $iname);
+    my $tbl              = param('tbl');
+    my $tbl2             = $m_dbh->quote_identifier($tbl);
+    my $cls              = param('over_cols');
+    my $sUniqueTyp       = Unique();
+    my $sUniqueIndexName = Unique();
+    my $sField           = translate('field');
+    my $sSize            = translate('size');
+    my $sName            = translate('name');
+    my $sTyp             = translate('type');
+    my $iname            = param('index') ? param('index') : '';
+    my $hashref          = $m_oDatabase->fetch_hashref("SHOW INDEX FROM $tbl2 where `Key_name` = ?", $iname);
     $RIBBONCONTENT .= qq|
               <div align="center">
               <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
               <table cellspacing="0" cellpadding="2" border="0" align="center" summary="ShowEditIndex" width="100%">
                      <tr><td>
-                            $sName&#160; <input type="text" value="$iname" name="$m_hUniqueIndexName"/>
+                            $sName&#160; <input type="text" value="$iname" name="$sUniqueIndexName"/>
                      </td><td>
                             $sTyp&#160;
-                            <select name="$m_hUniqueTyp">
+                            <select name="$sUniqueTyp">
                             <option  value="PRIMARY" |
       . ($hashref->{Key_name} eq 'PRIMARY' ? 'selected="selected"' : '') . qq|>PRIMARY</option>
                             <option value="INDEX" |
@@ -1995,8 +2078,8 @@ sub ShowEditIndex
                                  user   => $m_sUser,
                                  action => 'SaveNewIndex',
                                  table  => $tbl,
-                                 name   => $m_hUniqueIndexName,
-                                 typ    => $m_hUniqueTyp,
+                                 name   => $sUniqueIndexName,
+                                 typ    => $sUniqueTyp,
                                  fields => [@FILDS],
                                 }
     );
@@ -2268,6 +2351,12 @@ sub ShowDbHeader
                                   href    => 'javascript:void(0);',
                                   class   => param('sql') ? 'currentLink' : 'link',
                                  },
+                                 {
+                                  text    => translate('search'),
+                                  onclick => "showSearch(this.id)",
+                                  href    => 'javascript:void(0);',
+                                  class   => 'link',
+                                 }
                      ],
     );
     push @{$parameter{anchors}},
@@ -2293,7 +2382,7 @@ sub ShowDbHeader
                       title => translate("Show") . "($tbl)"
                      },
                      translate("Daten") . "($tbl)"
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "Edit" ? 'currentLink' : 'link',
@@ -2301,7 +2390,7 @@ sub ShowDbHeader
                       title => translate("Edit")
                      },
                      translate("Edit")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "Details" ? 'currentLink' : 'link',
@@ -2309,7 +2398,7 @@ sub ShowDbHeader
                       title => translate("Details")
                      },
                      translate("Details")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "Export" ? 'currentLink' : 'link',
@@ -2317,7 +2406,7 @@ sub ShowDbHeader
                       title => translate("Export")
                      },
                      translate("Export")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "AnalyzeTable" ? 'currentLink' : 'link',
@@ -2325,7 +2414,7 @@ sub ShowDbHeader
                       title => translate("AnalyzeTable")
                      },
                      translate("AnalyzeTable")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "OptimizeTable" ? 'currentLink' : 'link',
@@ -2333,7 +2422,7 @@ sub ShowDbHeader
                       title => translate("OptimizeTable")
                      },
                      translate("OptimizeTable")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "RepairTable" ? 'currentLink' : 'link',
@@ -2341,7 +2430,7 @@ sub ShowDbHeader
                       title => translate("RepairTable")
                      },
                      translate("RepairTable")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "NewEntry"
@@ -2351,7 +2440,7 @@ sub ShowDbHeader
                       title => translate("showNewEntry")
                      },
                      translate("NewEntry")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       href    => "$ENV{SCRIPT_NAME}?action=DropTable&amp;table=$tbl",
@@ -2377,7 +2466,7 @@ sub ShowDbHeader
                       title => translate("Databases")
                      },
                      translate("Databases")
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "Show" ? 'currentLink' : 'link',
@@ -2385,7 +2474,7 @@ sub ShowDbHeader
                       title => translate("ShowTables") . "($m_sCurrentDb)"
                      },
                      translate("Database") . "($m_sCurrentDb)"
-    ) . '&#160;|&#160;';
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "ShowUsers" ? 'currentLink' : 'link',
@@ -2393,7 +2482,23 @@ sub ShowDbHeader
                       title => translate('ShowUsers') . "($m_sCurrentDb)"
                      },
                      translate('ShowUsers') . "($m_sCurrentDb)"
-    ) . '&#160;|&#160;';
+    ) . ' | ';
+    $m_sContent .= a(
+                     {
+                      class => $current eq "ShowProcesslist" ? 'currentLink' : 'link',
+                      href  => "$ENV{SCRIPT_NAME}?action=ShowProcesslist",
+                      title => translate('processlist') . "($m_sCurrentDb)"
+                     },
+                     translate('processlist')
+    ) . ' | ';
+    $m_sContent .= a(
+                     {
+                      class => $current eq "ShowVariables" ? 'currentLink' : 'link',
+                      href  => "$ENV{SCRIPT_NAME}?action=ShowVariables",
+                      title => translate('ShowVariables') . "($m_sCurrentDb)"
+                     },
+                     translate('ShowVariables')
+    ) . ' | ';
     $m_sContent .= a(
                      {
                       class => $current eq "Export" ? 'currentLink' : 'link',
@@ -2503,9 +2608,10 @@ sub ShowDbHeader
 </form>
 </div>
 <div>
+<div id="SqlSearch" style="display:none;">) . searchForm() . qq(</div>
+) . tabwidgetFooter() . qq(
 <div id="EXECSQL">$RIBBONCONTENT</div>
 </div>
-) . tabwidgetFooter() . qq(
 <div align="center">$PAGES</div>);
 }
 
@@ -2517,33 +2623,8 @@ Action
 
 sub _insertTables
 {
-    my $selected = lc(shift);
-    my @tables   = $m_oDatabase->fetch_array("show Tables;");
-    my $list     = qq|
-<script language="JavaScript" >
-var nCurrentShown = 0;
-function DisplayTable(id){
-        hide( nCurrentShown);
-        visible(id);
-        nCurrentShown = id;
-}
-function DisplayKeyWords(b){
-        if(b){
-        document.getElementById('akeywods').className = 'currentLink';
-        document.getElementById('afieldNames').className = 'link';
-        hide( 'divTables');
-        hide( nCurrentShown);
-        visible('selKeyword');
-        document.getElementById('selKeyword').focus();
-        }else{
-        document.getElementById('akeywods').className = 'link';
-        document.getElementById('afieldNames').className = 'currentLink';
-        hide( 'selKeyword');
-        visible('divTables');
-        document.getElementById('divTables').focus();
-        }
-}
-</script>
+    my @tables = $m_oDatabase->fetch_array("show Tables;");
+    my $list   = qq|
 <a id="akeywods" onclick="DisplayKeyWords(true)">Keywords</a>&#160;<a id="afieldNames" onclick="DisplayKeyWords(false)" class="currentLink">Field&#160;Names</a>
 <div id="divTables">
 <select onSubmit="return false;" id="tablelist" name="tablelist" size="10" onkeypress="var keyCode = event.keyCode ? event.keyCode :event.charCode ? event.charCode :event.which;if (keyCode != 13) return;var e = document.getElementById('sqlEdit');e.value +=this.options[this.options.selectedIndex].value;return false;" style="width:150px;height:100px;">|;
@@ -3248,8 +3329,7 @@ sub ShowDatabases
     ShowDbHeader($m_sCurrentDb, 0, 'ShowDatabases');
     $m_sContent .= div(
                        {align => 'right'},
-                       translate('links_pro_page') 
-                         . '&#160;|&#160;'
+                       translate('links_pro_page') . ' | '
                          . (
                             $#a > 10
                             ? a(
@@ -3417,4 +3497,200 @@ sub CreateDatabase
     my $db2 = $m_dbh->quote_identifier($db);
     ExecSql("Create DATABASE $db2");
     ShowDatabases();
+}
+
+=head2 ShowProcesslist()
+
+Action
+
+=cut
+
+sub ShowProcesslist
+{
+    my %parameter = (
+                     path     => $m_hrSettings->{cgi}{bin} . '/templates',
+                     style    => $m_sStyle,
+                     template => "wnd.htm",
+                     server   => $m_hrSettings->{serverName},
+                     id       => 'ShowProcesslist',
+                     class    => 'max',
+    );
+    my $window = new HTML::Window(\%parameter);
+    $m_sContent .= $window->windowHeader();
+    ShowDbHeader($m_sCurrentDb, 0, 'ShowProcesslist');
+    $m_sContent .= '<div align="center" style="padding-top:5px;width:100%;padding-right:2px;">';
+    my $processlist = translate('processlist');
+    my @a           = $m_oDatabase->fetch_AoH("Show Processlist");
+    $m_sContent .= qq(
+              <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="ShowProcesslist">
+              <tr>
+              <td class="caption" align="left">Time</td>
+              <td class="caption" align="left">Command</td>
+              <td class="caption" align="left">db</td>
+              <td class="caption" align="left">Id</td>
+              <td class="caption" align="left">Info</td>
+              <td class="caption" align="left">User</td>
+              <td class="caption" align="left">State</td>
+              <td class="caption" align="left">Host</td>
+              </tr>);
+
+    for (my $i = 0; $i <= $#a; $i++) {
+        if ($a[$i]->{Name} eq $name) {
+            $m_sContent .= qq(
+        <tr class="values" align="left">
+        <td class="value" align="left">$a[$i]->{Time}</td>
+        <td class="value" align="left">$a[$i]->{Command}</td>
+        <td class="value" align="left">$a[$i]->{db}</td>
+        <td class="value" align="left">$a[$i]->{Id}</td>
+        <td class="value" align="left">$a[$i]->{Info}</td>
+        <td class="value" align="left">$a[$i]->{User}</td>
+        <td class="value" align="left">$a[$i]->{State}</td>
+        <td class="value" align="left">$a[$i]->{Host}</td>
+        </tr>);
+
+        }
+    }
+    $m_sContent .= '</table></div>' . $window->windowFooter();
+}
+
+=head2 ShowVariables()
+
+Action
+
+=cut
+
+sub ShowVariables
+{
+    my %parameter = (
+                     path     => $m_hrSettings->{cgi}{bin} . '/templates',
+                     style    => $m_sStyle,
+                     template => "wnd.htm",
+                     server   => $m_hrSettings->{serverName},
+                     id       => 'ShowVariables',
+                     class    => 'max',
+    );
+    my $window = new HTML::Window(\%parameter);
+    $m_sContent .= $window->windowHeader();
+    ShowDbHeader($m_sCurrentDb, 0, 'ShowVariables');
+    $m_sContent .= '<div align="center" style="padding-top:5px;width:100%;padding-right:2px;">';
+    my $showVariables = translate('ShowVariables');
+    my @a             = $m_oDatabase->fetch_AoH("Show Variables");
+    $m_sContent .= qq(
+              <table align="center" border="0" cellpadding="2"  cellspacing="0" summary="ShowProcesslist">
+              <tr><td colspan="2" class="caption">$showVariables</td></tr>);
+
+    for (my $i = 0; $i <= $#a; $i++) {
+        if ($a[$i]->{Name} eq $name) {
+            $m_sContent .= qq(<tr class="values" align="left"><td class="value" align="left">$a[$i]->{Variable_name}</td><td class="value" align="left">$a[$i]->{Value}</td></tr>);
+        }
+    }
+    $m_sContent .= '</table></div>' . $window->windowFooter();
+}
+
+=head2 ChangeCharset()
+
+Action
+
+=cut
+
+sub ChangeCharset
+{
+    my $tbl = param('table');
+    $tbl = $m_dbh->quote_identifier($tbl);
+    my $charset = param('charset');
+    $charset = $m_oDatabase->quote($charset);
+    ExecSql("ALTER TABLE $tbl CONVERT TO CHARACTER SET $charset;") & EditTable(param('table'));
+}
+
+sub searchForm
+{
+    my @tables  = $m_oDatabase->fetch_array("show Tables;");
+    my $search  = param('query') ? param('query') : '';
+    my $ts      = translate('search');
+    my $regexp  = translate('regexp');
+    my $checked = defined param('regexp') ? 'checked="checked"' : '';
+    my $form    = qq|<div align="center"><form action="$ENV{SCRIPT_NAME}" name="search" method="post" accept-charset="UTF-8">
+    <table align="center" border="0" cellpadding="0"  cellspacing="0" summary="searchForm" width="100%">
+    <tr><td align="center">
+    <table align="center" border="0" cellpadding="1"  cellspacing="0" summary="searchForm">
+    <tr><td class="caption" align="center">Table</td><td class="caption" align="center">Column</td></tr>
+    <tr><td class="value">
+    <select  id="tablelist" multiple="multiple" name="tablelist" size="5" style="width:150px;">|;
+    for (my $i = 0; $i <= $#tables; $i++) {
+        my @te = param('tablelist');
+        my %KEYS;
+        $KEYS{$_} = 1 foreach @te;
+        $form .= qq(<option value="$tables[$i]") . ($KEYS{$tables[$i]} ? 'selected="selected"' : '') . qq( class="table" onclick="DisplayTable('a$tables[$i]');">$tables[$i]</option>);
+    }
+    $form .= '</select></td><td class="value">';
+
+    for (my $i = 0; $i <= $#tables; $i++) {
+        my $table = $tables[$i];
+        $table = $m_dbh->quote_identifier($table);
+        my @tables2 = $m_oDatabase->fetch_AoH("show columns from $table");
+        $form .= qq|<select multiple="multiple" id="a$tables[$i]" name="$tables[$i]" size="5" style="| . ($i == 0 ? '' : 'display:none;') . qq|width:150px;">|;
+        for (my $j = 0; $j <= $#tables2; $j++) {
+            my @te = param($tables[$i]);
+            my %KEYS;
+            $KEYS{$_} = 1 foreach @te;
+            $form .= '<option ' . ($KEYS{$tables2[$j]->{'Field'}} ? 'selected="selected"' : '') . qq(value="$tables2[$j]->{'Field'}" class="table">$tables2[$j]->{'Field'}</option>);
+        }
+        $form .= '</select>';
+    }
+    my $markAll  = translate('select_all');
+    my $umarkAll = translate('unselect_all');
+    my $limit    = translate('limit');
+    $form .= qq|
+    </td></tr></table>
+    <script language="JavaScript">nCurrentShown = 'a$tables[0]';</script>
+    <a id="markAll2" href="javascript:markTables(true);" class="links">$markAll</a><a class="links" id="umarkAll2" style="display:none;" href="javascript:markTables(false);">$umarkAll</a>
+    </td><td align="center">
+<table valign="top" align="center" border="0" cellpadding="2"  cellspacing="0" summary="searchForm" width="100%">
+<tr><td colspan="2" height="98" valign="middle" align="left">
+or&#160;<input type="radio" class="radioButton" value="or"  name="and_or" checked="checked"/>&#160;
+and&#160;<input type="radio" class="radioButton" value="and"  name="and_or"/><br/>
+$regexp: <input type="checkbox" $checked name="regexp" value="regexp" alt="regexp" align="left" /><br/>
+$limit :<input align="left" type="text" title="$ts" name="limit"  value="10" style="width:20px"/>
+<br/>
+<tr><td colspan="2" valign="bottom" align="left">
+<input  type="hidden" name="action"  value="searchDatabase"/>
+<input align="left" type="text" title="$ts" name="query" id="query" value="$search" style="width:200px"/><input type="submit"  name="submit" value="$ts" maxlength="15" alt="$ts" align="left" />
+</td></tr></table></td></tr></table>
+|;
+    $form .= '</form></div>';
+    return $form;
+}
+
+sub searchDatabase
+{
+    my $sQuery = param('query');
+    $sQuery = $m_oDatabase->quote($sQuery);
+    my $limit  = param('limit') =~ /(\d+)/ ? $1 : 10;
+    my @tables = param('tablelist');
+    my $and_or = param('and_or') ? param('and_or') : 'or';
+    for (my $i = 0; $i <= $#tables; $i++) {
+        my @columns = param($tables[$i]);
+        my $table   = $m_dbh->quote_identifier($tables[$i]);
+        my $hash    = 0;
+        if ($#columns eq -1) {
+            $hash    = 1;
+            @columns = $m_oDatabase->fetch_AoH("show columns from $table");
+        }
+        for (my $j = 0; $j <= $#columns; $j++) {
+            $columns[$j] = ($hash ? $m_dbh->quote_identifier($columns[$j]->{'Field'}) : $m_dbh->quote_identifier($columns[$j]));
+        }
+        my $col;
+
+        if (param('regexp')) {
+            for (my $j = 0; $j < $#columns; $j++) {
+                $col .= " (  $columns[$j] REGEXP  $sQuery ) $and_or ";
+            }
+            $col .= "( $columns[$#columns] REGEXP $sQuery )";
+        } else {
+            $col = join " = $sQuery $and_or ", @columns;
+            $col .= "= $sQuery";
+        }
+        ExecSql("SELECT * FROM $table  where $col LIMIT 0 , $limit;\n", 1, $tables[$i]);
+    }
+    ShowTables();
 }

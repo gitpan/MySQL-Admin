@@ -36,7 +36,7 @@ $CGI::DefaultClass     = 'CGI';
 $DefaultClass          = 'MySQL::Admin' unless defined $MySQL::Admin::DefaultClass;
 $defaultconfig         = '/srv/www/cgi-bin/config/settings.pl';
 $CGI::AutoloadClass    = 'CGI';
-$MySQL::Admin::VERSION = '0.56';
+$MySQL::Admin::VERSION = '0.57';
 $m_bMod_perl           = ($ENV{MOD_PERL}) ? 1 : 0;
 our $hold = 120;    #session ist 120 sekunden gültig.
 @ISA = qw(Exporter CGI);
@@ -381,6 +381,7 @@ sub translate
     }
     $m_hrLng->{en}{$key} = $key unless defined $m_hrLng->{en}{$key};
     $m_hrLng->{de}{$key} = $key unless defined $m_hrLng->{de}{$key};
+    $m_hrLng->{es}{$key} = $key unless defined $m_hrLng->{es}{$key};
     saveTranslate($m_hrSettings->{translate}) unless param('action') eq 'translate';
     return $p[0];
 }

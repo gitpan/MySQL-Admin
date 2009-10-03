@@ -1,13 +1,13 @@
 package DBI::Library::Database;
 use strict;
 use warnings;
-use HTML::Entities;
 use utf8;
-use vars qw( $m_dbh $dsn $DefaultClass @EXPORT_OK @ISA %functions  $mod_rewrite
-  $serverName $min_secs);
-$DefaultClass = 'DBI::Library::Database' unless defined $DBI::Library::Database::DefaultClass;
+use HTML::Entities;
+use vars qw( $m_dbh $m_dsn $m_sDefaultClass @EXPORT_OK @ISA %m_hFunctions  $mod_rewrite
+  $m_sServerName $m_nSecs);
+$m_sDefaultClass = 'DBI::Library::Database' unless defined $DBI::Library::Database::m_sDefaultClass;
 require Exporter;
-use DBI::Library qw(:all $m_dbh $dsn);
+use DBI::Library qw(:all $m_dbh $m_dsn);
 @DBI::Library::Database::ISA    = qw(DBI::Library Exporter);
 @DBI::Library::Database::EXPORT = qw(useexecute);
 @DBI::Library::Database::EXPORT_OK =
@@ -23,9 +23,9 @@ use DBI::Library qw(:all $m_dbh $dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.56';
+$DBI::Library::Database::VERSION = '0.57';
 $mod_rewrite                     = 0;
-$min_secs                        = 10;
+$m_nSecs                         = 10;
 
 =head1 NAME
 
@@ -41,7 +41,7 @@ sub new
 {
     my ($class, @initializer) = @_;
     my $self = {};
-    bless $self, ref $class || $class || $DefaultClass;
+    bless $self, ref $class || $class || $m_sDefaultClass;
     $m_dbh = $self->SUPER::initDB(@initializer) if (@initializer);
     return $self;
 }
@@ -88,15 +88,15 @@ sub addMessage
         $thread = $m_dbh->quote_identifier($thread);
         my $headline = defined $p[0]->{title} ? $p[0]->{title} : 'headline';
         $headline = ($headline =~ /^(.{3,100})$/) ? $1 : 'Invalid headline';
-        my $m_sUser    = defined $p[0]->{user}   ? $p[0]->{user}   : 'guest';
-        my $body       = defined $p[0]->{body}   ? $p[0]->{body}   : 'Body';
-        my $cat        = defined $p[0]->{cat}    ? $p[0]->{cat}    : 'news';
-        my $rght       = $self->catright($cat);
-        my $attach     = defined $p[0]->{attach} ? $p[0]->{attach} : 0;
-        my $format     = defined $p[0]->{format} ? $p[0]->{format} : 'bbcode';
+        my $m_sUser   = defined $p[0]->{user}   ? $p[0]->{user}   : 'guest';
+        my $body      = defined $p[0]->{body}   ? $p[0]->{body}   : 'Body';
+        my $cat       = defined $p[0]->{cat}    ? $p[0]->{cat}    : 'news';
+        my $rght      = $self->catright($cat);
+        my $attach    = defined $p[0]->{attach} ? $p[0]->{attach} : 0;
+        my $format    = defined $p[0]->{format} ? $p[0]->{format} : 'bbcode';
         my $m_sAction = defined $p[0]->{action} ? $p[0]->{action} : 'news';
-        my $sql        = "insert into $thread (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`) values(?,?,?,?,?,?,?,?)";
-        my $sth        = $m_dbh->prepare($sql);
+        my $sql       = "insert into $thread (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`) values(?,?,?,?,?,?,?,?)";
+        my $sth       = $m_dbh->prepare($sql);
         $sth->execute($headline, $body, $attach, $cat, $rght, $m_sUser, $m_sAction, $format) or warn $m_dbh->errstr;
         my $id = $m_dbh->last_insert_id(undef, undef, qw(news news_id));
         $sth->finish();
@@ -228,16 +228,17 @@ sub deleteMessage
     my $sql_backup = "select * from $p_sTable  Where id  = '$id'";
     my $sth_backup = $m_dbh->prepare($sql_backup);
     $sth_backup->execute();
-    my $backup = $sth_backup->fetchrow_hashref();
-    my $c = ($p_sTable eq 'replies') ? 'replies' : $backup->{cat};
+    my $backup    = $sth_backup->fetchrow_hashref();
+    my $c         = ($p_sTable eq 'replies') ? 'replies' : $backup->{cat};
     my $refererId = ($p_sTable eq 'replies') ? $backup->{refererId} : 0;
-    my $sql_trash = "insert into `trash`  (`table`,`oldId`,`title`,`body`,`date`,`user`,`right`,`attach`,`cat`,`sticky`,`refererId`) values(?,?,?,?,?,?,?,?,?,?,?)";
+    my $sql_trash = "insert into `trash`  (`table`,`oldId`,`title`,`body`,`date`,`user`,`right`,`attach`,`cat`,`sticky`,`refererId`,`format`) values(?,?,?,?,?,?,?,?,?,?,?)";
     my $sth_trash = $m_dbh->prepare($sql_trash);
-    $sth_trash->execute($p_sTable, $id, $backup->{title}, $backup->{body}, $backup->{date}, $backup->{user}, $backup->{right}, $backup->{attach}, $c, $backup->{sticky},$refererId);
+    $sth_trash->execute($p_sTable, $id, $backup->{title}, $backup->{body}, $backup->{date}, $backup->{user}, $backup->{right}, $backup->{attach}, $c, $backup->{sticky}, $refererId, $backup->{format});
     my $sql_delete = "DELETE FROM $p_sTable Where id  = '$id'";
     my $sth        = $m_dbh->prepare($sql_delete);
     $sth->execute() or warn $m_dbh->errstr;
     $sth->finish();
+    return 1;
 }
 
 =head2 readMenu()
@@ -300,15 +301,15 @@ sub rss
     $sth->execute();
     my @output;
     push @output,
-qq(Content-Type: text/rss\n\n<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/"><channel><title>$thread</title>\n<description>Die Topics als rss.</description>\n<link>$serverName</link>\n<language>de</language>\n<pubDate>$time</pubDate>\n</channel>\n);
+qq(Content-Type: text/rss\n\n<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://my.netscape.com/rdf/simple/0.9/"><channel><title>$thread</title>\n<description>Die Topics als rss.</description>\n<link>$m_sServerName</link>\n<language>de</language>\n<pubDate>$time</pubDate>\n</channel>\n);
 
     while (my @data = $sth->fetchrow_array()) {
         my $headline = $data[0];
         my $href     = $data[9];
         my $link =
           $mod_rewrite
-          ? "$serverName/$thread.html#$href"
-          : "$serverName?action=$thread;#$href";
+          ? "$m_sServerName/$thread.html#$href"
+          : "$m_sServerName?action=$thread;#$href";
         push @output, "\n<item>\n<title>$headline</title>\n<link>$link</link>\n</item>\n";
     }
     push @output, "\n</rdf:RDF>";
@@ -327,14 +328,14 @@ sub getName
     my ($self, @p) = getSelf(@_);
     my $m_sSid = $p[0];
     if (defined $m_sSid) {
-        my $sql = "SELECT user FROM `users` where sid = ?;";
+        my $sql = 'SELECT user FROM `users` where sid = ?;';
         my $sth = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
         $sth->execute($m_sSid) or warn $m_dbh->errstr;
         my $name = $sth->fetchrow_array();
         $sth->finish();
         return $name;
     } else {
-        return "guest";
+        return 'guest';
     }
 }
 
@@ -359,7 +360,7 @@ sub setSid
     $md5->add($time);
     $md5->add($ip);
     my $fingerprint = $md5->hexdigest();
-    my $sql         = "UPDATE users  SET sid = ? ,ip = ? WHERE user = ?";
+    my $sql         = 'UPDATE users  SET sid = ? ,ip = ? WHERE user = ?';
     my $sth         = $m_dbh->prepare($sql);
     $sth->execute($fingerprint, $ip, $name);
     $sth->finish();
@@ -380,7 +381,7 @@ sub checkSession
     my $ip      = shift @p;
     my $return  = 0;
     if (length($m_sUser) > 3 && length($ssid) > 3) {
-        my $sql = "select sid from  users where  user = ?";
+        my $sql = 'select sid from  users where  user = ?';
         my $sth = $m_dbh->prepare($sql);
         $sth->execute($m_sUser) or warn $m_dbh->errstr;
         my $session = $sth->fetchrow_array();
@@ -401,7 +402,7 @@ sub checkPass
     my $cp = $p[1];
     use MD5;
     if (defined $u) {
-        my $sql = qq(SELECT pass  FROM users where user = ?);
+        my $sql = q(SELECT pass  FROM users where user = ?);
         my $sth = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
         $sth->execute($u);
         my $cpass = $sth->fetchrow_array();
@@ -422,8 +423,8 @@ sub getAction
 {
     my ($self, @p) = getSelf(@_);
     my $m_sAction = $p[0];
-    my $sql        = qq/select * from actions where action = ?/;
-    my $sth        = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
+    my $sql       = q/select * from actions where action = ?/;
+    my $sth       = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
     $sth->execute($m_sAction);
     my $hr = $sth->fetchrow_hashref;
     $sth->finish();
@@ -440,8 +441,8 @@ sub getActionRight
 {
     my ($self, @p) = getSelf(@_);
     my $m_sAction = $p[0];
-    my $sql        = qq/select `right` from actions where action = ?/;
-    my $sth        = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
+    my $sql       = q/select `right` from actions where action = ?/;
+    my $sth       = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
     $sth->execute($m_sAction);
     my $hr = $sth->fetchrow_array;
     $sth->finish();
@@ -471,7 +472,7 @@ sub userright
 {
     my ($self, @p) = getSelf(@_);
     my $sUser = $p[0];
-    my $sql   = "SELECT `right`  FROM users where `user` = ? ";
+    my $sql   = 'SELECT `right`  FROM users where `user` = ? ';
     my $sth   = $m_dbh->prepare($sql);
     $sth->execute($sUser);
     my @q = $sth->fetchrow_array;
@@ -489,7 +490,7 @@ sub topicright
 {
     my ($self, @p) = getSelf(@_);
     my $id  = $p[0];
-    my $sql = "SELECT `right` FROM news where id = ?";
+    my $sql = 'SELECT `right` FROM news where id = ?';
     my $sth = $m_dbh->prepare($sql);
     $sth->execute($id);
     my @q = $sth->fetchrow_array;
@@ -510,7 +511,7 @@ sub catright
     my @select = split /\|/, $cat;
     my %sel;
     $sel{$_} = 1 foreach @select;
-    my @cats   = $self->fetch_AoH("SELECT * FROM cats");
+    my @cats   = $self->fetch_AoH('SELECT * FROM cats');
     my $nRight = 0;
     for (my $i = 0; $i <= $#cats; $i++) {
         $nRight = $cats[$i]->{right} if ($sel{$cats[$i]->{name}} && $cats[$i]->{right} > $nRight);
@@ -532,7 +533,7 @@ sub isMember
     my ($self, @p) = getSelf(@_);
     my $m_sUser = lc $p[0];
     if (defined $m_sUser) {
-        my $sth = $m_dbh->prepare("SELECT user  FROM users where user = ?") or warn $m_dbh->errstr;
+        my $sth = $m_dbh->prepare('SELECT user  FROM users where user = ?') or warn $m_dbh->errstr;
         $sth->execute($m_sUser);
         my ($member) = $sth->fetchrow_array();
         $sth->finish();
@@ -555,7 +556,7 @@ sub hasAcount
     my ($self, @p) = getSelf(@_);
     my $mail = lc $p[0];
     if (defined $mail) {
-        my $sth = $m_dbh->prepare("SELECT email  FROM users where email = ?") or warn $m_dbh->errstr;
+        my $sth = $m_dbh->prepare('SELECT email  FROM users where email = ?') or warn $m_dbh->errstr;
         $sth->execute($mail);
         my ($email) = $sth->fetchrow_array();
         $sth->finish();
@@ -582,7 +583,7 @@ sub addUser
     $md5->add($newpass);
     my $fingerprint = $md5->hexdigest();
     my $mail        = $p[2];
-    my $sql_addUser = qq/insert into users (user,pass,email,`right`,cats) values(?,?,?,1,'news|member')/;
+    my $sql_addUser = q/insert into users (user,pass,email,`right`,cats) values(?,?,?,1,'news|member')/;
     my $sth         = $m_dbh->prepare($sql_addUser);
     my $anzahl      = $sth->execute($newuser, $fingerprint, $mail) or warn $m_dbh->errstr;
     $sth->finish();
@@ -614,8 +615,8 @@ set serverName.
 sub serverName
 {
     my ($self, @p) = getSelf(@_);
-    if (defined $p[0]) {$serverName = $p[0];}
-    else               {return $serverName;}
+    if (defined $p[0]) {$m_sServerName = $p[0];}
+    else               {return $m_sServerName;}
 }
 
 =head2 floodtime()
@@ -627,8 +628,8 @@ set floodtime.
 sub floodtime
 {
     my ($self, @p) = getSelf(@_);
-    if (defined $p[0]) {$min_secs = $p[0];}
-    else               {return $min_secs;}
+    if (defined $p[0]) {$m_nSecs = $p[0];}
+    else               {return $m_nSecs;}
 }
 
 =head2 searchDB()
@@ -762,19 +763,19 @@ sub checkFlood
 {
     my ($self, @p) = getSelf(@_);
     my $ip = $p[0];
-    $min_secs = defined $p[1] ? $p[1] : $min_secs;
+    $m_nSecs = defined $p[1] ? $p[1] : $m_nSecs;
     my $return = 0;
     if (defined $ip) {
-        my $sql = qq(SELECT ti  FROM flood where remote_addr = ? );
+        my $sql = q(SELECT ti  FROM flood where remote_addr = ? );
         my $sth = $m_dbh->prepare($sql) or warn $m_dbh->errstr;
         $sth->execute($ip);
         my $ltime = $sth->fetchrow_array();
         unless (defined $ltime) {
-            $self->void("insert into flood (remote_addr, ti) VALUES(?,?) ", $ip, time());
+            $self->void('insert into flood (remote_addr, ti) VALUES(?,?)', $ip, time());
             $return = 1;
         } else {
-            $return = (time() - $ltime > $min_secs) ? 1 : 0;
-            $self->void("update flood set ti =?  where remote_addr = ?; ", time(), $ip);
+            $return = (time() - $ltime > $m_nSecs) ? 1 : 0;
+            $self->void('update flood set ti =?  where remote_addr = ?', time(), $ip);
         }
         $sth->finish();
     }
@@ -791,7 +792,7 @@ sub checkFlood
 sub GetAutoIncrementValue
 {
     my ($self, @p) = getSelf(@_);
-    my $name = my @a = $self->fetch_AoH("SHOW TABLE STATUS");
+    my $name = my @a = $self->fetch_AoH('SHOW TABLE STATUS');
     for (my $i = 0; $i <= $#a; $i++) {
         return $a[$i]->{Auto_increment} if ($a[$i]->{Name} eq $name);
     }
@@ -799,7 +800,7 @@ sub GetAutoIncrementValue
 
 =head2 GetPrimaryKey()
 
-       liefert die primary_key(s) der tabelle zurÃ¼ck
+       liefert die primary_key(s) der tabelle zurueck
 
        @array = GetPrimaryKey(table)
 
@@ -810,6 +811,7 @@ sub GetPrimaryKey
     my ($self, @p) = getSelf(@_);
     my $tbl = $p[0];
     if (defined $tbl) {
+        $tbl = $m_dbh->quote_identifier($tbl);
         my @caption = $self->fetch_AoH("show columns from $tbl");
         my @return;
         for (my $j = 0; $j <= $#caption; $j++) {
@@ -824,7 +826,7 @@ sub GetPrimaryKey
 
 =head2 GetAutoIncrement()
 
-       liefert die auto_increment zeile zurÃ¼ck
+       liefert die auto_increment zeile zurueck
 
        GetAutoIncrement(table)
 
@@ -863,7 +865,7 @@ sub fetch_string
 
 =head2 GetDataBases()
 
-     Gibt eine auswahl liste der Datenabanken zurÃ¼ck
+     Gibt eine auswahl liste der Datenabanken zurueck
 
 =cut
 
@@ -873,7 +875,7 @@ sub GetDataBases
     my $name = $p[0] ? shift(@p) : 'm_ChangeCurrentDb';
     my $change = $p[0] ? 'onchange="this.form.submit()"' : '';
     my $m_sCurrentDb = $self->CurrentDb();
-    my @dbs          = $self->fetch_array("show Databases");
+    my @dbs          = $self->fetch_array('show Databases');
     my $return       = qq|<select align="center" $change name="$name" style="width:75%" >|;
     $return .=
       $_ eq $m_sCurrentDb
@@ -886,7 +888,7 @@ sub GetDataBases
 
 =head2 GetTables()
 
-Gibt eine auswahl liste der Tabellen zurÃ¼ck
+        GetTables(name,selected )
 
 =cut
 
@@ -895,7 +897,7 @@ sub GetTables
     my ($self, @p) = getSelf(@_);
     my $name     = $p[0] ? shift : 'm_ChangeCurrentDb';
     my $selected = $p[0] ? shift : '';
-    my @tbl      = $self->fetch_array("show Tables");
+    my @tbl      = $self->fetch_array('show Tables');
     my $return   = qq|<select align="left" name="$name"  >|;
     $return .= qq|<option  value="$_"  | . ($_ eq $selected ? 'selected="selected"' : '') . qq|>$_</option>| foreach @tbl;
     $return .= '</select>';
@@ -904,13 +906,14 @@ sub GetTables
 
 =head2 TableCount4Db()
 
-     Gibt die anzahl der tabellen fÃ¼r die angegebene Datenbank zurÃ¼ck.
+     Gibt die anzahl der tabellen fuer die angegebene Datenbank zurueck.
 
 =cut
 
 sub TableCount4Db
 {
     my ($self, @p) = getSelf(@_);
+    $p[0] = $m_dbh->quote_identifier($p[0]);
     my @count = $self->fetch_array("show tables from $p[0]");
     warn $@ if $@;
     return $#count > 0 ? $#count : 0;
@@ -918,7 +921,7 @@ sub TableCount4Db
 
 =head2 GetCharacterSet()
 
-        gibt das Charset zu coalation zurÃ¼ck.
+        gibt das Charset zu coalation zurueck.
 
         GetCharacterSet(coalation);
 
@@ -938,7 +941,7 @@ sub GetCharacterSet
 
 =head2 GetEngines()
 
-        gibt die verfÃ¼gbaren Engines zurÃ¼ck.
+        gibt die verfuegbaren Engines zurueck.
 
         GetEngines(tabelle);
 
@@ -950,8 +953,8 @@ sub GetEngines
     my $tbl  = shift @p;
     my $name = shift @p;
     if (defined $tbl) {
-        my @co     = $self->fetch_AoH("SHOW ENGINES");
-        my $status = $self->fetch_hashref("SHOW TABLE STATUS where `Name` = ?  ", $tbl);
+        my @co     = $self->fetch_AoH('SHOW ENGINES');
+        my $status = $self->fetch_hashref('SHOW TABLE STATUS where `Name` = ? ', $tbl);
         my $return = qq|<select name="$name">|;
         $return .=
           $_->{Engine} eq $status->{Engine}
@@ -977,8 +980,8 @@ sub GetEngineForRow
     my $tbl  = shift @p;
     my $name = shift @p;
     if (defined $tbl && defined $name) {
-        my @co       = $self->fetch_array("SHOW ENGINES");
-        my @EINGINES = $self->fetch_AoH("SHOW TABLE STATUS where `Name` = ?  ", $tbl);
+        my @co       = $self->fetch_array('SHOW ENGINES');
+        my @EINGINES = $self->fetch_AoH('SHOW TABLE STATUS where `Name` = ?  ', $tbl);
         my $return   = qq|<select name="$name">|;
         $return .=
           $_->{Engine} eq "@co"
@@ -994,7 +997,7 @@ sub GetEngineForRow
 
 =head2 GetNull()
 
-        gibt die NULL(NULL | not NULL) auswahlliste zurÃ¼ck
+        gibt die NULL(NULL | not NULL) auswahlliste zurueck
 
         GetNull(selected extra, slect_name);
 
@@ -1021,7 +1024,7 @@ sub GetNull
 
 =head2 GetExtra()
 
-        gibt die extra(auto_increment) auswahlliste zurÃ¼ck
+        gibt die extra(auto_increment) auswahlliste zurueck
 
         GetExtra(selected extra, slect_name);
 
@@ -1048,7 +1051,7 @@ sub GetExtra
 
 =head2 GetTypes()
 
-        gibt die datentypen zurÃ¼ck
+        gibt die datentypen zurueck
 
         GetTypes(selected type, slect_name);
 
@@ -1148,7 +1151,7 @@ sub GetTypes
 
 =head2 GetColumnCollation()
 
-       gibt eine auswahlliste (select) zurÃ¼ck.
+       gibt eine auswahlliste (select) zurueck.
 
        GetColumnCollation( tabelle ,columne, name_select);
 
@@ -1183,7 +1186,7 @@ sub GetColumnCollation
 
 =head2 GetCollation()
 
-       gibt eine auswahlliste (select) zurÃ¼ck.
+        $sel = GetCollation(name);
 
 =cut
 
@@ -1191,25 +1194,23 @@ sub GetCollation
 {
     my ($self, @p) = getSelf(@_);
     my $name      = shift @p;
+    my $selected  = shift @p;
     my @collation = $self->fetch_AoH("SHOW COLLATION");
-    my $collation = 0;
     if ($name) {
         my @a = $self->fetch_AoH("SHOW TABLE STATUS");
         for (my $i = 0; $i <= $#a; $i++) {
-            $collation = $a[$i]->{Collation} if ($a[$i]->{Name} eq $name);
+            $selected = $a[$i]->{Collation} if ($a[$i]->{Name} eq $selected);
         }
     }
     my $return = qq|<select name="$name" style="width:100px;"><option></option>|;
-    $return .= qq|<option  value="$_->{Collation}"| . ($collation eq $_->{Collation} ? 'selected="selected"' : '') . qq|>$_->{Collation}</option>| foreach @collation;
+    $return .= qq|<option  value="$_->{Collation}"| . ($selected eq $_->{Collation} ? 'selected="selected"' : '') . qq|>$_->{Collation}</option>| foreach @collation;
     $return .= '</select>';
     return $return;
 }
 
 =head2 GetAttrs
 
-       gibt eine auswahlliste (select) zurück.
-
-       GetAttrs($tbl, $field, $m_hUniqueAttrs )
+       $sel = GetAttrs($tbl, $field, $m_hUniqueAttrs );
 
 =cut
 
@@ -1247,21 +1248,19 @@ sub GetAttrs
     </select>|;
         return $return;
     } else {
-        return qq|
+        return qq(
     <select name="$name" style="width:100px;">
     <option ></option>
-    <option  value="UNSIGNED">UNSIGNED</option>
-    <option  value="UNSIGNED ZEROFILL">UNSIGNED ZEROFILL</option>
-    <option  value="ON UPDATE CURRENT_TIMESTAMP">ON UPDATE CURRENT_TIMESTAMP</option>
-    </select>|;
+    <option  value="UNSIGNED" ) .                    ($select eq 'UNSIGNED'                    ? 'selected="selected"' : '') . q(>UNSIGNED</option>
+    <option  value="UNSIGNED ZEROFILL" ) .           ($select eq 'UNSIGNED ZEROFILL'           ? 'selected="selected"' : '') . q(>UNSIGNED ZEROFILL</option>
+    <option  value="ON UPDATE CURRENT_TIMESTAMP" ) . ($select eq 'ON UPDATE CURRENT_TIMESTAMP' ? 'selected="selected"' : '') . q(>ON UPDATE CURRENT_TIMESTAMP</option>
+    </select>);
     }
 }
 
 =head2 GetColumns
 
-       gibt eine auswahlliste (select) zurÃ¼ck.
-
-       GetColumns($tbl ,$name,selected)
+       $sel = GetColumns($tbl ,$name,$selected);
 
 =cut
 
@@ -1280,6 +1279,8 @@ sub GetColumns
 
 =head2 getSelf()
 
+see HTML::Menu::TreeView::getSelf
+
 =cut
 
 sub getSelf
@@ -1287,7 +1288,7 @@ sub getSelf
     return @_ if defined($_[0]) && (!ref($_[0])) && ($_[0] eq 'DBI::Library::Database');
     return (defined($_[0]) && (ref($_[0]) eq 'DBI::Library::Database' || UNIVERSAL::isa($_[0], 'DBI::Library::Database')))
       ? @_
-      : ($DBI::Library::Database::DefaultClass->new, @_);
+      : ($DBI::Library::Database::m_sDefaultClass->new, @_);
 }
 
 package DBI::Library::Database::db;
@@ -1330,6 +1331,10 @@ sub fetch
     my $row = $sth->SUPER::fetch(@args) or return;
     return $row;
 }
+
+=head1 SEE ALSO
+
+L<MySQL::Admin::GUI> L<DBI> L<DBI::Library>
 
 =head1 AUTHOR
 

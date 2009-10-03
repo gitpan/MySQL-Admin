@@ -1,13 +1,16 @@
-my $TITLE = translate('editTranslation');
+my $title = translate('editTranslation');
 my %parameter = (
                  path   => $m_hrSettings->{cgi}{bin} . '/templates',
                  style  => $m_sStyle,
-                 title  => $TITLE,
+                 title  => $title,
                  server => $m_hrSettings->{cgi}{serverName},
-                 id     => "n$id",
+                 id     => "editTranslation",
                  class  => 'min',
 );
 my $window = new HTML::Window(\%parameter);
+$window->set_closeable(0);
+$window->set_moveable(0);
+$window->set_resizeable(0);
 $m_sContent .= $window->windowHeader();
 
 loadTranslate($m_hrSettings->{translate});

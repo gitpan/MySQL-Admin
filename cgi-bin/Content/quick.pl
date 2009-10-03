@@ -205,6 +205,11 @@ show_form(
          -default => $m_hrSettings->{floodtime},
         },
         {
+         -LABEL    => 'messages',
+         -default  => $m_hrSettings->{news}{messages},
+         -VALIDATE => \&newsPerPage
+        },
+        {
          -LABEL    => ' ',
          -name     => 'permalink link',
          -TYPE     => 'checkbox',
@@ -274,6 +279,8 @@ sub on_valid_form
     $m_hrSettings->{floodtime} = $floodtime;
     my $permalink = param('permalink link') eq 'on' ? 1 : 0;
     $m_hrSettings->{news}{permalink} = $permalink;
+    my $messages = param('messages');
+    $m_hrSettings->{news}{messages} = $messages;
 
     #general
     my $p16 = param('language');
@@ -319,6 +326,7 @@ sub enabledDisabled    {$_[0] =~ /^(Enabled|Disabled)$/;}
 sub acceptLanguage     {$_[0] =~ /^\w\w-?\w?\w?$/;}
 sub validDefaultAction {$_[0] =~ /^\w+$/;}
 sub validBox           {$_[0] =~ /^(left|right|disabled)$/;}
+sub newsPerPage        {$_[0] =~ /^(5|10|30|100)$/;}
 
 sub validExpires
 {

@@ -16,8 +16,9 @@ sub fulltext
     $m_sContent .= br() . $window->windowHeader();
     $m_sContent .= '<div align="center">';
     $m_sContent .= br();
-    my $ts = translate('search');
+    my $ts      = translate('search');
     my $checked = defined param('regexp') ? 'checked="checked"' : '';
+    my $regexp  = translate('regexp');
     $m_sContent .= qq(
 <div align="center">
 <a href="http://www.google.com/custom?q=$search&amp;sa=Google+Search&amp;&amp;domains=$m_hrSettings->{cgi}{serverName}&amp;sitesearch=$m_hrSettings->{cgi}{serverName}" class="menulink">Search with Google</a><br/><br/>
@@ -25,7 +26,7 @@ sub fulltext
 <input align="top" type="text" maxlength="100" title="$ts" name="query" id="query" value="$search"/>
 <input  type="hidden" name="action"  value="fulltext"/>
 <input type="submit"  name="submit" value="$ts" maxlength="15" alt="$ts" align="left" />
-Regexp:<input type="checkbox" $checked name="regexp" value="regexp" alt="regexp" align="left" />
+$regexp: <input type="checkbox" $checked name="regexp" value="regexp" alt="regexp" align="left" />
 </form></div>
 );
     $m_sContent .= br();

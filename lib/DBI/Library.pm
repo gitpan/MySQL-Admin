@@ -3,10 +3,10 @@ use strict;
 use warnings;
 use utf8;
 use vars
-    qw( $m_dbh $dsn $DefaultClass $m_hrSettings  @EXPORT_OK @ISA %functions $m_sStyle $m_nRight $m_tbl $driver $m_oDatabase $host $pass $m_sUser);
-$DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
+    qw( $m_dbh $m_dsn $m_sDefaultClass $m_hrSettings  @EXPORT_OK @ISA %m_hFunctions $m_sStyle $m_nRight $m_tbl $driver $m_oDatabase $m_sHost $m_sPass $m_sUser);
+$m_sDefaultClass = 'DBI::Library' unless defined $DBI::Library::m_sDefaultClass;
 @DBI::Library::EXPORT_OK
-    = qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver  useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $dsn $m_dbh selectTable);
+    = qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver  useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB $m_dsn $m_dbh selectTable);
 %DBI::Library::EXPORT_TAGS = (
     'all' => [
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver useexecute quote void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute tableLength tableExists initDB selectTable)
@@ -18,8 +18,8 @@ $DefaultClass = 'DBI::Library' unless defined $DBI::Library::DefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.56';
-$m_tbl                   = 'querys';
+$DBI::Library::VERSION = '0.57';
+$m_tbl                 = 'querys';
 $driver                = 'mysql';
 require Exporter;
 use DBI;
@@ -68,9 +68,9 @@ use DBI::Library;
 
                 description => 'description',
 
-                sql => "show tables",
+                sql => 'show tables',
 
-                return => "fetch_array",
+                return => 'fetch_array',
 
         );
 
@@ -104,11 +104,11 @@ DBI::Library is a DBI subclass providing a dynamic SQL Libary.
 
                                         name => $db,
 
-                                        host => $host,
+                                        host => $m_sHost,
 
                                         user => $m_sUser,
 
-                                        password => $password,
+                                        password => $m_sPassword,
 
                                         }
 
@@ -120,7 +120,7 @@ sub new {
     my ( $class, @initializer ) = @_;
     my $self = {};
     my $m_dbh;
-    bless $self, ref $class || $class || $DefaultClass;
+    bless $self, ref $class || $class || $m_sDefaultClass;
     $m_dbh = $self->initDB(@initializer) if(@initializer);
     return ( $self, $m_dbh ) if $m_dbh;
     return $self;
@@ -152,23 +152,23 @@ sub initDB {
         = defined $hash->{name}
         ? $hash->{name}
         : 'LZE';    #todo durch make setzen
-    $host    = defined $hash->{host}     ? $hash->{host}     : 'localhost';
+    $m_sHost    = defined $hash->{host}     ? $hash->{host}     : 'localhost';
     $m_sUser = defined $hash->{user}     ? $hash->{user}     : 'root';
-    $pass    = defined $hash->{password} ? $hash->{password} : '';
+    $m_sPass    = defined $hash->{password} ? $hash->{password} : '';
     my $install = defined $hash->{install} ? $hash->{install} : 0;
     $m_sStyle = defined $hash->{style} ? $hash->{style} : 'lze';
-    $dsn      = "DBI:$driver:database=$m_oDatabase;host=$host";
+    $m_dsn      = "DBI:$driver:database=$m_oDatabase;host=$m_sHost";
     $m_dbh    = DBI::Library->connect(
-        $dsn, $m_sUser, $pass,
+        $m_dsn, $m_sUser, $m_sPass,
         {   RaiseError => 1,
             PrintError => 0,
             AutoCommit => 1,
         }
-        ) or print "$DBI::Library::errs";
+        ) or warn "$DBI::Library::errs";
         $self->void("SET NAMES 'utf8_general_ci'");
     if( !$install && $m_oDatabase eq 'LZE' ) {
-        my @q = $self->fetch_array("select title from querys");
-        $functions{$_} = $_ foreach (@q);
+        my @q = $self->fetch_array('select title from querys');
+        $m_hFunctions{$_} = $_ foreach (@q);
     }
     return $m_dbh;
 }
@@ -208,7 +208,7 @@ gibt den aktuellen host zurück
 =cut
 
 sub CurrentHost {
-    return $host;
+    return $m_sHost;
 }
 
 =head2 CurrentUser()
@@ -218,7 +218,7 @@ gibt den aktuellen user zurück
 =cut
 
 sub CurrentUser {
-    return $host;
+    return $m_sUser;
 }
 
 =head2 CurrentPass()
@@ -228,7 +228,7 @@ gibt das aktuelle passwort zurück
 =cut
 
 sub CurrentPass {
-    return $pass;
+    return $m_sPass;
 }
 
 =head1 independent functions
@@ -242,7 +242,7 @@ $bool =  $database->tableExists($table);
 sub tableExists {
     my ( $self, @p ) = getSelf(@_);
     my $table     = $m_dbh->quote( $p[0] );
-    my $db_clause = "";
+    my $db_clause = '';
     ( $db_clause, $table ) = ( " FROM $1", $2 ) if $table =~ /(.*)\.(.*)/;
     return ( $m_dbh->selectrow_array("SHOW TABLES $db_clause LIKE $table") );
 }
@@ -280,9 +280,9 @@ add sql statments to yourdatabase for later use witdh useexecute();
 
                 description => 'description',
 
-                sql => "show tables",
+                sql => 'show tables',
 
-                return => "fetch_array",
+                return => 'fetch_array',
 
         );
 
@@ -303,7 +303,7 @@ sub addexecute {
     my $sql         = $hash->{sql} if( ( defined $hash->{sql} ) );
     my $description = $hash->{description} if( defined $hash->{description} );
     my $return      = $hash->{'return'} if( defined $hash->{'return'} );
-    unless ( $functions{$m_sTitle} ) {
+    unless ( $m_hFunctions{$m_sTitle} ) {
         my $sql_addexecute
             = qq/INSERT INTO querys(`title`,`sql`,`description`,`return`) VALUES(?,?,?,?);/;
         my $sth = $m_dbh->prepare($sql_addexecute);
@@ -326,7 +326,7 @@ sub addexecute {
 
                 description => 'querys Abfragen',
 
-                sql => "sql statement",
+                sql => 'sql statement',
 
                 return => 'fetch_hashref', #subname
 
@@ -346,7 +346,7 @@ sub editexecute {
     my $description = $hash->{description} if( defined $hash->{description} );
     my $return = ( defined $hash->{'return'} ) ? $hash->{'return'} : 'array';
 
-    if( $functions{$m_sTitle} ) {
+    if( $m_hFunctions{$m_sTitle} ) {
         my $sql_edit
             = qq(update querys set title = ?, sql=? ,description=?,return=? where title = ? );
         my $sth = $m_dbh->prepare($sql_edit);
@@ -373,7 +373,7 @@ example:
 
                 sql => 'select * from table_1 JOIN  table_2 ',
 
-                return => "fetch_hashref"
+                return => 'fetch_hashref'
 
         );
 
@@ -386,7 +386,7 @@ example:
 sub useexecute {
     my ( $self, @p ) = getSelf(@_);
     my $m_sTitle = shift(@p);
-    my $sql      = "select `sql`,`return` from querys where `title` = ?";
+    my $sql      = 'select `sql`,`return` from querys where `title` = ?';
     my $sth      = $m_dbh->prepare($sql);
     $sth->execute($m_sTitle) or warn $m_dbh->errstr;
     my ( $sqlexec, $return ) = $sth->fetchrow_array();
@@ -411,7 +411,7 @@ sub useexecute {
 sub deleteexecute {
     my ( $self, @p ) = getSelf(@_);
     my $id         = $p[0];
-    my $sql_delete = "DELETE FROM querys Where title  = ?";
+    my $sql_delete = 'DELETE FROM querys Where title  = ?';
     my $sth        = $m_dbh->prepare($sql_delete);
     $sth->execute($id) or warn $m_dbh->errstr;
     $sth->finish();
@@ -476,9 +476,6 @@ $hashref = $database->fetch_hashref($sql)
 sub fetch_hashref {
     my ( $self, @p ) = getSelf(@_);
     my $sql = shift @p;
-#     for(my $i = 0; $i < $#p; $i++){
-#     utf8::decode($p[$i]) if (!utf8::is_utf8($p[$i]));
-#     }
     my $h;
     eval( '
 my $sth = $m_dbh->prepare($sql);
@@ -503,9 +500,6 @@ void(sql)
 sub void {
     my ( $self, @p ) = getSelf(@_);
     my $sql = shift @p;
-    for(my $i = 0; $i < $#p; $i++){
-    utf8::decode($p[$i]) if (!utf8::is_utf8($p[$i]));
-    }
     my $sth = $m_dbh->prepare($sql);
     eval( '
 if(defined $p[0]) {
@@ -552,8 +546,8 @@ sub selectTable {
 
 sub updateModules {
     my ( $self, @p ) = getSelf(@_);
-    my @q = $self->fetch_array("select title from querys");
-    $functions{$_} = $_ foreach (@q);
+    my @q = $self->fetch_array('select title from querys');
+    $m_hFunctions{$_} = $_ foreach (@q);
 }
 
 =head2 getSelf()
@@ -569,7 +563,7 @@ sub getSelf {
         defined( $_[0] )
             && ( ref( $_[0] ) eq 'DBI::Library'
             || UNIVERSAL::isa( $_[0], 'DBI::Library' ) )
-    ) ? @_ : ( $DBI::Library::DefaultClass->new, @_ );
+    ) ? @_ : ( $DBI::Library::m_sDefaultClass->new, @_ );
 }
 
 =head2 AUTOLOAD()
@@ -583,7 +577,7 @@ $database->showTables()
 sub AUTOLOAD {
     my ( $self, @p ) = getSelf(@_);
     our $AUTOLOAD;
-    if( $AUTOLOAD =~ /.*::(\w+)$/ and grep $1 eq $_, %functions ) {
+    if( $AUTOLOAD =~ /.*::(\w+)$/ and grep $1 eq $_, %m_hFunctions ) {
         my $attr = $1;
         {
             no strict 'refs';
@@ -643,6 +637,9 @@ sub fetch {
     }
     return $row;
 }
+=head1 SEE ALSO
+
+L<MySQL::Admin::GUI> L<DBI> L<DBI::Library::Database>
 
 =head1 AUTHOR
 

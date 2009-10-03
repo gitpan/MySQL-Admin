@@ -54,7 +54,9 @@ $window->set_moveable(1);
 $window->set_resizeable(0);
 $m_sContent .= '<tr id="trwn1"><td valign="top" class="sidebar">';
 $m_sContent .= $window->windowHeader();
+applyRights(\@t);
 $m_sContent .= Tree(\@t, $m_sStyle);
 undef @m_aT1;
 $m_sContent .= $window->windowFooter();
 $m_sContent .= '<br/></td></tr>';
+

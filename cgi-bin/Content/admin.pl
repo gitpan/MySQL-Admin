@@ -1,4 +1,3 @@
-my $serverdir = $m_hrSettings->{cgi}{serverName};
 my %parameter = (
                  path   => $m_hrSettings->{cgi}{bin} . '/templates',
                  style  => $m_sStyle,
@@ -12,20 +11,45 @@ $window->set_closeable(0);
 $window->set_moveable(0);
 $window->set_resizeable(0);
 $m_sContent .= br() . $window->windowHeader();
-$m_sContent .=
-    qq(<table align="center" border="0" cellpadding="0" cellspacing="0" summary="adminlayout" width="100%"><tr><td align="center"><a href="$ENV{SCRIPT_NAME}?action=settings">)
-  . translate('settings')
-  . qq(</a>&#160;|&#160;<a href="$ENV{SCRIPT_NAME}?action=showTables">)
-  . translate('database')
-  . qq(</a>&#160;|&#160;<a href="$ENV{SCRIPT_NAME}?action=editTreeview">)
-  . translate('EditNavi')
-  . qq(</a>&#160;|&#160;<a href="$ENV{SCRIPT_NAME}?action=editTreeview&amp;dump=links">)
-  . translate('links')
-  . qq(</a>&#160;|&#160;<a href="$ENV{SCRIPT_NAME}?action=showFiles">)
-  . translate('showFiles')
-  . qq(</a><br/><a href="$ENV{SCRIPT_NAME}?action=env">)
-  . translate('env')
-  . qq(</a></td></tr></table><br/>);
+my $tn  = translate('editnavi');
+my $ts  = translate('settings');
+my $td  = translate('database');
+my $tl  = translate('bookmarks');
+my $tf  = translate('explorer');
+my $te  = translate('env');
+my $tna = translate('navigation');
+my $tr  = translate('trash');
+my $trn = translate('translate');
+$m_sContent .= qq(<table align="center" border="0" cellpadding="0" cellspacing="0" summary="adminlayout" width="100%">
+<tr>
+<td align="center">
+<img src="/style/$m_sStyle/buttons/settings.png" alt="$ts" border="0" title="$ts"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=settings">$ts</a>
+</td><td align="center">
+<img src="/style/$m_sStyle/buttons/mysql.jpg" alt="$td" border="0" title="$td"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=showTables">$td</a>
+</td><td align="center">
+<img src="/style/$m_sStyle/buttons/folder_txt.png" alt="$tna" border="0" title="$tna"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=editTreeview">$tna</a>
+</td>
+</tr><tr>
+<td align="center">
+<img src="/style/$m_sStyle/buttons/bookmark.png" alt="$tl" border="0" title="$tl"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=editTreeview&amp;dump=links">$tl</a>
+</td><td align="center">
+<img src="/style/$m_sStyle/buttons/explorer.png" alt="$tf" border="0" title="$tf"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=showDir">$tf</a>
+</td><td align="center">
+<img src="/style/$m_sStyle/buttons/env.png" alt="$te" border="0" title="$te"/><br/>
+<a href="$ENV{SCRIPT_NAME}?action=env">$te</a>
+</td>
+</tr>
+<tr><td align="center"><img src="/style/$m_sStyle/buttons/trash.png" alt="$tr" border="0" title="$tr"/><br/><a href="$ENV{SCRIPT_NAME}?action=trash">$tr</a></td>
+<td align="center"><img src="/style/$m_sStyle/buttons/translate.png" alt="$trn" border="0" title="$trn"/><br/><a href="$ENV{SCRIPT_NAME}?action=translate">$trn</a></td>
+<td align="center">&#160;</td>
+</tr>);
+$m_sContent .= q(</table><br/>);
+
 &showExploits() unless ($m_sAction eq 'deleteexploit');
 $m_sContent .= $window->windowFooter();
 

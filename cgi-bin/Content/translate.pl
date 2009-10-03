@@ -1,7 +1,7 @@
 use vars qw($m_hrLng});
 loadTranslate($m_hrSettings->{translate});
 *m_hrLng = \$MySQL::Admin::Translate::lang;
-my $TITLE = translate('Edit Translation');
+my $title = translate('editTranslation');
 my @translate;
 my $lg = param('lang') ? param('lang') : 'de';
 foreach my $key (sort keys %{$m_hrLng->{$lg}}) {
@@ -13,7 +13,7 @@ foreach my $key (sort keys %{$m_hrLng->{$lg}}) {
       } unless $key eq 'action';
 }
 my @l;
-$m_sContent .= '<div align="center" style="width:100%;">';
+$m_sContent .= '<div align="center">';
 
 foreach my $key (sort keys %{$m_hrLng}) {
     push @l, $key;
@@ -21,7 +21,7 @@ foreach my $key (sort keys %{$m_hrLng}) {
 }
 $m_sContent .= a({href => "$ENV{SCRIPT_NAME}?action=showaddTranslation"}, translate('addTranslation')) . '&#160;';
 show_form(
-          -HEADER   => qq(<br/><h2>$TITLE</h2>),
+          -HEADER   => qq(&#160;),
           -ACCEPT   => \&on_valid_form,
           -CHECK    => (param('checkFormsddfsds') ? 1 : 0),
           -LANGUAGE => $ACCEPT_LANGUAGE,
@@ -57,6 +57,9 @@ if (defined $htm) {
                      class  => 'max',
     );
     my $window = new HTML::Window(\%parameter);
+    $window->set_closeable(0);
+    $window->set_moveable(0);
+    $window->set_resizeable(0);
     $m_sContent .= $window->windowHeader();
     $m_sContent .= qq|<div align="left">$htm</div></div>|;
     $m_sContent .= $window->windowFooter();

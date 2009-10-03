@@ -1,4 +1,18 @@
-Revision history for Perl MySQL::Admin 0.56
+Revision history for Perl MySQL::Admin 0.57
+0.57
+     multiple delete EditTree
+     rights for Bookmarks
+     Create newTable form fixed
+     SaveNewTable  PrimaryKey fixed
+     Show Processlist
+     Show Variables
+     Change Charset
+     translate fixed
+     news per/page settings
+     ./Build install_docs
+     searchDatabase
+     empty directory bug Explorer
+     rename files
 0.56
      trash fixed
 0.55
@@ -110,7 +124,6 @@ Revision history for Perl MySQL::Admin 0.56
 0.27 some fixes
 
 0.26
-
     Overwrought Docs and clean up code, fix build System
 
 0.25

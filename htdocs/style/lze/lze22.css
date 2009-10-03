@@ -126,11 +126,12 @@ table.reg{
 width:250px;
 }
 input{
-border:1px solid black;
+border:0 none;
 color:black;
 background-color:#8f8e8e;
 font-family:verdana,sans-serif;
 vertical-align:top;
+font-size:16px;
 }
 select{
 vertical-align:top;

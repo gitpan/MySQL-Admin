@@ -7,8 +7,8 @@ sub show
         defined param('links_pro_page')
       ? param('links_pro_page') =~ /(\d\d?\d?)/
           ? $1
-          : 10
-      : 10;
+          : $m_hrSettings->{news}{messages}
+      : $m_hrSettings->{news}{messages};
     $m_nStart = $m_nStart >= $threadlength       ? $threadlength - $lpp : $m_nStart;
     $m_nEnd   = $m_nStart + $lpp > $threadlength ? $threadlength        : $m_nStart + $lpp;
     my %needed = (
@@ -344,9 +344,9 @@ sub deleteNews
         &showMessage($tid[0]);
     } else {
         $m_oDatabase->deleteMessage($th, $del);
-        my @a_id = $m_oDatabase->fetch_array("select id from  `replies` where refererId = ?",$del);
-        foreach my $id (@a_id){
-                $m_oDatabase->deleteMessage('replies', $del);
+        my @a_id = $m_oDatabase->fetch_array("select id from  `replies` where refererId = ?", $del);
+        foreach my $id (@a_id) {
+            $m_oDatabase->deleteMessage('replies', $del);
         }
         &show();
     }
@@ -555,8 +555,8 @@ sub showThread
         defined param('links_pro_page')
       ? param('links_pro_page') =~ /(\d\d?\d?)/
           ? $1
-          : 10
-      : 10;
+          : $m_hrSettings->{news}{messages}
+      : $m_hrSettings->{news}{messages};
     my $itht = '<table align="center" border ="0" cellpadding ="0" cellspacing="0" summary="showThread" width="100%" >';
     $itht .= Tr(
                 td(
@@ -588,7 +588,7 @@ sub showThread
                             : ''
                          )
                          . (
-                            $m_nLength > 10
+                            $m_nLength > 9
                             ? a(
                                 {
                                  href  => "$ENV{SCRIPT_NAME}?action=$m_sAkt&amp;links_pro_page=10&amp;von=$m_nStart$replylink",
@@ -600,7 +600,7 @@ sub showThread
                             : ''
                          )
                          . (
-                            $m_nLength > 30
+                            $m_nLength > 29
                             ? a(
                                 {
                                  href  => "$ENV{SCRIPT_NAME}?action=$m_sAkt&amp;links_pro_page=30&amp;von=$m_nStart$replylink",
@@ -643,17 +643,19 @@ sub threadBody
             defined param('links_pro_page')
           ? param('links_pro_page') =~ /(\d\d?\d?)/
               ? $1
-              : 10
-          : 10;
+              : $m_hrSettings->{news}{messages}
+          : $m_hrSettings->{news}{messages};
         my $qcats = $m_oDatabase->fetch_string("SELECT cats FROM users where user = ?", $m_sUser);
         $qcats = $m_oDatabase->quote($qcats);
         my $answers =
           defined $m_nReplyId
           ? " && refererId =$m_nReplyId"
           : "&& cat REGEXP($qcats)";
+
         my $sql_read = qq/select title,body,date,id,user,attach,format from $th where `right` <= $m_nRight $answers  order by date desc LIMIT $m_nStart,$lpp /;
-        my $sth      = $m_dbh->prepare($sql_read);
-        $sth->execute();
+
+        my $sth = $m_dbh->prepare($sql_read);
+        $sth->execute() or warn $sql_read . $m_dbh->errstr;
 
         while (my @data = $sth->fetchrow_array()) {
 
@@ -730,7 +732,7 @@ sub threadBody
             $win->set_resizeable(1);
             my $h1       = qq(<tr id="trw$id"><td valign="top">) . $win->windowHeader();
             my $readmore = translate('readmore');
-            $reply .= qq( <a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/ && $thread eq "news";
+            $reply .= qq( <a href="$replylink" class="link" >$readmore</a>) if $body =~ /\[previewende\]/i && $thread eq "news";
             my $permalink =
               $m_hrSettings->{cgi}{mod_rewrite}
               ? "/news$id.html"
@@ -739,7 +741,7 @@ sub threadBody
             if ($th eq 'news') {
                 my $Permalink = translate('Permalink');
                 $reply .= qq( <a href="$permalink" class="link" >$permalink</a>) if $m_hrSettings->{news}{permalink};
-                $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/s;
+                $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/is;
             }
             BBCODE(\$body, $ACCEPT_LANGUAGE) if ($format eq 'bbcode');
 
@@ -880,22 +882,24 @@ sub multipleRebuild
         if ($params[$i] =~ /markBox\d?/) {
             my $id = param($params[$i]);
             my $trash = $m_oDatabase->fetch_hashref('select * from trash where id = ?', $id);
-            SWITCH : {
-                if ($a eq "delete"){
+            SWITCH: {
+                if ($a eq "delete") {
                     $m_oDatabase->void("delete from trash where id = ?", $id);
                     last SWITCH;
                 }
                 if ($a eq "rebuild") {
                     if ($trash->{table} eq 'news') {
-                        $m_oDatabase->void("insert into news (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",                                          $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{action}, $trash->{format}, $trash->{date}, $trash->{oldId});
+                        $m_oDatabase->void("insert into news (`title`,`body`,`attach`,`cat`,`right`,`user`,`action`,`format`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",
+                                           $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{action}, $trash->{format}, $trash->{date}, $trash->{oldId});
                         $m_oDatabase->void("delete from trash where id = ?", $id);
                     } else {
-                        $m_oDatabase->void("insert into replies (`title`,`body`,`attach`,`cat`,`right`,`user`,`format`,`refererId`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",                                           $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{format}, $trash->{refererId}, $trash->{date}, $trash->{oldId});
+                        $m_oDatabase->void("insert into replies (`title`,`body`,`attach`,`cat`,`right`,`user`,`format`,`refererId`,`date`,`id`) values(?,?,?,?,?,?,?,?,?,?)",
+                                           $trash->{title}, $trash->{body}, $trash->{attach}, $trash->{cat}, $trash->{right}, $trash->{user}, $trash->{format}, $trash->{refererId}, $trash->{date}, $trash->{oldId});
                         $m_oDatabase->void("delete from trash where id = ?", $id);
                     }
                     last SWITCH;
                 }
-             }
+            }
         }
     }
     &show();

@@ -4,17 +4,17 @@ ABOUT
     MySQL::Admin is a Mysql Adminstration tool.
     see http://lindnerei.sourceforge.net
 
-
 INSTALLATION
 
 To install this module type the following:
 
-   perl Makefile.PL
-   make
-   make test
-   make install
-   make testdb
-   make install_examples # /cgi-bin/examples/
+   perl Build.PL
+   ./Build
+   ./Build test
+   ./Build install
+   ./Build testdb
+   ./Build install_examples # /cgi-bin/examples/
+   ./Build install_docs #/perldoc.htm
 
 DEPENDENCIES
 

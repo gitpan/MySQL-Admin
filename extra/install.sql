@@ -123,6 +123,10 @@ INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('r
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('trash','news.pl','trash','5','navigation','trash','139');
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('showaddTranslation','addtranslate.pl','showaddTranslation','5','navigation','main','140');
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('translate','translate.pl','translate','5','navigation','main','141');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('deleteTreeviewEntrys','editTree.pl','Edit','5','navigation','deleteTreeviewEntrys','142');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('ShowProcesslist','tables.pl','processlist','5','tables;navigation','ShowProcesslist','143');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('ShowVariables','tables.pl','ShowVariables','5','tables;navigation','ShowVariables','144');
+INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('searchDatabase','tables.pl','searchDatabase','5','tables;navigation','searchDatabase','145');
 CREATE TABLE box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',
@@ -214,7 +218,7 @@ INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('settings'
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('database','showDatabases','link.gif',5,'',8);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('navigation','editTreeview','',5,'',9);
 INSERT INTO submenuadmin (title,`action`,src,`right`,submenu,id) VALUES('env','env','link.gif',5,NULL,10);
-INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Edit links','linkseditTreeview','link.gif',5,'',12);
+INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Editlinks','linkseditTreeview','link.gif',5,'',12);
 INSERT INTO submenuadmin (title,action,src,`right`,submenu,id) VALUES('Explorer','showDir','link.gif',5,'',15);
 INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('trash','trash','','5','','16');
 INSERT INTO submenuadmin (`title`,`action`,`src`,`right`,`submenu`,`id`) values('translate','translate','link.png','5','','17');

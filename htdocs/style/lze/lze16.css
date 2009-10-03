@@ -132,6 +132,13 @@ border:1px solid black;
 color:black;
 background-color:#8f8e8e;
 }
+.text{
+border:1px solid black;
+vertical-align:top;
+border:1px solid black;
+color:black;
+background-color:#8f8e8e;
+}
 select{
 vertical-align:top;
 border:1px solid black;
@@ -163,6 +170,7 @@ height:16px;
 background-color:#8f8e8e;
 }
 .radioButton{
+border:1px solid black;
 width:16px;
 height:16px;
 background-color:#8f8e8e;

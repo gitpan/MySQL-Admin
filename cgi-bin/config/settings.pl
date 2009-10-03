@@ -7,8 +7,8 @@ $VAR1 = {
                     },
           'defaultAction' => 'news',
           'files' => {
-                       'owner' => 'root',
-                       'group' => 'wwwrun',
+                       'owner' => 'linse',
+                       'group' => 'users',
                        'chmod' => '0755'
                      },
           'size' => 16,
@@ -42,14 +42,14 @@ $VAR1 = {
                        'jabber' => ''
                      },
           'language' => 'en',
-          'version' => '0.56',
+          'version' => '0.57',
           'cgi' => {
                      'bin' => '/srv/www/cgi-bin',
                      'style' => 'lze',
                      'serverName' => 'http://localhost',
                      'cookiePath' => '/',
                      'title' => 'MySQL::Admin',
-                     'mod_rewrite' => 0,
+                     'mod_rewrite' => '1',
                      'alias' => 'cgi-bin',
                      'DocumentRoot' => '/srv/www//htdocs',
                      'expires' => '+1y'

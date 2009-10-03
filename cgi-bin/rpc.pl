@@ -7,6 +7,7 @@ use MySQL::Admin::Settings;
 use vars qw($m_oRpc $m_sXml $m_oDatabase $m_dbh @m_aUsersBlogs $m_hrSubs @m_aRecentPost @m_aCatlist $m_hrSettings $m_nRight);
 $m_oRpc = new Frontier::RPC2;
 $m_sXml = "";
+$m_nRight = 0;
 loadSettings("%PATH%/config/settings.pl");
 *m_hrSettings = \$MySQL::Admin::Settings::m_hrSettings;
 ($m_oDatabase, $m_dbh) = new DBI::Library::Database({name => $m_hrSettings->{database}{name}, host => $m_hrSettings->{database}{host}, user => $m_hrSettings->{database}{user}, password => $m_hrSettings->{database}{password},});
@@ -55,21 +56,24 @@ sub getPostCategories{
 }
 
 sub setPostCategories {
-        my $postid   = shift;
-        my $username = shift;
-        my $password = shift;
-        my $aoh       = shift;
-        if(checkPassword($username, $password)) {
-               my $catstring;
-               foreach my $hash (@{$aoh}){
-                    $catstring.= $hash->{categoryName};
-               }
-               $catstring = $catstring=~/^$/ ? 'draft': $catstring;
-               $m_oDatabase->void("update news Set cat =? where id = ? && `right` <= $m_nRight", $catstring, $postid);
-               return \@m_aRecentPost;
-        }else{
+#         my $postid   = shift;
+#         my $username = shift;
+#         my $password = shift;
+#         my $aoh       = shift;
+#         if(checkPassword($username, $password)) {
+#                 my $catstring;
+#                 my @cats;
+#                foreach my $hash (@{$aoh}){
+#                 my $name   = $m_oDatabase->fetch_string("select name from cats where id = ?", $catstring.= $hash->{categoryId});
+#                 push @cats, $name;
+#                 }
+#                my $cat = join ('|',@cats);
+#                $cat = $cat=~/^$/ ? 'draft': $cat;
+#                $m_oDatabase->void("update news Set cat =? where id = ? && `right` <= $m_nRight", $cat, $postid);
+#                return \@m_aRecentPost;
+#         }else{
                return 0;
-        }
+#         }
 }
 
 sub getPost {
