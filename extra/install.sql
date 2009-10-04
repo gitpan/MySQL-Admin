@@ -127,6 +127,7 @@ INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('d
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('ShowProcesslist','tables.pl','processlist','5','tables;navigation','ShowProcesslist','143');
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('ShowVariables','tables.pl','ShowVariables','5','tables;navigation','ShowVariables','144');
 INSERT INTO actions (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) values('searchDatabase','tables.pl','searchDatabase','5','tables;navigation','searchDatabase','145');
+INSERT INTO `actions` (`action`,`file`,`title`,`right`,`box`,`sub`,`id`) VALUES('deleteTreeviewEntrys','editTree.pl','deleteTreeviewEntrys','5','navigation','deleteTreeviewEntrys','146');
 CREATE TABLE box (
   `file` varchar(100) NOT NULL default '',
   position varchar(8) NOT NULL default 'left',

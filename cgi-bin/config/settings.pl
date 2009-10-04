@@ -42,7 +42,7 @@ $VAR1 = {
                        'jabber' => ''
                      },
           'language' => 'en',
-          'version' => '0.57',
+          'version' => '0.58',
           'cgi' => {
                      'bin' => '/srv/www/cgi-bin',
                      'style' => 'lze',

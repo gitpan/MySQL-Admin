@@ -6,7 +6,7 @@ use vars qw( $session $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Session::EXPORT = qw(loadSession saveSession $session);
 use MySQL::Admin::Config;
 @MySQL::Admin::Session::ISA     = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Session::VERSION = '0.57';
+$MySQL::Admin::Session::VERSION = '0.58';
 $DefaultClass                   = 'MySQL::Admin::Session' unless defined $MySQL::Admin::Session::DefaultClass;
 $defaultconfig                  = '%CONFIG%';
 

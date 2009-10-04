@@ -6,7 +6,7 @@ use vars qw(@EXPORT @ISA $currentstring @formatString);
 require Exporter;
 @HTML::Editor::BBCODE::EXPORT  = qw(BBCODE);
 @ISA                           = qw(Exporter);
-$HTML::Editor::BBCODE::VERSION = '0.57';
+$HTML::Editor::BBCODE::VERSION = '0.58';
 use Parse::BBCode;
 use Syntax::Highlight::Engine::Kate;
 use Syntax::Highlight::Perl ':FULL';
@@ -188,7 +188,7 @@ sub BBCODE
              email  => 'Email:<a target="_blank" href="mailto:%{uri}A">%{parse}s</a>',
              google => 'Google:<a href="http://www.google.de/search?q=%{uri}A">%{parse}s</a>',
              blog =>
-'<table  cellpadding="0" cellspacing="0" border="0"><tr><td><table  cellpadding="5" cellspacing="0"  border="0" class="blog"><tr><td>%{parse}s</td></tr></table></td></tr><tr><td><b><a href="%{uri}A" class="link">Quelle</a></b></td></tr></table>',
+'<table  cellpadding="0" cellspacing="0" border="0"><tr><td><table  cellpadding="5" cellspacing="0"  border="0" class="blog"><tr><td>%{parse}s</td></tr></table></td></tr><tr><td><b><a href="%{link}A" class="link">Quelle</a></b></td></tr></table>',
              left   => '<div align="left">%{parse}s</div>',
              center => '<div align="center">%{parse}s</div>',
              right  => '<div align="right">%{parse}s</div>',

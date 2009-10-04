@@ -740,7 +740,7 @@ sub threadBody
 
             if ($th eq 'news') {
                 my $Permalink = translate('Permalink');
-                $reply .= qq( <a href="$permalink" class="link" >$permalink</a>) if $m_hrSettings->{news}{permalink};
+                $reply .= qq( <a href="$permalink" class="link" >$Permalink</a>) if $m_hrSettings->{news}{permalink};
                 $body =~ s/([^\[previewende\]]+)\[previewende\](.*)$/$1/is;
             }
             BBCODE(\$body, $ACCEPT_LANGUAGE) if ($format eq 'bbcode');

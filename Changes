@@ -1,4 +1,6 @@
-Revision history for Perl MySQL::Admin 0.57
+Revision history for Perl MySQL::Admin 0.58
+0.58
+     install.sql, permalink and blog tag bbcode fixed
 0.57
      multiple delete EditTree
      rights for Bookmarks
