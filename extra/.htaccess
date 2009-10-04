@@ -40,7 +40,7 @@ RewriteRule ^(.+)editTreeview\.html /%ALIAS%/lze.pl?action=editTreeview&dump=$1 
 RewriteRule translate/(.+).html$ /%ALIAS%/translate.pl?q=$1 [PT]
 RewriteRule  (.+)/(.+)/gbook.html(.+)? /%ALIAS%/lze.pl?action=gbook&von=$1&bis=$2$3 [PT]
 RewriteRule  (.+)/(.+)/showthread.html(.+)? /%ALIAS%/lze.pl?action=showthread&von=$1&bis=$2$3 [PT]
-RewriteRule ^([^/]*)\.html(.*)? /%ALIAS%/lze.pl?action=$1&$2 [PT]=======
+RewriteRule ^([^/]*)\.html(.*)? /%ALIAS%/lze.pl?action=$1&$2 [PT]
 RewriteRule ^$ /%ALIAS%/lze.pl
 RewriteRule index.html /%ALIAS%/lze.pl
 RewriteRule hilfe.html /%ALIAS%/lze.pl?action=bbcodehelp
@@ -82,4 +82,4 @@ RewriteRule ^(.+)editTreeview\.html /%ALIAS%/lze.pl?action=editTreeview&dump=$1 
 RewriteRule translate/(.+).html$ /%ALIAS%/translate.pl?q=$1 [PT]
 RewriteRule  (.+)/(.+)/gbook.html(.+)? /%ALIAS%/lze.pl?action=gbook&von=$1&bis=$2$3 [PT]
 RewriteRule  (.+)/(.+)/showthread.html(.+)? /%ALIAS%/lze.pl?action=showthread&von=$1&bis=$2$3 [PT]
-RewriteRule ^([^/]*)\.html(.*)? /%ALIAS%/lze.pl?action=$1&$2 [PT]>>>>>>> .r311
+RewriteRule ^([^/]*)\.html(.*)? /%ALIAS%/lze.pl?action=$1&$2 [PT]

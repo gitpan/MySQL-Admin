@@ -1,4 +1,6 @@
-Revision history for Perl MySQL::Admin 0.58
+Revision history for Perl MySQL::Admin 0.59
+0.59
+    .htaccess fixed
 0.58
      install.sql, permalink and blog tag bbcode fixed
 0.57
