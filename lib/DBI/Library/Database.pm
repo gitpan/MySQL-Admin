@@ -23,7 +23,7 @@ use DBI::Library qw(:all $m_dbh $m_dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.59';
+$DBI::Library::Database::VERSION = '0.6';
 $mod_rewrite                     = 0;
 $m_nSecs                         = 10;
 

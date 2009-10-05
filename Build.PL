@@ -40,11 +40,11 @@ sub ACTION_build
         copy("$cwd/extra/.htaccess", "$cwd/blib/rhtml/.htaccess") or die "Copy failed: $!";
         &replace('%ALIAS%', $m_hrSettings->{cgi}{alias}, "$cwd/blib/rhtml/.htaccess");
     }
-    if (-e "$cwd/extra/startup.pl") {
-        copy("$cwd/extra/startup.pl", "$cwd/blib/perl/config/startup.pl") or die "Copy failed: $cwd/extra/startup.pl $!";
-    }
-    &replace('%PATH%',   "$m_hrSettings->{cgi}{bin}", "$cwd/blib/perl/config/startup.pl"  );
-    &replace('%host%',   $m_hrSettings->{cgi}{serverName}, "$cwd/blib/perl/config/startup.pl"  );
+#     if (-e "$cwd/extra/startup.pl") {
+#         copy("$cwd/extra/startup.pl", "$cwd/blib/perl/config/startup.pl") or die "Copy failed: $cwd/extra/startup.pl $!";
+#     }
+#     &replace('%PATH%',   "$m_hrSettings->{cgi}{bin}", "$cwd/blib/perl/config/startup.pl"  );
+#     &replace('%host%',   $m_hrSettings->{cgi}{serverName}, "$cwd/blib/perl/config/startup.pl"  );
     &replace('%CONFIG%', "$cwd/t/config.pl",    "$cwd/blib/lib/MySQL/Admin/Config.pm");
     &replace('%CONFIG%', "$cwd/t/translate.pl", "$cwd/blib/lib/MySQL/Admin/Translate.pm");
     &replace('%CONFIG%', "$cwd/t/settings.pl",  "$cwd/blib/lib/MySQL/Admin/Settings.pm");
@@ -68,8 +68,8 @@ sub ACTION_install
 {
     my $self = shift;
 
-    &replace("$cwd/blib/perl",     $m_hrSettings->{cgi}{bin},                          "$cwd/blib/perl/config/startup.pl"  );
-    &replace('%host%',             $m_hrSettings->{cgi}{serverName},                   "$cwd/blib/perl/config/startup.pl"  );
+#     &replace("$cwd/blib/perl",     $m_hrSettings->{cgi}{bin},                          "$cwd/blib/perl/config/startup.pl"  );
+#     &replace('%host%',             $m_hrSettings->{cgi}{serverName},                   "$cwd/blib/perl/config/startup.pl"  );
     &replace("$cwd/t/config.pl",    $m_hrSettings->{cgi}{bin} . '/config/config.pl',    "$cwd/blib/lib/MySQL/Admin/Config.pm");
     &replace("$cwd/t/translate.pl", $m_hrSettings->{cgi}{bin} . '/config/translate.pl', "$cwd/blib/lib/MySQL/Admin/Translate.pm");
     &replace("$cwd/t/settings.pl",  $m_hrSettings->{cgi}{bin} . '/config/settings.pl',  "$cwd/blib/lib/MySQL/Admin/Settings.pm");
@@ -212,7 +212,7 @@ sub ACTION_install_examples
     &change($dir);
     system("chmod 0755 -R  $release");
 }
-use HTML::Menu::TreeView qw(:all);
+eval('use HTML::Menu::TreeView qw(:all);');
 my ($htdocs, $key);
 my $style = 'Crystal';
 my (@modules, @r, $p, $root);
@@ -552,7 +552,7 @@ $inctance->{properties}{sqlhost}     = $m_hrSettings->{database}{host}     ? $m_
 $inctance->{properties}{dbpass}      = $m_hrSettings->{database}{password} ? $m_hrSettings->{database}{password} : '';
 $inctance->{properties}{group}       = $m_hrSettings->{files}{group}       ? $m_hrSettings->{files}{group}       : 'wwwrun';
 $inctance->{properties}{owner}       = $m_hrSettings->{files}{owner}       ? $m_hrSettings->{files}{owner}       : $ENV{USER};
-$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.59';
+$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.6';
 $inctance->{properties}{password}    = $m_hrSettings->{admin}{pass}        ? $m_hrSettings->{admin}{pass}        : 'testpass';
 $inctance->{properties}{email}       = $m_hrSettings->{admin}{email}       ? $m_hrSettings->{admin}{email}       : '';
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
@@ -605,7 +605,7 @@ unless ($skip) {
     $inctance->{properties}{owner}    = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
     $inctance->{properties}{group}    = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
     $inctance->{properties}{group}    = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
-    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.59';
+    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.6';
     $inctance->{properties}{chmod}    = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
     $inctance->{properties}{password} = Module::Build->prompt("Enter Password for login!", $inctance->{properties}{password});
     $inctance->{properties}{email}    = Module::Build->prompt("Enter your email adress!", $inctance->{properties}{email});
@@ -657,7 +657,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.59',
+    version   => '0.6',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

@@ -18,7 +18,7 @@ $m_sDefaultClass = 'DBI::Library' unless defined $DBI::Library::m_sDefaultClass;
         qw(CurrentPass CurrentUser CurrentHost CurrentDb Driver tableLength tableExists initDB useexecute void fetch_hashref fetch_AoH fetch_array updateModules deleteexecute editexecute addexecute selectTable)
     ],
 );
-$DBI::Library::VERSION = '0.59';
+$DBI::Library::VERSION = '0.6';
 $m_tbl                 = 'querys';
 $driver                = 'mysql';
 require Exporter;

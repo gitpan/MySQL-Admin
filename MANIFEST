@@ -69,9 +69,7 @@ extra/.htaccess
 extra/00-DBI-Database.t
 extra/00-DBI-FO.t
 extra/00-DBI-OO.t
-extra/apache2-example-config.conf
 extra/install.sql
-extra/startup.pl
 extra/uninstall.sql
 htdocs/favicon.ico
 htdocs/images/minus.png

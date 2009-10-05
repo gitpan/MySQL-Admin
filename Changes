@@ -1,4 +1,6 @@
-Revision history for Perl MySQL::Admin 0.59
+Revision history for Perl MySQL::Admin 0.6
+0.6
+    cleanup
 0.59
     .htaccess fixed
 0.58
