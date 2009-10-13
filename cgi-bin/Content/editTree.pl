@@ -242,9 +242,9 @@ sub addEntry
 {
     my $t    = shift;
     my $find = shift;
+ 
     for (my $i = 0; $i < @$t; $i++) {
         if (@$t[$i]->{rid} eq $find) {
-
             my %params = Vars();
             my $node   = {};
             foreach my $key (sort(keys %params)) {
@@ -258,11 +258,16 @@ sub addEntry
             if (param('folder')) {
                 $node->{'subtree'} = [{text => 'Empty Folder',}];
             }
-            if (param('addBookMark')) {
+           if (param('addBookMark')) {
+                unless($node->{'text'} eq $m_aTree[$#m_aTree]->{'text'}){
                 push @$t, $node;
-            } else {
-                splice @$t, $i, 0, $node;
+      &rid();
+saveTree($m_sDump, \@m_aTree);
+                return;
+              }
             }
+            splice @$t, $i, 0, $node;
+           
             &rid();
             saveTree($m_sDump, \@m_aTree);
             return;
@@ -299,7 +304,7 @@ sub editEntry
 {
     my $t    = shift;
     my $find = shift;
-    my $href = "$ENV{SCRIPT_NAME}?action=editTreeviewEntry&amp;dump=$m_sPdmp";
+    my $href = "$ENV{SCRIPT_NAME}?action=editTreeviewEntry&dump=$m_sPdmp";
     language('de') if $ACCEPT_LANGUAGE eq 'de';
     my $node = help();
     for (my $i = 0; $i < @$t; $i++) {
@@ -376,7 +381,7 @@ sub updateTree
             my $nPrevId = 'a' . (@$t[$i]->{rid} - 1);
             @$t[$i]->{addition} = qq|<table border="0" cellpadding="0" cellspacing="0" align="right" summary="layout"><tr>
 <td><a class="treeviewLink$m_nSize" target="_blank" title="@$t[$i]->{text}" href="@$t[$i]->{href}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/www.png" border="0" alt=""></a></td>
-<td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=editTreeviewEntry&amp;dump=$m_sPdmp&amp;rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteTreeviewEntry&amp;dump=$m_sPdmp&amp;rid=@$t[$i]->{rid}#$nPrevId" onclick="if( confirm('Delete ?')){return true;}else{return false;}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=upEntry&amp;dump=$m_sPdmp&amp;rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="up"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=downEntry&amp;dump=$m_sPdmp&amp;rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="down"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=newTreeviewEntry&amp;dump=$m_sPdmp&amp;rid=@$t[$i]->{rid}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"></a></td><td><input type="checkbox" name="markBox$i" class="markBox" value="@$t[$i]->{rid}" /></td></tr></table>|;
+<td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=editTreeviewEntry&dump=$m_sPdmp&rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/edit.png" border="0" alt="edit"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=deleteTreeviewEntry&dump=$m_sPdmp&rid=@$t[$i]->{rid}#$nPrevId" onclick="if( confirm('Delete ?')){return true;}else{return false;}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/editdelete.png" border="0" alt="delete"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=upEntry&dump=$m_sPdmp&rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/up.png" border="0" alt="up"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=downEntry&dump=$m_sPdmp&rid=@$t[$i]->{rid}#@$t[$i]->{id}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/down.png" border="0" alt="down"></a></td><td><a class="treeviewLink$m_nSize" href="$ENV{SCRIPT_NAME}?action=newTreeviewEntry&dump=$m_sPdmp&rid=@$t[$i]->{rid}"><img src="/style/$m_sStyle/$m_nSize/mimetypes/filenew.png" border="0" alt="new"></a></td><td><input type="checkbox" name="markBox$i" class="markBox" value="@$t[$i]->{rid}" /></td></tr></table>|;
             @$t[$i]->{href} = '';
             updateTree(\@{@$t[$i]->{subtree}}) if (defined @{@$t[$i]->{subtree}});
 

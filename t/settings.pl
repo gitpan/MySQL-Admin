@@ -9,7 +9,7 @@ $VAR1 = {
          'files'         => {
                      'owner' => 'linse',
                      'group' => 'users',
-                     'chmod' => '0.6'
+                     'chmod' => '0.61'
          },
          'size'    => 22,
          'uploads' => {
@@ -28,7 +28,7 @@ $VAR1 = {
                      'town'      => 'Berlin'
          },
          'language' => 'en',
-         'version'  => '0.6',
+         'version'  => '0.61',
          'cgi'      => {
                    'bin'          => 'cgi-bin/',
                    'style'        => 'lze',

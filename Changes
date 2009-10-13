@@ -1,4 +1,9 @@
-Revision history for Perl MySQL::Admin 0.6
+Revision history for Perl MySQL::Admin 0.61
+0.61
+     fixed,
+     ChangeCharset
+     AutoincrementValue
+     AddBookmark
 0.6
     cleanup
 0.59

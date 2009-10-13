@@ -23,7 +23,7 @@ use DBI::Library qw(:all $m_dbh $m_dsn);
         qw(getActionRight CurrentPass CurrentUser CurrentHost CurrentDb Driver addUser hasAcount isMember  catright topicright right getAction checkPass checkSession setSid getName rss readMenu deleteMessage reply editMessage addMessage rewrite checkFlood GetColumns GetAttrs GetCollation GetColumnCollation GetTypes GetExtra GetNull GetEngineForRow GetEngines GetCharacterSet GetDataBases GetAutoIncrement GetPrimaryKey GetAutoIncrementValue)
     ],
 );
-$DBI::Library::Database::VERSION = '0.6';
+$DBI::Library::Database::VERSION = '0.57';
 $mod_rewrite                     = 0;
 $m_nSecs                         = 10;
 
@@ -792,7 +792,8 @@ sub checkFlood
 sub GetAutoIncrementValue
 {
     my ($self, @p) = getSelf(@_);
-    my $name = my @a = $self->fetch_AoH('SHOW TABLE STATUS');
+    my $name = $p[0];
+    my @a = $self->fetch_AoH('SHOW TABLE STATUS');
     for (my $i = 0; $i <= $#a; $i++) {
         return $a[$i]->{Auto_increment} if ($a[$i]->{Name} eq $name);
     }
@@ -1204,6 +1205,31 @@ sub GetCollation
     }
     my $return = qq|<select name="$name" style="width:100px;"><option></option>|;
     $return .= qq|<option  value="$_->{Collation}"| . ($selected eq $_->{Collation} ? 'selected="selected"' : '') . qq|>$_->{Collation}</option>| foreach @collation;
+    $return .= '</select>';
+    return $return;
+}
+
+=head2 GetCharset()
+
+        $sel = GetCharset(name,table);
+
+=cut
+
+sub GetCharset
+{
+    my ($self, @p) = getSelf(@_);
+    my $name      = shift @p;
+    my $selected  = shift @p;
+    my @Charset = $self->fetch_AoH("SHOW Charset");
+    if ($name) {
+        my @a = $self->fetch_AoH("SHOW TABLE STATUS");
+        for (my $i = 0; $i <= $#a; $i++) {
+                $selected = $a[$i]->{Collation} if ($a[$i]->{Name} eq $selected);
+        }
+        }
+        $selected = GetCharacterSet($selected );
+    my $return = qq|<select name="$name" style="width:100px;"><option></option>|;
+    $return .= qq|<option  value="$_->{Charset}"| . ($selected eq $_->{Charset} ? 'selected="selected"' : '') . qq|>$_->{Charset}</option>| foreach @Charset;
     $return .= '</select>';
     return $return;
 }

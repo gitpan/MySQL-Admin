@@ -64,7 +64,7 @@ use vars qw(
 );
 @MySQL::Admin::GUI::EXPORT  = qw(action ContentHeader Body maxlength openFile ChangeDb action Unique applyRights);
 @ISA                        = qw(Exporter MySQL::Admin);
-$MySQL::Admin::GUI::VERSION = '0.6';
+$MySQL::Admin::GUI::VERSION = '0.61';
 $m_bMod_perl                = ($ENV{MOD_PERL}) ? 1 : 0;
 local $^W = 0;
 

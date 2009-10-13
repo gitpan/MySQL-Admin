@@ -1689,15 +1689,16 @@ sub EditTable
         ShowDbHeader($tbl, 1, "Edit");
         $m_sContent .= qq(
               <div  align="center" style="padding-top:5px;width:100%;padding-right:2px;">
-              <table border="0" cellpadding="0" cellspacing="2" class="dataBaseTable">
+              <table border="0" cellpadding="1" cellspacing="0" class="dataBaseTable">
               <tr >
               <td >);
         $m_sContent .= qq|
-              <table cellspacing="0" border="0" cellpadding="2" width="100%">
+              <table cellspacing="0" border="0" cellpadding="2" width="*">
               <tr>
               <td class="caption">Name</td>
               <td class="caption">Engine</td>
               <td class="caption">Auto_increment</td>
+              <td class="caption">Charset</td>
               </tr>
               <tr>
               <td class="values"><form action="" enctype="multipart/form-data" accept-charset="utf-8"><input type="hidden" name="action" value="RenameTable"/>
@@ -1715,7 +1716,8 @@ sub EditTable
               <input type="submit" value="|
           . translate('ChangeEngine') . qq|"/>
               </td>
-              </tr></table>
+              </tr>
+              </table>
               <input type="hidden" value="ChangeEngine" name="action"/>
               <input type="hidden" value="$tbl" name="table"/>
               </form></td>|;
@@ -1731,12 +1733,13 @@ sub EditTable
           . translate('ChangeAutoInCrementValue') . qq|"/>
                      </form></td>
                      </tr></table>
-              </td></tr></table>|;
+              </td>|;
 
-        $m_sContent .= qq|<td class="values"><form action="$ENV{SCRIPT_NAME}" method="POST" enctype="multipart/form-data">
+              $m_sContent .= qq|<td class="values">
+              <form action="$ENV{SCRIPT_NAME}" method="POST" enctype="multipart/form-data">
                                <table border="0" align="left" cellpadding="2" cellspacing="0" class="dataBaseTable">
                               <tr><td class="values">|
-          . $m_oDatabase->GetCollation($tbl, 'charset') . qq|
+                              . $m_oDatabase->GetCharset( 'charset',$tbl) . qq|
                               </td>
                               <td class="values"><input type="submit" value="|
           . translate('ChangeCharset') . qq|"/>
@@ -1744,12 +1747,12 @@ sub EditTable
                               </tr></table>
                               <input type="hidden" value="$tbl" name="table"/>
                               <input type="hidden" value="ChangeCharset" name="action"/>
-                              </form></td></table></td>|;
+                              </form></td></table></td></tr>|;
         $m_sContent .= qq(
               <tr><td >
               <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
               <input type="hidden" name="action" value="SaveEditTable"/>
-              <table border="0" cellpadding="0" cellspacing="0" class="dataBaseTable">
+              <table border="0" cellpadding="1" cellspacing="0" class="dataBaseTable">
               <tr class="caption">
               <td class="caption">Field</td>
               <td class="caption">Type</td>
@@ -1838,14 +1841,14 @@ sub EditTable
               <input type="hidden" name="change_col_sessionRTZHBG" value="$qstring"/>
               </form>
               </td></tr>
-              <tr><td colspan="10" align="right" style="padding-top:2px;">
+              <tr><td colspan="11" align="right" style="padding-top:2px;">
        );
         my $newCol = translate('newcol');
         $m_sContent .= qq(
               <div align="center">
               <form action="$ENV{SCRIPT_NAME}" method="post" enctype="multipart/form-data">
               <input type="hidden" name="action" value="SaveNewColumn"/>
-              <table border="0" cellpadding="2" cellspacing="0" class="dataBaseTable" width="100%">
+              <table border="0" cellpadding="2" cellspacing="0" class="dataBaseTable" width="*">
               <tr ><td colspan="10" align="left">$newCol</td></tr>
               <tr class="caption">
               <td class="caption">Field</td>
@@ -3599,7 +3602,8 @@ sub ChangeCharset
     $tbl = $m_dbh->quote_identifier($tbl);
     my $charset = param('charset');
     $charset = $m_oDatabase->quote($charset);
-    ExecSql("ALTER TABLE $tbl CONVERT TO CHARACTER SET $charset;") & EditTable(param('table'));
+    ExecSql("ALTER TABLE $tbl CONVERT TO CHARACTER SET $charset;");
+    EditTable(param('table'));
 }
 
 sub searchForm
