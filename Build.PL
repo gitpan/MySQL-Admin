@@ -552,7 +552,7 @@ $inctance->{properties}{sqlhost}     = $m_hrSettings->{database}{host}     ? $m_
 $inctance->{properties}{dbpass}      = $m_hrSettings->{database}{password} ? $m_hrSettings->{database}{password} : '';
 $inctance->{properties}{group}       = $m_hrSettings->{files}{group}       ? $m_hrSettings->{files}{group}       : 'wwwrun';
 $inctance->{properties}{owner}       = $m_hrSettings->{files}{owner}       ? $m_hrSettings->{files}{owner}       : $ENV{USER};
-$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.61';
+$inctance->{properties}{chmod}       = $m_hrSettings->{files}{chmod}       ? $m_hrSettings->{files}{chmod}       : '0.62';
 $inctance->{properties}{password}    = $m_hrSettings->{admin}{pass}        ? $m_hrSettings->{admin}{pass}        : 'testpass';
 $inctance->{properties}{email}       = $m_hrSettings->{admin}{email}       ? $m_hrSettings->{admin}{email}       : '';
 $inctance->{properties}{dbname}      = $inctance->args('dbname')      if $inctance->args('dbname');
@@ -605,7 +605,7 @@ unless ($skip) {
     $inctance->{properties}{owner}    = Module::Build->prompt("Enter your File Owner", $inctance->{properties}{owner});
     $inctance->{properties}{group}    = $inctance->{properties}{group} ? $inctance->{properties}{group} : 'wwwrun';
     $inctance->{properties}{group}    = Module::Build->prompt("Enter your File Owner Group", $inctance->{properties}{group});
-    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.61';
+    $inctance->{properties}{chmod}    = $inctance->{properties}{chmod} ? $inctance->{properties}{chmod} : '0.62';
     $inctance->{properties}{chmod}    = Module::Build->prompt("Enter your Chmod!", $inctance->{properties}{chmod});
     $inctance->{properties}{password} = Module::Build->prompt("Enter Password for login!", $inctance->{properties}{password});
     $inctance->{properties}{email}    = Module::Build->prompt("Enter your email adress!", $inctance->{properties}{email});
@@ -657,7 +657,7 @@ $m_hrSettings = {
         navigation => "$inctance->{properties}{cgi}/config/tree.pl",
         links      => "$inctance->{properties}{cgi}/config/links.pl"
     },
-    version   => '0.61',
+    version   => '0.62',
     session   => "$inctance->{properties}{cgi}/config/session.pl",
     actions   => "$inctance->{properties}{cgi}/config/actions.pl",
     translate => "$inctance->{properties}{cgi}/config/translate.pl",

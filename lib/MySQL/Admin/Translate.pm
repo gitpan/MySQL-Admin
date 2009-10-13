@@ -6,7 +6,7 @@ use vars qw($ACCEPT_LANGUAGE $lang $DefaultClass @EXPORT  @ISA $defaultconfig);
 @MySQL::Admin::Translate::EXPORT = qw(loadTranslate saveTranslate $lang);
 use MySQL::Admin::Config;
 @ISA                              = qw(Exporter MySQL::Admin::Config);
-$MySQL::Admin::Translate::VERSION = '0.61';
+$MySQL::Admin::Translate::VERSION = '0.62';
 $DefaultClass                     = 'MySQL::Admin::Translate' unless defined $MySQL::Admin::Translate::DefaultClass;
 $defaultconfig                    = '%CONFIG%';
 
